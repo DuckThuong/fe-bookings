@@ -2,8 +2,19 @@ import { Button } from "antd";
 import { Banner } from "../../component/Banner";
 import "./style.scss";
 import { Logo } from "../../../../components/Logo";
+import { useNavigate } from "react-router-dom";
+import { ROUTER_PATH } from "../../../../routers/Route";
 
 export const WelcomePage = () => {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate(ROUTER_PATH.LOGIN);
+  };
+
+  const handleRegisterClick = () => {
+    navigate(ROUTER_PATH.SIGNIN);
+  };
   return (
     <div className="auth__welcome">
       <div className="welcome-banner">
@@ -50,6 +61,7 @@ export const WelcomePage = () => {
           type="primary"
           className="welcome-form__button welcome-form__button--primary"
           block
+          onClick={handleLoginClick}
         >
           Đăng nhập tài khoản →
         </Button>
@@ -64,6 +76,7 @@ export const WelcomePage = () => {
           type="default"
           className="welcome-form__button welcome-form__button--secondary"
           block
+          onClick={handleRegisterClick}
         >
           Đăng ký miễn phí
         </Button>

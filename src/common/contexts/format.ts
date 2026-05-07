@@ -11,9 +11,7 @@ export const formatMinutesToTime = (minutes: number) => {
   return `${hh}:${mm}:${ss}`;
 };
 
-export const formatMoney = (
-  value?: string | number | null,
-) => {
+export const formatMoney = (value?: string | number | null) => {
   if (value === undefined || value === null || value === "") {
     return "";
   }
@@ -77,4 +75,15 @@ export const formatLastMessageAt = (dateString: string) => {
   }
 
   return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}`;
+};
+
+export const formatPhone = (raw: string) => {
+  let digits = raw.replace(/\D/g, "");
+  if (digits.startsWith("0")) digits = digits.slice(1);
+  if (digits.length > 9) digits = digits.slice(0, 9);
+  let result = "";
+  if (digits.length > 0) result = digits.slice(0, 3);
+  if (digits.length > 3) result += " " + digits.slice(3, 6);
+  if (digits.length > 6) result += " " + digits.slice(6, 9);
+  return digits ? "0" + result : "";
 };
