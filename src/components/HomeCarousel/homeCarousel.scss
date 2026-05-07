@@ -1,0 +1,53 @@
+@import "../../color.scss";
+
+.home {
+  &__carousel {
+    width: 100%;
+
+    &-wrapper {
+      .slick-list {
+        overflow: hidden;
+        .slick-track {
+          display: flex;
+          flex-direction: row;
+          gap: 16px;
+
+          .slick-slide {
+            height: auto;
+            & > div {
+              height: 100%;
+            }
+          }
+        }
+      }
+
+      .slick-dots {
+        li {
+          button {
+            background: $secondary_color !important;
+            &:before {
+              display: none;
+            }
+          }
+
+          &.slick-active button {
+            background: $black_color !important;
+          }
+        }
+      }
+    }
+
+    &-item {
+      display: flex !important;
+      justify-content: center;
+      align-items: stretch;
+      height: fit-content;
+      outline: none;
+    }
+  }
+}
+
+.home__carousel-item .home-card {
+  width: 100%;
+  height: 100%;
+}
