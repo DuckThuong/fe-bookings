@@ -1,7 +1,12 @@
 import { useState } from "react";
 import "../style.scss";
+import type { FormInstance } from "antd";
 
-export const Step2 = () => {
+interface SignInProps {
+  form: FormInstance;
+}
+
+export const Step2 = (props: SignInProps) => {
   const [gender, setGender] = useState<string>("");
   return (
     <div className="signIn__step-2">

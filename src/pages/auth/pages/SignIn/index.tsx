@@ -2,31 +2,52 @@ import { BENEFITS } from "@/common/constants/constants";
 import "./style.scss";
 import { Logo } from "@/components/Logo";
 import { useState } from "react";
-import { Button, Steps } from "antd";
+import { Button, Form, Steps } from "antd";
 import { Step1 } from "./steps/Step1";
 import { Step3 } from "./steps/Step3";
 import { Step2 } from "./steps/Step2";
+import type { SignInDto } from "@api/dtos/SignIn.dto";
 
 export const SignIn = () => {
+  const [form] = Form.useForm();
   const [step, setStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [data, setData] = useState<SignInDto>(null);
   const contentRender = () => {
     switch (step) {
       case 0:
-        return <Step1 />;
+        return <Step1 form={form} />;
       case 1:
-        return <Step2 />;
+        return <Step2 form={form} />;
       case 2:
-        return <Step3 />;
+        return <Step3 form={form} />;
       default:
-        return <Step1 />;
+        return <Step1 form={form} />;
     }
   };
 
-  const handleSubmit = () => {
-    setLoading(true);
-    setStep((v) => v + 1);
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      await form.validateFields();
+
+      if (step < 2) {
+        const currentValues = form.getFieldsValue();
+        setData((prev) => ({ ...prev, ...currentValues }));
+        setStep((v) => v + 1);
+      } else {
+        const finalData: SignInDto = {
+          ...data,
+          ...form.getFieldsValue(),
+        };
+        setData(finalData);
+        console.log("Submit:", finalData);
+      }
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      console.log(e);
+    }
   };
   return (
     <div className="auth-signin">
@@ -37,7 +58,6 @@ export const SignIn = () => {
       <div className="signin-card">
         <Steps
           current={step}
-          onChange={setStep}
           items={[
             {
               title: "Tài Khoản",
@@ -72,13 +92,12 @@ export const SignIn = () => {
             GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính
             xác và cập nhật để trải nghiệm dịch vụ tốt nhất.
           </p>
-          {contentRender()}
+          <Form form={form} layout="vertical">
+            {contentRender()}
+          </Form>
         </div>
-        <Button className={`signin-btn`} onClick={handleSubmit}>
+        <Button loading={loading} className="signin-btn" onClick={handleSubmit}>
           Tạo tài khoản
-          <span className="arrow">
-            {loading ? <span className="signin-btn__spinner" /> : " →"}
-          </span>
         </Button>
 
         <p className="signin-login-link">
