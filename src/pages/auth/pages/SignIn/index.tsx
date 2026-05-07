@@ -15,10 +15,16 @@ import type { SignInDto } from "@api/dtos/SignIn.dto";
 import { useNotification } from "@/providers/notificationProvider";
 import back from "../../../../assets/icons/back.svg";
 
+const subTitleMap: Record<number, string> = {
+  0: "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để tạo tài khoản GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính xác và cập nhật để trải nghiệm dịch vụ tốt nhất.",
+  1: "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để tạo tài khoản GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính xác và cập nhật để trải nghiệm dịch vụ tốt nhất.",
+  2: "Chúng tôi đã gửi mã xác minh đến số điện thoại của bạn. Vui lòng nhập mã có 4 chữ số để hoàn tất đăng ký. Lưu ý: Mã xác minh có hiệu lực trong vòng 5 phút, hãy kiểm tra hộp thư đến của bạn và nhập mã kịp thời để hoàn tất quá trình đăng ký.",
+};
+
 export const SignIn = () => {
   const [form] = Form.useForm();
   const { showNotification } = useNotification();
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(2);
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<SignInDto>(null);
   const contentRender = () => {
@@ -116,10 +122,8 @@ export const SignIn = () => {
             <br />
             biết về bạn
           </h1>
-          <p className="signin-header__sub">
-            Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để tạo tài khoản
-            GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính
-            xác và cập nhật để trải nghiệm dịch vụ tốt nhất.
+          <p id="sub-title" className="signin-header__sub">
+            {subTitleMap[step]}
           </p>
           <Form form={form} layout="vertical">
             {contentRender()}
