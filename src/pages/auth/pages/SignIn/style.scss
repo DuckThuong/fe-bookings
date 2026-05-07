@@ -179,6 +179,7 @@ $red: #ef4444;
       align-items: center;
       justify-content: center;
       color: $muted;
+      padding-top: 2%;
     }
 
     &:nth-child(1) {
@@ -453,5 +454,13 @@ $red: #ef4444;
 
   .signin-benefits__text {
     font-size: 9.5px;
+  }
+}
+
+.signIn {
+  &__step {
+    &-2 {
+      padding: 12px 0px;
+    }
   }
 }

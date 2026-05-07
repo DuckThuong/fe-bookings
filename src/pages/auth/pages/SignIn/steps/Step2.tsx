@@ -71,30 +71,53 @@ export const Step2 = (props: SignInProps) => {
         </Form.Item>
       </div>
 
-      {/* Giới tính */}
-      <div className="signin-field">
-        <label className="signin-field__label">Giới tính</label>
-        <div className="signin-gender">
-          {genderList?.map((opt) => (
-            <div
-              key={opt.value}
-              className={`signin-gender__opt ${
-                gender === opt.value ? "signin-gender__opt--selected" : ""
-              }`}
-              onClick={() => {
-                setGender(opt.value);
-                props.form.setFieldValue("gender", opt.value);
-              }}
-            >
-              <div className="signin-gender__radio">
-                <div className="signin-gender__dot" />
-              </div>
-              <span className="signin-gender__emoji">{opt.emoji}</span>
-              <span className="signin-gender__text">{opt.label}</span>
+        <Form.Item
+            name="gender"
+            rules={[
+                {
+                    required: true,
+                    message: "Vui lòng chọn giới tính",
+                },
+            ]}
+        >
+            <div className="signin-field">
+                <label className="signin-field__label">
+                    Giới tính
+                </label>
+
+                <div className="signin-gender">
+                    {genderList?.map((opt) => (
+                        <div
+                            key={opt.value}
+                            className={`signin-gender__opt ${
+                                gender === opt.value
+                                    ? "signin-gender__opt--selected"
+                                    : ""
+                            }`}
+                            onClick={() => {
+                                setGender(opt.value);
+                                props.form.setFieldValue(
+                                    "gender",
+                                    opt.value,
+                                );
+                            }}
+                        >
+                            <div className="signin-gender__radio">
+                                <div className="signin-gender__dot" />
+                            </div>
+
+                            <span className="signin-gender__emoji">
+                        {opt.emoji}
+                    </span>
+
+                            <span className="signin-gender__text">
+                        {opt.label}
+                    </span>
+                        </div>
+                    ))}
+                </div>
             </div>
-          ))}
-        </div>
-      </div>
+        </Form.Item>
     </div>
   );
 };
