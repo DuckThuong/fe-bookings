@@ -85,6 +85,34 @@ $red: #ef4444;
   }
 }
 
+.login-form {
+  .ant-form-item {
+    &-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: $night;
+      letter-spacing: 0.3px;
+      margin-bottom: 7px;
+    }
+
+    .ant-input-prefix {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: $muted;
+    }
+
+    &:nth-child(1) {
+      @include fadeUpSecond(0.3s);
+    }
+    &:nth-child(2) {
+      @include fadeUpSecond(0.38s);
+    }
+  }
+}
+
 .login-card {
   width: 100%;
   max-width: 440px;

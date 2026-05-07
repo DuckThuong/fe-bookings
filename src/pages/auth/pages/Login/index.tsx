@@ -5,9 +5,10 @@ import { InputPhoneNumber } from "../../component/InputPhoneNumber";
 import "./style.scss";
 import { InputState } from "./../../../../common/constants/constants";
 import { ROUTER_PATH } from "@/routers/Route";
-import { Button } from "antd";
+import { Button, Form } from "antd";
 
 export const Login = () => {
+  const [form] = Form.useForm();
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<string>(InputState.idle);
   const [loading, setLoading] = useState(false);
@@ -75,11 +76,13 @@ export const Login = () => {
           </p>
         </div>
 
-        <InputPhoneNumber
-          value={phone}
-          onChange={(value) => setPhone(value)}
-          onBlur={(value) => setPhone(value)}
-        />
+        <Form form={form} layout="vertical" className="login-form">
+          <InputPhoneNumber
+            value={phone}
+            onChange={(value) => setPhone(value)}
+            onBlur={(value) => setPhone(value)}
+          />
+        </Form>
 
         <Button className={`signin-btn`} onClick={handleSubmit}>
           Tạo tài khoản

@@ -67,80 +67,37 @@ $red: #ef4444;
 }
 
 // ─── Steps ───────────────────────────────────────────────
-.signin-steps {
-  display: flex;
-  align-items: center;
-  margin-bottom: 32px;
-  @include fadeUp(0.15s);
+.signin-card {
+  .ant-steps {
+    &-item {
+      &-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
 
-  &__item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    flex: 1;
-    position: relative;
+      &-finish {
+        .ant-steps-item-icon {
+          background: $green !important;
+          border-color: $green !important;
 
-    // Connector line between steps
-    &:not(:last-child)::after {
-      content: "";
-      position: absolute;
-      top: 14px;
-      left: calc(50% + 14px);
-      right: calc(-50% + 14px);
-      height: 2px;
-      background: $border;
-      z-index: 0;
-      transition: background 0.4s;
-    }
+          span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+          }
+        }
+      }
 
-    &--done:not(:last-child)::after,
-    &--active:not(:last-child)::after {
-      background: $amber;
-    }
-  }
-
-  &__dot {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 2px solid $border;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-    color: #9ca3af;
-    z-index: 1;
-    position: relative;
-    transition: all 0.3s;
-
-    .signin-steps__item--active & {
-      border-color: $amber;
-      background: $amber;
-      color: #fff;
-      box-shadow: 0 0 0 4px rgba($amber, 0.15);
-    }
-
-    .signin-steps__item--done & {
-      border-color: $amber;
-      background: $amber;
-      color: #fff;
-    }
-  }
-
-  &__label {
-    font-size: 10.5px;
-    font-weight: 500;
-    color: #9ca3af;
-    text-align: center;
-    white-space: nowrap;
-    transition: color 0.3s;
-
-    .signin-steps__item--active &,
-    .signin-steps__item--done & {
-      color: $amber;
+      &-icon {
+        margin: 0px 0px 0px 10%;
+        background: $amber !important;
+        border-color: $amber !important;
+        span {
+          font-size: 11px;
+          font-weight: 700;
+          color: #fff;
+        }
+      }
     }
   }
 }
@@ -152,13 +109,17 @@ $red: #ef4444;
 .signin-header {
   margin-bottom: 24px;
   @include fadeUp(0.25s);
-
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;
   &__icon {
     width: 48px;
     height: 48px;
     background: $amber-pale;
     border-radius: 14px;
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     margin-bottom: 14px;
@@ -168,6 +129,12 @@ $red: #ef4444;
       width: 24px;
       height: 24px;
     }
+  }
+
+  .back {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
   }
 
   &__eyebrow {
@@ -206,8 +173,71 @@ $red: #ef4444;
       margin-bottom: 7px;
     }
 
-    &:nth-child(1) { @include fadeUp(0.30s); }
-    &:nth-child(2) { @include fadeUp(0.38s); }
+    .ant-input-prefix {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: $muted;
+    }
+
+    &:nth-child(1) {
+      @include fadeUp(0.3s);
+    }
+
+    &:nth-child(2) {
+      @include fadeUp(0.38s);
+    }
+
+    &:nth-child(3) {
+      @include fadeUp(0.42s);
+    }
+
+    &:nth-child(4) {
+      @include fadeUp(0.46s);
+    }
+  }
+}
+
+& .ant-checkbox {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 6px;
+  border: 1.5px solid $border !important;
+  background: #fff;
+
+  &.ant-checkbox-checked {
+    background: $night !important;
+    border-color: $night !important;
+
+    .ant-checkbox-inner::after {
+      display: block;
+      width: 5px;
+      height: 10px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      position: absolute;
+      top: 3px;
+      left: 6px;
+    }
+
+    &:hover {
+      background: $night;
+      border-color: $night;
+    }
+
+    &::after {
+      display: block;
+      width: 5px;
+      height: 10px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      position: absolute;
+      top: 3px;
+      left: 6px;
+    }
   }
 }
 
@@ -275,61 +305,6 @@ $red: #ef4444;
     font-size: 13px;
     font-weight: 500;
     color: $night;
-  }
-}
-
-.signin-terms {
-  display: flex;
-  gap: 11px;
-  align-items: center;
-  margin-bottom: 22px;
-  @include fadeUp(0.54s);
-
-  &__check {
-    width: 20px;
-    height: 20px;
-    border-radius: 6px;
-    border: 1.5px solid $border;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 1px;
-
-    svg {
-      display: none;
-      width: 11px;
-      height: 11px;
-    }
-
-    &--checked {
-      background: $night;
-      border-color: $night;
-
-      svg {
-        display: block;
-      }
-    }
-  }
-
-  &__text {
-    font-size: 12px;
-    color: $muted;
-    line-height: 1.6;
-
-    a {
-      color: $night;
-      font-weight: 600;
-      text-decoration: none;
-      border-bottom: 1.5px solid $amber;
-
-      &:hover {
-        color: $amber;
-      }
-    }
   }
 }
 

@@ -13,6 +13,7 @@ import { Step3 } from "./steps/Step3";
 import { Step2 } from "./steps/Step2";
 import type { SignInDto } from "@api/dtos/SignIn.dto";
 import { useNotification } from "@/providers/notificationProvider";
+import back from "../../../../assets/icons/back.svg";
 
 export const SignIn = () => {
   const [form] = Form.useForm();
@@ -68,7 +69,6 @@ export const SignIn = () => {
       <div className="signin-card">
         <Steps
           current={step}
-          onChange={handleSubmit}
           items={[
             {
               title: "Tài Khoản",
@@ -82,16 +82,34 @@ export const SignIn = () => {
           ]}
         />
         <div className="signin-content">
-          <div className="signin-header__icon">
-            <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="4" stroke="#f5a623" strokeWidth="1.5" />
-              <path
-                d="M4 20c0-4 3.6-7 8-7s8 3 8 7"
-                stroke="#f5a623"
-                strokeWidth="1.5"
-                strokeLinecap="round"
+          <div className="signin-header">
+            <div className="signin-header__icon">
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle
+                  cx="12"
+                  cy="8"
+                  r="4"
+                  stroke="#f5a623"
+                  strokeWidth="1.5"
+                />
+                <path
+                  d="M4 20c0-4 3.6-7 8-7s8 3 8 7"
+                  stroke="#f5a623"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+            {step > 0 && (
+              <img
+                src={back}
+                onClick={() => {
+                  setStep(step - 1);
+                }}
+                alt="Back"
+                className="back"
               />
-            </svg>
+            )}
           </div>
           <h1 className="signin-header__title">
             Cho chúng tôi
