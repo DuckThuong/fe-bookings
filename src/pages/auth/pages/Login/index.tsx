@@ -10,26 +10,11 @@ import { Button } from "antd";
 export const Login = () => {
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<string>(InputState.idle);
-  const [touched, setTouched] = useState(false);
   const [loading, setLoading] = useState(false);
   const rawDigits = phone.replace(/\s/g, "");
   const isValid = rawDigits.length === 10;
 
-  const inputState = !touched
-    ? InputState.idle
-    : status === InputState.error
-      ? InputState.error
-      : isValid
-        ? InputState.valid
-        : InputState.idle;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(formatPhone(e.target.value));
-    if (status === InputState.error) setStatus(InputState.idle);
-  };
-
   const handleSubmit = () => {
-    setTouched(true);
     if (!isValid) {
       setStatus(InputState.error);
       return;
@@ -92,13 +77,8 @@ export const Login = () => {
 
         <InputPhoneNumber
           value={phone}
-          onChange={(value) =>
-            handleChange({
-              target: { value },
-            } as React.ChangeEvent<HTMLInputElement>)
-          }
-          onBlur={() => setTouched(true)}
-          inputState={inputState}
+          onChange={(value) => setPhone(value)}
+          onBlur={(value) => setPhone(value)}
         />
 
         <Button className={`signin-btn`} onClick={handleSubmit}>

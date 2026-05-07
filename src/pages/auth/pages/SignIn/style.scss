@@ -195,6 +195,22 @@ $red: #ef4444;
   }
 }
 
+.signin-form {
+  .ant-form-item {
+    &-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: $night;
+      letter-spacing: 0.3px;
+      margin-bottom: 7px;
+    }
+
+    &:nth-child(1) { @include fadeUp(0.30s); }
+    &:nth-child(2) { @include fadeUp(0.38s); }
+  }
+}
+
 .signin-gender {
   display: flex;
   gap: 10px;

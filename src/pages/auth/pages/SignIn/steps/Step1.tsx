@@ -1,10 +1,12 @@
 import { useState } from "react";
 import "../style.scss";
 import { Form, Input } from "antd";
+import { InputPhoneNumber } from "@pages/auth/component/InputPhoneNumber";
 
 export const Step1 = () => {
   const [form] = Form.useForm();
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
+
   return (
     <>
       <div className="signin-header">
@@ -18,21 +20,35 @@ export const Step1 = () => {
           name="name"
           rules={[{ required: true, message: "Vui lòng nhập họ tên của bạn" }]}
         >
-          <Input type="text" placeholder="Nhập họ và tên của bạn" />
-        </Form.Item>
-        <Form.Item
-          label="Số điện thoại"
-          name="phone"
-          rules={[
-            { required: true, message: "Vui lòng nhập số điện thoại của bạn" },
-          ]}
-        >
           <Input
-            type="tel"
-            placeholder="Nhập số điện thoại của bạn"
-            autoComplete="tel"
+            type="text"
+            size="large"
+            placeholder="Nhập họ và tên của bạn"
+            prefix={
+              <svg viewBox="0 0 17 17" fill="none" width="16" height="16">
+                <circle
+                  cx="8.5"
+                  cy="5.5"
+                  r="3"
+                  stroke="#9ca3af"
+                  strokeWidth="1.3"
+                />
+                <path
+                  d="M2 15c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6"
+                  stroke="#9ca3af"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                />
+              </svg>
+            }
           />
         </Form.Item>
+
+        <InputPhoneNumber
+          value={form.getFieldValue("phone")}
+          onChange={(value) => form.setFieldValue("phone", value)}
+          onBlur={(value) => form.setFieldValue("phone", value)}
+        />
       </Form>
       <div className="signin-terms">
         <div
