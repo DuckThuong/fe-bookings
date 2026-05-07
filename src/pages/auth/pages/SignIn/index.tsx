@@ -1,4 +1,9 @@
-import { BENEFITS } from "@/common/constants/constants";
+import {
+  BENEFITS,
+  DEFAULT_MESSAGE,
+  NOTI_ERROR,
+  NOTI_SUCCESS,
+} from "@/common/constants/constants";
 import "./style.scss";
 import { Logo } from "@/components/Logo";
 import { useState } from "react";
@@ -7,9 +12,11 @@ import { Step1 } from "./steps/Step1";
 import { Step3 } from "./steps/Step3";
 import { Step2 } from "./steps/Step2";
 import type { SignInDto } from "@api/dtos/SignIn.dto";
+import { useNotification } from "@/providers/notificationProvider";
 
 export const SignIn = () => {
   const [form] = Form.useForm();
+  const { showNotification } = useNotification();
   const [step, setStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<SignInDto>(null);
@@ -35,20 +42,23 @@ export const SignIn = () => {
         const currentValues = form.getFieldsValue();
         setData((prev) => ({ ...prev, ...currentValues }));
         setStep((v) => v + 1);
+        showNotification(DEFAULT_MESSAGE, NOTI_SUCCESS);
       } else {
         const finalData: SignInDto = {
           ...data,
           ...form.getFieldsValue(),
         };
+        showNotification(DEFAULT_MESSAGE, NOTI_SUCCESS);
         setData(finalData);
-        console.log("Submit:", finalData);
       }
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      console.log(e);
+      showNotification(DEFAULT_MESSAGE, NOTI_ERROR);
     }
   };
+
+  console.log(data);
   return (
     <div className="auth-signin">
       {/* Logo */}
@@ -58,6 +68,7 @@ export const SignIn = () => {
       <div className="signin-card">
         <Steps
           current={step}
+          onChange={handleSubmit}
           items={[
             {
               title: "Tài Khoản",
