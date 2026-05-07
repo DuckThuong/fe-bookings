@@ -1,0 +1,78 @@
+$night: #0a0e1a;
+$navy: #0f1629;
+$amber: #f5a623;
+$amber-light: #fdc96a;
+$amber-pale: #fff8ec;
+$white: #ffffff;
+$muted: rgba(255, 255, 255, 0.55);
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dashMove {
+  to {
+    stroke-dashoffset: -60;
+  }
+}
+
+@keyframes carDrive {
+  0% {
+    transform: translateY(600px);
+  }
+  100% {
+    transform: translateY(-30px);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 36px;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.4s ease forwards;
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: $night;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .logo-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: $night;
+    letter-spacing: 0.5px;
+
+    span {
+      color: $amber;
+    }
+  }
+}
