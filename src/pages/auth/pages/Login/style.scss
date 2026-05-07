@@ -18,6 +18,11 @@ $red: #ef4444;
   }
 }
 
+@mixin fadeUpSecond($delay: 0s) {
+  opacity: 0;
+  animation: fadeUp 0.5s #{$delay} ease forwards;
+}
+
 @keyframes float {
   0%,
   100% {
@@ -279,7 +284,7 @@ $red: #ef4444;
   border: none !important;
   cursor: pointer;
 
-  @include fadeUp(0.62s);
+  @include fadeUpSecond(0.62s);
   margin-bottom: 18px;
   transition: all 0.2s ease;
   position: relative;

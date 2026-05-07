@@ -21,13 +21,17 @@ export const Step1 = () => {
           <Input type="text" placeholder="Nhập họ và tên của bạn" />
         </Form.Item>
         <Form.Item
-          label="Ngày sinh"
-          name="dob"
+          label="Số điện thoại"
+          name="phone"
           rules={[
-            { required: true, message: "Vui lòng chọn ngày sinh của bạn" },
+            { required: true, message: "Vui lòng nhập số điện thoại của bạn" },
           ]}
         >
-          <Input type="date" placeholder="Chọn ngày sinh của bạn" />
+          <Input
+            type="tel"
+            placeholder="Nhập số điện thoại của bạn"
+            autoComplete="tel"
+          />
         </Form.Item>
       </Form>
       <div className="signin-terms">
