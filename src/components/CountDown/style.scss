@@ -1,25 +1,8 @@
-// ─── Countdown ring ───────────────────────────────────────
-$night: #0a0e1a;
-$amber: #f5a623;
-$amber-pale: #fff8ec;
-$muted: #6b7280;
-$border: #e5e7eb;
-$red: #ef4444;
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+@use "../../common" as *;
 
 @mixin fadeUp($delay: 0s) {
   opacity: 0;
-  animation: fadeUp 0.5s #{$delay} ease forwards;
+  animation: fadeUp18 0.5s #{$delay} ease forwards;
 }
 
 .otp-countdown {

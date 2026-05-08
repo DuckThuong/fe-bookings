@@ -1,46 +1,4 @@
-$night: #0a0e1a;
-$navy: #0f1629;
-$amber: #f5a623;
-$amber-light: #fdc96a;
-$amber-pale: #fff8ec;
-$white: #ffffff;
-$muted: rgba(255, 255, 255, 0.55);
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes dashMove {
-  to {
-    stroke-dashoffset: -60;
-  }
-}
-
-@keyframes carDrive {
-  0% {
-    transform: translateY(600px);
-  }
-  100% {
-    transform: translateY(-30px);
-  }
-}
-
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 0.9;
-  }
-}
+@use "../../../../common" as *;
 
 .auth__welcome {
   display: flex;
@@ -135,7 +93,7 @@ $muted: rgba(255, 255, 255, 0.55);
 
   .banner-sub {
     font-size: 13.5px;
-    color: $muted;
+    color: $muted-on-dark;
     line-height: 1.7;
     max-width: 320px;
     margin-bottom: 20px;
