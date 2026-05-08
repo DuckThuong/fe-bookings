@@ -6,6 +6,7 @@ import "./style.scss";
 import { InputState } from "./../../../../common/constants/constants";
 import { ROUTER_PATH } from "@/routers/Route";
 import { Button, Form } from "antd";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [form] = Form.useForm();
@@ -14,6 +15,7 @@ export const Login = () => {
   const [loading, setLoading] = useState(false);
   const rawDigits = phone.replace(/\s/g, "");
   const isValid = rawDigits.length === 10;
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     if (!isValid) {
@@ -22,6 +24,7 @@ export const Login = () => {
     }
     setStatus(InputState.loading);
     setTimeout(() => setStatus(InputState.success), 1800);
+    navigate(ROUTER_PATH.OTP_CONFIRM);
   };
 
   return (

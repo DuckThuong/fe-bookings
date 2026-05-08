@@ -13,7 +13,7 @@ export const Step3 = (props: SignInProps) => {
         name="otp"
         rules={[{ required: true, message: "Vui lòng nhập mã OTP!" }]}
       >
-        <OTPInput />
+        <OTPInput length={6} />
       </Form.Item>
     </div>
   );

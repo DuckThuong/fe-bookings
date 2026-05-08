@@ -14,6 +14,8 @@ import { Step2 } from "./steps/Step2";
 import type { SignInDto } from "@api/dtos/SignIn.dto";
 import { useNotification } from "@/providers/notificationProvider";
 import back from "../../../../assets/icons/back.svg";
+import { ROUTER_PATH } from "@/routers/Route";
+import { useNavigate } from "react-router";
 
 const subTitleMap: Record<number, string> = {
   0: "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để tạo tài khoản GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính xác và cập nhật để trải nghiệm dịch vụ tốt nhất.",
@@ -23,8 +25,9 @@ const subTitleMap: Record<number, string> = {
 
 export const SignIn = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const { showNotification } = useNotification();
-  const [step, setStep] = useState<number>(2);
+  const [step, setStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<SignInDto>(null);
   const contentRender = () => {
@@ -57,6 +60,10 @@ export const SignIn = () => {
         };
         showNotification(DEFAULT_MESSAGE, NOTI_SUCCESS);
         setData(finalData);
+      }
+
+      if (step === 2) {
+        navigate(ROUTER_PATH.FINISH);
       }
       setLoading(false);
     } catch (e) {
@@ -135,7 +142,7 @@ export const SignIn = () => {
 
         <p className="signin-login-link">
           Đã có tài khoản?{" "}
-          <a href="/login" className="signin-login-link__a">
+          <a href={ROUTER_PATH.LOGIN} className="signin-login-link__a">
             Đăng nhập ngay
           </a>
         </p>
