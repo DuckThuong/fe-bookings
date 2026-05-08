@@ -5,7 +5,7 @@ import { Login } from "@/pages/auth/pages/Login";
 import { SignIn } from "@/pages/auth/pages/SignIn";
 import { OtpConfirm } from "@/pages/auth/pages/OtpConfirm";
 import { Finish } from "@/pages/auth/pages/Finish";
-import { HomePage } from "@/pages/home/pages";
+import { HomePage } from "@/pages/home/pages/Page1";
 
 export const WebRouter = () => (
   <Routes>
