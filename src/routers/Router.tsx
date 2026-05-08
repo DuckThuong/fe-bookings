@@ -5,6 +5,7 @@ import { Login } from "@/pages/auth/pages/Login";
 import { SignIn } from "@/pages/auth/pages/SignIn";
 import { OtpConfirm } from "@/pages/auth/pages/OtpConfirm";
 import { Finish } from "@/pages/auth/pages/Finish";
+import { HomePage } from "@/pages/home/pages";
 
 export const WebRouter = () => (
   <Routes>
@@ -14,5 +15,7 @@ export const WebRouter = () => (
     <Route path={ROUTER_PATH.SIGNIN} element={<SignIn />} />
     <Route path={ROUTER_PATH.OTP_CONFIRM} element={<OtpConfirm />} />
     <Route path={ROUTER_PATH.FINISH} element={<Finish />} />
+    {/* home */}
+    <Route path={ROUTER_PATH.HOME} element={<HomePage />} />
   </Routes>
 );

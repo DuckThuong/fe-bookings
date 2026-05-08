@@ -23,3 +23,24 @@ export const BENEFITS = [
   { icon: "⚡", text: "Đặt xe\n1 chạm" },
   { icon: "📍", text: "Theo dõi\nreal-time" },
 ];
+
+export const LOGO_COLORS: Record<string, string> = {
+  PT: "#e63946",
+  TB: "#2563eb",
+  HL: "#16a34a",
+  KS: "#7c3aed",
+};
+
+export const LOGO_OPERATORS_COLORS: Record<string, string> = {
+  PT: "#e63946",
+  TB: "#2563eb",
+  HL: "#16a34a",
+  KS: "#7c3aed",
+  CT: "#ea580c",
+};
+
+export const TAG_COLORS: Record<string, string> = {
+  amber: "service-card__tag--amber",
+  green: "service-card__tag--green",
+  red: "service-card__tag--red",
+};

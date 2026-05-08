@@ -10,3 +10,9 @@ export const validString = (value: string) => {
     return true;
   }
 };
+
+export const seatColor = (n: number) => {
+  if (n <= 3) return "trip-card__seats--urgent";
+  if (n <= 8) return "trip-card__seats--low";
+  return "trip-card__seats--ok";
+};
