@@ -2,7 +2,7 @@ import { LOGO_COLORS } from "@/common/constants/constants";
 import { formatMoney } from "@/common/contexts/format";
 import { seatColor } from "@/common/contexts/helper";
 import { Button } from "antd";
-
+import arrowToIcn from "@/assets/icons/arrowTo.svg";
 interface HomeProps {
   data: any;
 }
@@ -21,15 +21,7 @@ export const TopTrips = ({ data }: HomeProps) => {
               <div className="trip-card__route">
                 <span className="trip-card__city">{trip.from}</span>
                 <span className="trip-card__route-arrow">
-                  <svg viewBox="0 0 24 10" fill="none" width={36} height={10}>
-                    <path
-                      d="M0 5h20M16 1l4 4-4 4"
-                      stroke="#f5a623"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <img src={arrowToIcn} alt="arrow" />
                 </span>
                 <span className="trip-card__city">{trip.to}</span>
               </div>

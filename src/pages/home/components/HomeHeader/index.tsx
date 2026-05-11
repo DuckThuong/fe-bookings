@@ -1,6 +1,12 @@
 import { Badge, Avatar, Dropdown, Menu } from "antd";
 import type { MenuProps } from "antd";
 import { Logo } from "@/components/Logo";
+import profileIcn from "@/assets/icons/profile.svg";
+import tripsIcn from "@/assets/icons/trip.svg";
+import settingsIcn from "@/assets/icons/setting.svg";
+import logoutIcn from "@/assets/icons/logout.svg";
+import bellIcn from "@/assets/icons/bell.svg";
+import chevronDownIcn from "@/assets/icons/chevron-down.svg";
 
 interface HomeHeaderProps {
   userName?: string;
@@ -18,72 +24,24 @@ const USER_MENU_ITEMS: MenuProps["items"] = [
   {
     key: "profile",
     label: "Tài khoản của tôi",
-    icon: (
-      <svg viewBox="0 0 16 16" fill="none" width={14} height={14}>
-        <circle cx="8" cy="5" r="3" stroke="currentColor" strokeWidth="1.3" />
-        <path
-          d="M2 14c0-3 2.7-5 6-5s6 2 6 5"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
+    icon: <img src={profileIcn} alt="Profile" width={14} height={14} />,
   },
   {
     key: "trips",
     label: "Chuyến đi của tôi",
-    icon: (
-      <svg viewBox="0 0 16 16" fill="none" width={14} height={14}>
-        <rect
-          x="2"
-          y="4"
-          width="12"
-          height="9"
-          rx="2"
-          stroke="currentColor"
-          strokeWidth="1.3"
-        />
-        <path
-          d="M5 4V3a3 3 0 016 0v1M5 9h6M5 12h4"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
+    icon: <img src={tripsIcn} alt="Trips" width={14} height={14} />,
   },
   {
     key: "settings",
     label: "Cài đặt",
-    icon: (
-      <svg viewBox="0 0 16 16" fill="none" width={14} height={14}>
-        <circle cx="8" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.3" />
-        <path
-          d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
+    icon: <img src={settingsIcn} alt="Settings" width={14} height={14} />,
   },
   { type: "divider" },
   {
     key: "logout",
     label: "Đăng xuất",
     danger: true,
-    icon: (
-      <svg viewBox="0 0 16 16" fill="none" width={14} height={14}>
-        <path
-          d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
+    icon: <img src={logoutIcn} alt="Logout" width={14} height={14} />,
   },
 ];
 
@@ -121,20 +79,7 @@ export const HomeHeader = ({
           {/* Notification bell */}
           <Badge count={notifCount} size="small" color="#f5a623">
             <button className="home-header__icon-btn" aria-label="Thông báo">
-              <svg viewBox="0 0 20 20" fill="none" width={20} height={20}>
-                <path
-                  d="M10 2a6 6 0 00-6 6v2.586l-1.707 1.707A1 1 0 003 14h14a1 1 0 00.707-1.707L16 10.586V8a6 6 0 00-6-6z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M8 14a2 2 0 004 0"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <img src={bellIcn} alt="Bell" width={20} height={20} />
             </button>
           </Badge>
 
@@ -155,21 +100,12 @@ export const HomeHeader = ({
                 {userName.charAt(0).toUpperCase()}
               </Avatar>
               <span className="home-header__username">{userName}</span>
-              <svg
-                viewBox="0 0 12 12"
-                fill="none"
+              <img
+                src={chevronDownIcn}
+                alt="Chevron Down"
                 width={10}
                 height={10}
-                className="home-header__chevron"
-              >
-                <path
-                  d="M2 4l4 4 4-4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              />
             </button>
           </Dropdown>
         </div>

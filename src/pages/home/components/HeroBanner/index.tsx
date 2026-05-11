@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { AutoComplete, Button, DatePicker } from "antd";
 import dayjs from "dayjs";
+import pinnedIcn from "@/assets/icons/pinned.svg";
+import swapIcn from "@/assets/icons/swap.svg";
+import arrowDownIcn from "@/assets/icons/arrowDown.svg";
+import datePickerIcn from "@/assets/icons/datePicker.svg";
 
 const POPULAR_ROUTES = [
   "Hà Nội → Đà Nẵng",
@@ -91,20 +95,7 @@ export const HeroBanner = () => {
           <div className="hero__search-fields">
             <div className="hero__search-field">
               <span className="hero__field-icon">
-                <svg viewBox="0 0 16 16" fill="none" width={14} height={14}>
-                  <circle
-                    cx="8"
-                    cy="6"
-                    r="3"
-                    stroke="#f5a623"
-                    strokeWidth="1.4"
-                  />
-                  <path
-                    d="M8 14s5-4.5 5-8A5 5 0 003 6c0 3.5 5 8 5 8z"
-                    stroke="#f5a623"
-                    strokeWidth="1.4"
-                  />
-                </svg>
+                <img src={pinnedIcn} alt="From" width={14} height={14} />
               </span>
               <AutoComplete
                 value={from}
@@ -122,30 +113,13 @@ export const HeroBanner = () => {
               onClick={handleSwap}
               title="Đổi chiều"
             >
-              <svg viewBox="0 0 16 16" fill="none" width={14} height={14}>
-                <path
-                  d="M2 5h12M10 2l4 3-4 3M14 11H2M6 8l-4 3 4 3"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <img src={swapIcn} alt="Swap" width={14} height={14} />
             </button>
 
             {/* To */}
             <div className="hero__search-field">
               <span className="hero__field-icon">
-                <svg viewBox="0 0 16 16" fill="none" width={14} height={14}>
-                  <path
-                    d="M8 2v10M5 9l3 3 3-3"
-                    stroke="#f5a623"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle cx="8" cy="13" r="1" fill="#f5a623" />
-                </svg>
+                <img src={arrowDownIcn} alt="To" width={14} height={14} />
               </span>
               <AutoComplete
                 value={to}
@@ -165,23 +139,7 @@ export const HeroBanner = () => {
             format="DD/MM/YYYY"
             disabledDate={(d) => d.isBefore(dayjs().startOf("day"))}
             suffixIcon={
-              <svg viewBox="0 0 16 16" fill="none" width={13} height={13}>
-                <rect
-                  x="2"
-                  y="3"
-                  width="12"
-                  height="11"
-                  rx="2"
-                  stroke="#9ca3af"
-                  strokeWidth="1.3"
-                />
-                <path
-                  d="M5 1v3M11 1v3M2 7h12"
-                  stroke="#9ca3af"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <img src={datePickerIcn} alt="Date" width={14} height={14} />
             }
           />
 
