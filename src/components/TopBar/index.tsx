@@ -7,6 +7,7 @@ import settingsIcn from "@/assets/icons/setting.svg";
 import logoutIcn from "@/assets/icons/logout.svg";
 import bellIcn from "@/assets/icons/bell.svg";
 import chevronDownIcn from "@/assets/icons/chevron-down.svg";
+import { ROUTER_PATH } from "@/routers/Route";
 
 interface HomeHeaderProps {
   userName?: string;
@@ -14,10 +15,10 @@ interface HomeHeaderProps {
 }
 
 const NAV_ITEMS = [
-  { label: "Trang chủ", href: "/" },
-  { label: "Vé xe", href: "/tickets" },
-  { label: "Khuyến mãi", href: "/promos" },
-  { label: "Hỗ trợ", href: "/support" },
+  { label: "Trang chủ", href: ROUTER_PATH.HOME },
+  { label: "Vé xe", href: ROUTER_PATH.TRIP },
+  { label: "Khuyến mãi", href: ROUTER_PATH.PROMOS },
+  { label: "Hỗ trợ", href: ROUTER_PATH.SUPPORT },
 ];
 
 const USER_MENU_ITEMS: MenuProps["items"] = [
@@ -45,7 +46,6 @@ const USER_MENU_ITEMS: MenuProps["items"] = [
   },
 ];
 
-// ─── Component ───────────────────────────────────────────
 export const HomeHeader = ({
   userName = "Khách",
   notifCount = 3,

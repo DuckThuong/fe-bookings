@@ -1,0 +1,695 @@
+// ─── Design tokens ───────────────────────────────────────
+$night: #0a0e1a;
+$night-2: #151b2e;
+$amber: #f5a623;
+$amber-pale: #faeeda;
+$muted: #6b7280;
+$border: #e5e7eb;
+$bg: #f4f5f7;
+$white: #fff;
+$green: #16a34a;
+$red: #ef4444;
+$orange: #e85d2c;
+
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+
+// ─── Page shell ──────────────────────────────────────────
+.booking-page {
+  min-height: 100vh;
+  background: $bg;
+  font-family: "Be Vietnam Pro", sans-serif;
+
+  &__search-wrap {
+    padding: 0 32px;
+    margin-top: -56px; // floats over hero bottom curve
+    position: relative;
+    z-index: 10;
+
+    @media (max-width: 768px) {
+      padding: 0 16px;
+    }
+  }
+
+  &__content {
+    padding: 24px 32px 48px;
+
+    @media (max-width: 768px) {
+      padding: 16px 16px 40px;
+    }
+  }
+}
+
+// ─── Hero ────────────────────────────────────────────────
+.booking-hero {
+  background: $night;
+  padding: 36px 32px 80px;
+  position: relative;
+  overflow: hidden;
+
+  // Bottom curve scoop
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: $bg;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+
+  &__eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: $amber;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    font-size: 26px;
+    font-weight: 600;
+    color: $white;
+    line-height: 1.25;
+    margin-bottom: 4px;
+    font-family: "Cormorant Garamond", serif;
+  }
+
+  &__sub {
+    font-size: 13px;
+    color: rgba($white, 0.5);
+  }
+
+  &__deco {
+    position: absolute;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 100px;
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: 28px 16px 72px;
+    &__title {
+      font-size: 20px;
+    }
+  }
+}
+
+// ─── Search card ─────────────────────────────────────────
+.search-card {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: $radius-xl;
+  padding: 24px 28px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 180px 160px auto;
+    gap: 12px;
+    align-items: end;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: 1fr 40px 1fr;
+      grid-template-rows: auto auto auto;
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr 36px 1fr;
+    }
+  }
+
+  &__swap {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid $border;
+    background: $white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    color: $muted;
+    align-self: center;
+    margin-top: 20px; // align with field (label height)
+
+    &:hover {
+      border-color: $amber;
+      background: $amber-pale;
+      color: $amber;
+      transform: rotate(180deg);
+    }
+  }
+
+  &__datepicker {
+    width: 100% !important;
+    height: 44px !important;
+    border-radius: $radius-md !important;
+
+    &:hover,
+    &.ant-picker-focused {
+      border-color: $amber !important;
+      box-shadow: 0 0 0 2px rgba($amber, 0.12) !important;
+    }
+  }
+
+  &__btn {
+    &.ant-btn-primary {
+      height: 44px !important;
+      padding: 0 24px !important;
+      border-radius: $radius-md !important;
+      background: $night !important;
+      border-color: $night !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      font-family: "Be Vietnam Pro", sans-serif !important;
+      white-space: nowrap;
+      transition: all 0.15s !important;
+
+      &:hover {
+        opacity: 0.85 !important;
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  // Seat type row
+  &__seat-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid $border;
+    flex-wrap: wrap;
+  }
+
+  &__seat-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+
+// ─── Shared field parts ───────────────────────────────────
+.sc-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sc-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: $muted;
+  margin-bottom: 5px;
+}
+
+.sc-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  padding: 10px 12px;
+  background: $bg;
+  min-height: 44px;
+  transition: border-color 0.15s;
+  cursor: pointer;
+
+  &:hover {
+    border-color: darken($border, 10%);
+  }
+
+  &--active {
+    border-color: $amber;
+    background: rgba($amber, 0.04);
+  }
+
+  &--pax {
+    justify-content: space-between;
+    cursor: default;
+  }
+
+  &__icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  &__city {
+    font-size: 14px;
+    font-weight: 600;
+    color: $night;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__station {
+    font-size: 11px;
+    color: $muted;
+  }
+}
+
+.sc-pax-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid $border;
+  background: $white;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $muted;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: $amber;
+    color: $amber;
+  }
+}
+
+.sc-pax-num {
+  font-size: 16px;
+  font-weight: 700;
+  color: $night;
+  min-width: 20px;
+  text-align: center;
+}
+
+.sc-pax-hint {
+  font-size: 11px;
+  color: $muted;
+  text-align: center;
+  margin-top: 3px;
+}
+
+// ─── Seat / filter chips ──────────────────────────────────
+.seat-chip,
+.filter-chip {
+  padding: 5px 14px;
+  border-radius: $radius-sm;
+  border: 1px solid $border;
+  background: $white;
+  font-size: 12px;
+  font-family: "Be Vietnam Pro", sans-serif;
+  color: $muted;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: darken($border, 12%);
+    color: $night;
+  }
+
+  &--active,
+  &.filter-chip--active {
+    background: $night;
+    color: $amber;
+    border-color: $night;
+    font-weight: 600;
+  }
+}
+
+// ─── Filter bar ───────────────────────────────────────────
+.filter-bar {
+  margin-bottom: 16px;
+
+  &__count {
+    font-size: 13px;
+    color: $muted;
+    margin-bottom: 12px;
+
+    strong {
+      color: $night;
+      font-weight: 600;
+    }
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $muted;
+    white-space: nowrap;
+  }
+
+  &__chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  &__sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+
+    @media (max-width: 600px) {
+      margin-left: 0;
+    }
+  }
+
+  &__sort-label {
+    font-size: 12px;
+    color: $muted;
+    white-space: nowrap;
+  }
+
+  &__sort-select {
+    width: 180px !important;
+
+    .ant-select-selector {
+      border-radius: $radius-sm !important;
+      height: 32px !important;
+      font-size: 12px !important;
+    }
+  }
+}
+
+// ─── Trip list ────────────────────────────────────────────
+.trip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__empty {
+    padding: 60px 0;
+  }
+}
+
+// ─── Trip card ────────────────────────────────────────────
+.trip-card {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  padding: 20px 24px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+
+  &:hover {
+    border-color: darken($border, 8%);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  &--featured {
+    border-color: $amber;
+    border-width: 1.5px;
+    box-shadow: 0 4px 20px rgba($amber, 0.12);
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+    margin: 16px 0;
+
+    @media (max-width: 680px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// ─── Operator header ──────────────────────────────────────
+.tc-operator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2px;
+
+  &__logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: $amber;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: $night;
+  }
+
+  &__type {
+    font-size: 11.5px;
+    color: $muted;
+  }
+
+  &__featured {
+    font-size: 11px;
+    font-weight: 700;
+    background: $amber;
+    color: $white;
+    padding: 2px 8px;
+    border-radius: $radius-sm;
+    white-space: nowrap;
+  }
+
+  &__rating {
+    margin-left: auto;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: $night;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  &__reviews {
+    font-size: 11px;
+    color: $muted;
+    font-weight: 400;
+  }
+}
+
+// ─── Route timeline ───────────────────────────────────────
+.tc-route {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  &__endpoint {
+    &--right {
+      text-align: right;
+    }
+  }
+
+  &__time {
+    font-size: 22px;
+    font-weight: 700;
+    color: $night;
+    font-family: "Cormorant Garamond", serif;
+    line-height: 1.1;
+  }
+
+  &__city {
+    font-size: 13px;
+    color: $muted;
+  }
+
+  &__station {
+    font-size: 11px;
+    color: lighten($muted, 15%);
+  }
+
+  &__mid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 100px;
+  }
+
+  &__duration {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: $muted;
+  }
+
+  &__line {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 4px;
+  }
+
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1.5px solid $border;
+    background: $white;
+    flex-shrink: 0;
+  }
+
+  &__dash {
+    flex: 1;
+    height: 1px;
+    background: $border;
+  }
+
+  &__bus {
+    font-size: 14px;
+  }
+
+  &__stop {
+    font-size: 11px;
+    color: $muted;
+  }
+}
+
+// ─── Price panel ─────────────────────────────────────────
+.tc-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 150px;
+
+  @media (max-width: 680px) {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  &__amount {
+    font-size: 22px;
+    font-weight: 700;
+    color: $night;
+    font-family: "Cormorant Garamond", serif;
+    line-height: 1;
+  }
+
+  &__per {
+    font-size: 11px;
+    font-weight: 400;
+    color: $muted;
+    margin-left: 3px;
+  }
+
+  &__badges {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    @media (max-width: 680px) {
+      justify-content: flex-start;
+    }
+  }
+
+  &__seats {
+    font-size: 12px;
+    color: $muted;
+
+    strong {
+      color: $night;
+    }
+
+    &--urgent strong {
+      color: $orange;
+    }
+  }
+}
+
+.tc-badge {
+  font-size: 11px !important;
+  border-radius: $radius-sm !important;
+}
+
+.tc-book-btn {
+  &.ant-btn-primary {
+    border-radius: $radius-sm !important;
+    background: $night !important;
+    border-color: $night !important;
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    font-weight: 600 !important;
+    transition: opacity 0.15s !important;
+
+    &:hover {
+      opacity: 0.8 !important;
+    }
+  }
+
+  &--outline.ant-btn-default {
+    border-radius: $radius-sm !important;
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    font-weight: 600 !important;
+    color: $night !important;
+
+    &:hover {
+      border-color: $night !important;
+      color: $night !important;
+    }
+  }
+}
+
+// ─── Amenities ────────────────────────────────────────────
+.tc-amenities {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid $border;
+  margin-top: 4px;
+}
+
+.tc-amenity {
+  font-size: 11.5px;
+  color: $muted;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+// ─── Responsive ───────────────────────────────────────────
+@media (max-width: 480px) {
+  .trip-card {
+    padding: 16px;
+  }
+  .tc-route__time {
+    font-size: 18px;
+  }
+  .tc-price__amount {
+    font-size: 18px;
+  }
+}

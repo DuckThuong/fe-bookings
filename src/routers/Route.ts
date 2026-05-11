@@ -9,6 +9,9 @@ export const ROUTER_NAME = {
   FINISH: "finish",
   // home
   HOME: "home",
+  TRIP: "trip",
+  PROMOS: "promos",
+  SUPPORT: "support",
 };
 
 export const ROUTER_PATH = {
@@ -20,4 +23,7 @@ export const ROUTER_PATH = {
   FINISH: `${ROUTER}/${ROUTER_NAME.FINISH}`,
   // home
   HOME: `${ROUTER}/${ROUTER_NAME.HOME}`,
+  TRIP: `${ROUTER}/${ROUTER_NAME.TRIP}`,
+  PROMOS: `${ROUTER}/${ROUTER_NAME.PROMOS}`,
+  SUPPORT: `${ROUTER}/${ROUTER_NAME.SUPPORT}`,
 };

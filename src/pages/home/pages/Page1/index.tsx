@@ -1,11 +1,11 @@
 import { OPERATORS, PROMOS, SERVICES, TOP_TRIPS } from "@/common/types/home";
-import { HeroBanner } from "../../components/HeroBanner";
-import { HomeHeader } from "../../components/HomeHeader";
-import { PromoCarousel } from "../../components/PromoCarousel";
-import { ServiceGrid } from "../../components/ServiceGrid";
-import { TopOperators } from "../../components/TopOperators";
-import { TopTrips } from "../../components/TopTrips";
-import "../style.scss";
+import { HeroBanner } from "../../components/Page1/HeroBanner";
+import { HomeHeader } from "../../../../components/TopBar";
+import { PromoCarousel } from "../../components/Page1/PromoCarousel";
+import { ServiceGrid } from "../../components/Page1/ServiceGrid";
+import { TopOperators } from "../../components/Page1/TopOperators";
+import { TopTrips } from "../../components/Page1/TopTrips";
+import "./style.scss";
 
 const FAKE_USER = {
   userName: "Nguyễn Văn A",
