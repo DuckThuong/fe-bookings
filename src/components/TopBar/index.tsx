@@ -8,6 +8,7 @@ import logoutIcn from "@/assets/icons/logout.svg";
 import bellIcn from "@/assets/icons/bell.svg";
 import chevronDownIcn from "@/assets/icons/chevron-down.svg";
 import { ROUTER_PATH } from "@/routers/Route";
+import { Link, useLocation } from "react-router-dom";
 
 interface HomeHeaderProps {
   userName?: string;
@@ -16,7 +17,7 @@ interface HomeHeaderProps {
 
 const NAV_ITEMS = [
   { label: "Trang chủ", href: ROUTER_PATH.HOME },
-  { label: "Vé xe", href: ROUTER_PATH.TRIP },
+  { label: "Đặt vé", href: ROUTER_PATH.TRIP },
   { label: "Khuyến mãi", href: ROUTER_PATH.PROMOS },
   { label: "Hỗ trợ", href: ROUTER_PATH.SUPPORT },
 ];
@@ -50,6 +51,22 @@ export const HomeHeader = ({
   userName = "Khách",
   notifCount = 3,
 }: HomeHeaderProps) => {
+  const { pathname } = useLocation();
+
+  const isNavItemActive = (href: string) => {
+    const normalize = (path: string) =>
+      path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path;
+
+    const currentPath = normalize(pathname);
+    const navPath = normalize(href);
+
+    if (navPath === ROUTER_PATH.HOME) {
+      return currentPath === navPath;
+    }
+
+    return currentPath === navPath || currentPath.startsWith(`${navPath}/`);
+  };
+
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     console.log("user menu:", key);
   };
@@ -63,14 +80,14 @@ export const HomeHeader = ({
         </div>
 
         <nav className="home-header__nav">
-          {NAV_ITEMS.map((item, i) => (
-            <a
+          {NAV_ITEMS.map((item) => (
+            <Link
               key={item.href}
-              href={item.href}
-              className={`home-header__nav-link${i === 0 ? " active" : ""}`}
+              to={item.href}
+              className={`home-header__nav-link${isNavItemActive(item.href) ? " active" : ""}`}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 

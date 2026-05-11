@@ -52,6 +52,49 @@ $font-serif: "Cormorant Garamond", serif;
   position: relative;
   overflow: hidden;
 
+  &__animated-banner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    opacity: 0.45;
+    z-index: 0;
+
+    .banner-svg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      .road-line {
+        stroke-dasharray: 18 12;
+        animation: bookingDashMove 1.2s linear infinite;
+      }
+
+      .car {
+        animation: bookingCarDrive 4s linear infinite;
+      }
+      .car2 {
+        animation: bookingCarDrive 6s linear infinite 1.5s;
+      }
+      .car3 {
+        animation: bookingCarDrive 5s linear infinite 3s;
+      }
+
+      .blink {
+        animation: bookingBlink 2.5s ease-in-out infinite;
+      }
+      .blink2 {
+        animation: bookingBlink 3.5s ease-in-out infinite 0.8s;
+      }
+    }
+  }
+
   // Bottom curve scoop
   &::after {
     content: "";
@@ -62,9 +105,12 @@ $font-serif: "Cormorant Garamond", serif;
     height: 48px;
     background: $bg;
     border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    z-index: 2;
   }
 
   &__eyebrow {
+    position: relative;
+    z-index: 1;
     font-size: 11px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -73,6 +119,8 @@ $font-serif: "Cormorant Garamond", serif;
   }
 
   &__title {
+    position: relative;
+    z-index: 1;
     font-size: 26px;
     font-weight: 600;
     color: $white;
@@ -82,12 +130,15 @@ $font-serif: "Cormorant Garamond", serif;
   }
 
   &__sub {
+    position: relative;
+    z-index: 1;
     font-size: 13px;
     color: rgba($white, 0.5);
   }
 
   &__deco {
     position: absolute;
+    z-index: 1;
     right: 32px;
     top: 50%;
     transform: translateY(-50%);
@@ -103,6 +154,39 @@ $font-serif: "Cormorant Garamond", serif;
     &__title {
       font-size: 20px;
     }
+  }
+}
+
+@keyframes bookingDashMove {
+  to {
+    stroke-dashoffset: -60;
+  }
+}
+
+@keyframes bookingCarDrive {
+  0% {
+    transform: translateY(0) scale(0.95);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  86% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(660px) scale(1.06);
+    opacity: 0;
+  }
+}
+
+@keyframes bookingBlink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.95;
   }
 }
 
@@ -221,17 +305,34 @@ $font-serif: "Cormorant Garamond", serif;
   }
 
   &__quick {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
-    gap: 12px;
+    column-gap: 12px;
     margin-top: 14px;
-    flex-wrap: wrap;
+    overflow: hidden;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+      row-gap: 8px;
+    }
   }
 
-  &__quick-tags {
+  &__quick-viewport {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  &__quick-track {
     display: flex;
     gap: 8px;
-    flex-wrap: wrap;
+    width: max-content;
+    white-space: nowrap;
+    animation: searchQuickScroll 16s linear infinite;
+
+    &:hover {
+      animation-play-state: paused;
+    }
   }
 
   &__quick-tag {
@@ -250,6 +351,15 @@ $font-serif: "Cormorant Garamond", serif;
       background: $amber-pale;
       color: darken($amber, 10%);
     }
+  }
+}
+
+@keyframes searchQuickScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }
 

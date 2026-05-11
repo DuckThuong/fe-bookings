@@ -230,17 +230,19 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
 
       <div className="search-card__quick">
         <span className="sc-label sc-label--inline">Tuyến phổ biến:</span>
-        <div className="search-card__quick-tags">
-          {HOME_QUICK_ROUTES.map((r) => (
-            <button
-              key={`${r.from}-${r.to}`}
-              className="search-card__quick-tag"
-              onClick={() => applyQuickRoute(r.from, r.to)}
-              type="button"
-            >
-              {r.from} → {r.to}
-            </button>
-          ))}
+        <div className="search-card__quick-viewport">
+          <div className="search-card__quick-track">
+            {[...HOME_QUICK_ROUTES, ...HOME_QUICK_ROUTES].map((r, idx) => (
+              <button
+                key={`${r.from}-${r.to}-${idx}`}
+                className="search-card__quick-tag"
+                onClick={() => applyQuickRoute(r.from, r.to)}
+                type="button"
+              >
+                {r.from} → {r.to}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
