@@ -43,6 +43,47 @@ $font-serif: "Cormorant Garamond", serif;
       padding: 16px 16px 40px;
     }
   }
+
+  &__actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &__action-btn {
+    height: 40px;
+    border-radius: $radius-md;
+    border: 1px solid $border;
+    padding: 0 16px;
+    font-family: $font-sans;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &--primary {
+      background: $night;
+      border-color: $night;
+      color: $white;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+
+    &--ghost {
+      background: $white;
+      color: $night;
+
+      &:hover {
+        border-color: $amber;
+        color: $amber;
+        background: $amber-pale;
+      }
+    }
+  }
 }
 
 // ─── Hero ────────────────────────────────────────────────

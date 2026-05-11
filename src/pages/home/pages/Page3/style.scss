@@ -1,0 +1,126 @@
+@use "../../../../common" as *;
+
+.promos-page {
+  min-height: 100vh;
+  background: $bg;
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
+.promos-main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 24px 20px 56px;
+}
+
+.promos-hero {
+  background: $night;
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 20px;
+  color: $white;
+
+  &__eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: $amber;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 36px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  &__sub {
+    color: rgba($white, 0.7);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 620px;
+  }
+}
+
+.promos-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+
+  @media (max-width: 960px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.promo-item {
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 210px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  &__discount {
+    font-size: 20px;
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 700;
+  }
+
+  &__expiry {
+    font-size: 11px;
+    opacity: 0.8;
+  }
+
+  &__title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  &__sub {
+    font-size: 13px;
+    opacity: 0.9;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  &__code-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border: 1px dashed rgba(255, 255, 255, 0.55);
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+
+  &__code {
+    font-family: "Courier New", monospace;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  &__copy-btn {
+    border: none;
+    background: rgba(255, 255, 255, 0.18);
+    color: inherit;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+}
+

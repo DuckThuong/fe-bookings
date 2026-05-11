@@ -4,6 +4,7 @@ import {
   type SortKey,
   type Trip,
 } from "@/common/types/ticket";
+import { ScrollTopButton } from "@/components/ScrollTopButton";
 import { HomeHeader } from "@/components/TopBar";
 import { useState } from "react";
 import { BookingHero } from "../../components/Page2/BookingHero";
@@ -23,11 +24,14 @@ const FAKE_USER = {
   notifCount: 3,
 };
 
+const PAGE_SIZE = 10;
+
 export const TripPage = () => {
   const [searchMeta, setSearchMeta] = useState(INITIAL_SEARCH);
 
   const [activeFilters, setFilters] = useState<FilterKey[]>(["all"]);
   const [sortKey, setSort] = useState<SortKey>("price");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const trips: Trip[] = FAKE_TRIPS;
 
   const handleSearch = (params: {
@@ -40,6 +44,7 @@ export const TripPage = () => {
       to: params.to.city,
       date: params.date,
     });
+    setVisibleCount(PAGE_SIZE);
   };
 
   const handleToggleFilter = (key: FilterKey) => {
@@ -67,6 +72,17 @@ export const TripPage = () => {
     if (sortKey === "duration") return a.duration.localeCompare(b.duration);
     return 0;
   });
+  const visibleTrips = displayedTrips.slice(0, visibleCount);
+  const hasMoreTrips = visibleCount < displayedTrips.length;
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, displayedTrips.length));
+  };
+
+  const handleSortChange = (nextSort: SortKey) => {
+    setSort(nextSort);
+    setVisibleCount(PAGE_SIZE);
+  };
 
   return (
     <div className="booking-page">
@@ -89,10 +105,25 @@ export const TripPage = () => {
           to={searchMeta.to}
           date={searchMeta.date}
           onToggleFilter={handleToggleFilter}
-          onSortChange={setSort}
+          onSortChange={handleSortChange}
         />
 
-        <TripList trips={displayedTrips} onBook={handleBook} />
+        <TripList trips={visibleTrips} onBook={handleBook} />
+
+        <div className="booking-page__actions">
+          {hasMoreTrips && (
+            <button
+              className="booking-page__action-btn booking-page__action-btn--primary"
+              type="button"
+              onClick={handleLoadMore}
+            >
+              Xem thêm {Math.min(PAGE_SIZE, displayedTrips.length - visibleCount)}{" "}
+              chuyến
+            </button>
+          )}
+
+          <ScrollTopButton className="booking-page__action-btn booking-page__action-btn--ghost" />
+        </div>
       </div>
     </div>
   );

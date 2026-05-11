@@ -67,7 +67,7 @@ export const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 
 // ─── Fake trips ───────────────────────────────────────────
 
-export const FAKE_TRIPS: Trip[] = [
+const BASE_FAKE_TRIPS: Trip[] = [
   {
     id: "t1",
     featured: true,
@@ -164,4 +164,32 @@ export const FAKE_TRIPS: Trip[] = [
       { icon: "💆", label: "Ghế massage" },
     ],
   },
+];
+
+const EXTRA_TIME_PAIRS: Array<{ departure: string; arrival: string }> = [
+  { departure: "05:30", arrival: "13:30" },
+  { departure: "07:15", arrival: "15:15" },
+  { departure: "09:45", arrival: "17:45" },
+  { departure: "11:30", arrival: "19:30" },
+  { departure: "13:00", arrival: "21:00" },
+  { departure: "15:20", arrival: "23:20" },
+  { departure: "17:40", arrival: "01:40" },
+  { departure: "19:10", arrival: "03:10" },
+  { departure: "21:30", arrival: "05:30" },
+];
+
+export const FAKE_TRIPS: Trip[] = [
+  ...BASE_FAKE_TRIPS,
+  ...EXTRA_TIME_PAIRS.map((slot, index) => {
+    const source = BASE_FAKE_TRIPS[index % BASE_FAKE_TRIPS.length];
+    return {
+      ...source,
+      id: `${source.id}-x${index + 1}`,
+      featured: index % 4 === 0,
+      departure: { ...source.departure, time: slot.departure },
+      arrival: { ...source.arrival, time: slot.arrival },
+      price: source.price + (index + 1) * 15000,
+      seatsLeft: Math.max(1, source.seatsLeft + ((index % 5) - 2)),
+    };
+  }),
 ];
