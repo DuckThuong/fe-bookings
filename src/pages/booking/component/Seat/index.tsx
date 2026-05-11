@@ -12,10 +12,11 @@ export const Seat = ({
   isSleeper: boolean;
   onToggle: (id: string) => void;
 }) => {
+  const isBooked = seat.status === "booked";
   const cls = [
     "seat-map__seat",
     isSleeper && "seat-map__seat--sleeper",
-    seat.status === "booked" && "seat-map__seat--booked",
+    isBooked && "seat-map__seat--booked",
     seat.status === "vip" && "seat-map__seat--vip",
     selected && "seat-map__seat--selected",
   ]
@@ -25,15 +26,18 @@ export const Seat = ({
   return (
     <Button
       className={cls}
-      onClick={() => seat.status !== "booked" && onToggle(seat.id)}
-      title={seat.status === "booked" ? "Đã đặt" : seat.id}
+      onClick={() => !isBooked && onToggle(seat.id)}
+      title={isBooked ? "Đã đặt" : seat.id}
       aria-label={`Ghế ${seat.id}`}
       aria-pressed={selected}
       type="text"
-      disabled={seat.status === "booked"}
+      aria-disabled={isBooked}
     >
-      {seat.status === "booked" ? (
-        <i className="ti ti-x" aria-hidden="true" />
+      {isBooked ? (
+        <>
+          <span aria-hidden="true">×</span>
+          <span className="seat-map__seat-num">{seat.id}</span>
+        </>
       ) : (
         <>
           <i
