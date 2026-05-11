@@ -1,21 +1,22 @@
+import profileIcn from "@/assets/icons/profile.svg";
 import {
   BENEFITS,
   DEFAULT_MESSAGE,
   NOTI_ERROR,
   NOTI_SUCCESS,
 } from "@/common/constants/constants";
-import "./style.scss";
 import { Logo } from "@/components/Logo";
-import { useState } from "react";
-import { Button, Form, Steps } from "antd";
-import { Step1 } from "./steps/Step1";
-import { Step3 } from "./steps/Step3";
-import { Step2 } from "./steps/Step2";
-import type { SignInDto } from "@api/dtos/SignIn.dto";
 import { useNotification } from "@/providers/notificationProvider";
-import back from "../../../../assets/icons/back.svg";
 import { ROUTER_PATH } from "@/routers/Route";
+import type { SignInDto } from "@api/dtos/SignIn.dto";
+import { Button, Form, Steps } from "antd";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import back from "../../../../assets/icons/back.svg";
+import { Step1 } from "./steps/Step1";
+import { Step2 } from "./steps/Step2";
+import { Step3 } from "./steps/Step3";
+import "./style.scss";
 
 const subTitleMap: Record<number, string> = {
   0: "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để tạo tài khoản GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính xác và cập nhật để trải nghiệm dịch vụ tốt nhất.",
@@ -97,21 +98,7 @@ export const SignIn = () => {
         <div className="signin-content">
           <div className="signin-header">
             <div className="signin-header__icon">
-              <svg viewBox="0 0 24 24" fill="none">
-                <circle
-                  cx="12"
-                  cy="8"
-                  r="4"
-                  stroke="#f5a623"
-                  strokeWidth="1.5"
-                />
-                <path
-                  d="M4 20c0-4 3.6-7 8-7s8 3 8 7"
-                  stroke="#f5a623"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <img src={profileIcn} alt="Profile Icon" />
             </div>
             {step > 0 && (
               <img

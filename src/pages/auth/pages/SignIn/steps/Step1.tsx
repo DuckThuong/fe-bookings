@@ -2,7 +2,7 @@ import { InputPhoneNumber } from "@pages/auth/component/InputPhoneNumber";
 import { Checkbox, Form, Input, type FormInstance } from "antd";
 import { useState } from "react";
 import "../style.scss";
-
+import profileIcn from "@/assets/icons/profile.svg";
 interface SignInProps {
   form: FormInstance;
 }
@@ -28,21 +28,11 @@ export const Step1 = (props: SignInProps) => {
             size="large"
             placeholder="Nhập họ và tên của bạn"
             prefix={
-              <svg viewBox="0 0 17 17" fill="none" width="16" height="16">
-                <circle
-                  cx="8.5"
-                  cy="5.5"
-                  r="3"
-                  stroke="#9ca3af"
-                  strokeWidth="1.3"
-                />
-                <path
-                  d="M2 15c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6"
-                  stroke="#9ca3af"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <img
+                src={profileIcn}
+                alt="profile icon"
+                style={{ width: 16, height: 16, marginRight: 8 }}
+              />
             }
           />
         </Form.Item>

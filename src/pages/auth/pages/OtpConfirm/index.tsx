@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef } from "react";
-import { Button, Form } from "antd";
-import { Logo } from "@/components/Logo";
-import OTPInput from "@/components/FormOtp/formOtp";
-import "./style.scss";
 import { CountDown } from "@/components/CountDown";
-import { useNavigate } from "react-router-dom";
+import OTPInput from "@/components/FormOtp/formOtp";
+import { Logo } from "@/components/Logo";
 import { ROUTER_PATH } from "@/routers/Route";
+import { Button, Form } from "antd";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./style.scss";
+import privacyIcn from "@/assets/icons/privacy.svg";
 
 const COUNTDOWN_SECONDS = 60;
 const MAX_ATTEMPTS = 3;
@@ -187,21 +188,11 @@ export const OtpConfirm = () => {
         </p>
 
         <div className="otp-security">
-          <svg viewBox="0 0 14 14" fill="none" className="otp-security__icon">
-            <path
-              d="M7 1L2 3v4c0 3 2.3 5.3 5 6 2.7-.7 5-3 5-6V3L7 1z"
-              stroke="#9ca3af"
-              strokeWidth="1.2"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M4.5 7l2 2 3-3"
-              stroke="#9ca3af"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <img
+            src={privacyIcn}
+            alt="Privacy Icon"
+            className="otp-security__icon"
+          />
           <p>
             Mã OTP chỉ có hiệu lực một lần. GoRide không bao giờ hỏi mã này qua
             điện thoại.

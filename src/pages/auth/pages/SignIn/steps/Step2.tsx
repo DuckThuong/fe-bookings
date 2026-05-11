@@ -1,8 +1,7 @@
+import { DatePicker, Form, Input, type FormInstance } from "antd";
 import { useState } from "react";
 import "../style.scss";
-import { DatePicker, Form, Input, type FormInstance } from "antd";
-import { InputPhoneNumber } from "@pages/auth/component/InputPhoneNumber";
-
+import mailIcn from "@/assets/icons/mail.svg";
 interface SignInProps {
   form: FormInstance;
 }
@@ -34,24 +33,14 @@ export const Step2 = (props: SignInProps) => {
             size="large"
             placeholder="Nhập địa chỉ email của bạn"
             prefix={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                id="mail"
-              >
-                <g
-                  fill="none"
-                  fill-rule="evenodd"
-                  stroke="#000"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                >
-                  <path d="M3 1h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2z" />
-                  <path d="m21 3-10 7L1 3" />
-                </g>
-              </svg>
+              <img
+                src={mailIcn}
+                alt="mail icon"
+                style={{
+                  width: 24,
+                  height: 24,
+                }}
+              />
             }
           />
         </Form.Item>
@@ -71,53 +60,42 @@ export const Step2 = (props: SignInProps) => {
         </Form.Item>
       </div>
 
-        <Form.Item
-            name="gender"
-            rules={[
-                {
-                    required: true,
-                    message: "Vui lòng chọn giới tính",
-                },
-            ]}
-        >
-            <div className="signin-field">
-                <label className="signin-field__label">
-                    Giới tính
-                </label>
+      <Form.Item
+        name="gender"
+        rules={[
+          {
+            required: true,
+            message: "Vui lòng chọn giới tính",
+          },
+        ]}
+      >
+        <div className="signin-field">
+          <label className="signin-field__label">Giới tính</label>
 
-                <div className="signin-gender">
-                    {genderList?.map((opt) => (
-                        <div
-                            key={opt.value}
-                            className={`signin-gender__opt ${
-                                gender === opt.value
-                                    ? "signin-gender__opt--selected"
-                                    : ""
-                            }`}
-                            onClick={() => {
-                                setGender(opt.value);
-                                props.form.setFieldValue(
-                                    "gender",
-                                    opt.value,
-                                );
-                            }}
-                        >
-                            <div className="signin-gender__radio">
-                                <div className="signin-gender__dot" />
-                            </div>
-
-                            <span className="signin-gender__emoji">
-                        {opt.emoji}
-                    </span>
-
-                            <span className="signin-gender__text">
-                        {opt.label}
-                    </span>
-                        </div>
-                    ))}
+          <div className="signin-gender">
+            {genderList?.map((opt) => (
+              <div
+                key={opt.value}
+                className={`signin-gender__opt ${
+                  gender === opt.value ? "signin-gender__opt--selected" : ""
+                }`}
+                onClick={() => {
+                  setGender(opt.value);
+                  props.form.setFieldValue("gender", opt.value);
+                }}
+              >
+                <div className="signin-gender__radio">
+                  <div className="signin-gender__dot" />
                 </div>
-            </div>
-        </Form.Item>
+
+                <span className="signin-gender__emoji">{opt.emoji}</span>
+
+                <span className="signin-gender__text">{opt.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Form.Item>
     </div>
   );
 };
