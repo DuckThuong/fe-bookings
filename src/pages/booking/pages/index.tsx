@@ -8,6 +8,62 @@ import { formatVnd, getVehicleLayout } from "@/common/contexts/booking";
 import type { VehicleConfig, VehicleType } from "@/common/types/booking";
 import { BusMap } from "../component/BusMap";
 
+type BookingPageData = {
+  user: { userName: string; notifCount: number };
+  breadcrumb: { label: string }[];
+  trip: {
+    from: string;
+    to: string;
+    operatorName: string;
+    departTime: string;
+    arriveTime: string;
+    arriveNote?: string;
+    date: string;
+    durationLabel: string;
+    unitPrice: number;
+  };
+  passenger: {
+    fullName: string;
+    phone: string;
+    pickupPointDefault: string;
+    dropoffPointDefault: string;
+    pickupPointOptions: Array<{ value: string; label: string }>;
+    dropoffPointOptions: Array<{ value: string; label: string }>;
+  };
+};
+
+const BOOKING_PAGE_DATA: BookingPageData = {
+  user: { userName: "Nguyễn An", notifCount: 3 },
+  breadcrumb: [{ label: "Trang chủ" }, { label: "Vé xe" }, { label: "Chọn ghế" }],
+  trip: {
+    from: "Hà Nội",
+    to: "TP. Hồ Chí Minh",
+    operatorName: "GoRide Express",
+    departTime: "06:00",
+    arriveTime: "14:00",
+    arriveNote: "(+1)",
+    date: "11/05/2026",
+    durationLabel: "~32 tiếng",
+    unitPrice: UNIT_PRICE,
+  },
+  passenger: {
+    fullName: "Nguyễn Văn An",
+    phone: "098 765 4321",
+    pickupPointDefault: "mydinh",
+    dropoffPointDefault: "mienDong",
+    pickupPointOptions: [
+      { value: "mydinh", label: "Mỹ Đình" },
+      { value: "giapbat", label: "Giáp Bát" },
+      { value: "nuocngam", label: "Nước Ngầm" },
+    ],
+    dropoffPointOptions: [
+      { value: "mienDong", label: "Miền Đông" },
+      { value: "mienTay", label: "Miền Tây" },
+      { value: "binhTrieu", label: "Bình Triệu" },
+    ],
+  },
+};
+
 export const SeatSelectionPage = () => {
   const [vehicleType, setVehicleType] = useState<VehicleType>("16");
   const [floor, setFloor] = useState<1 | 2>(1);
@@ -41,40 +97,49 @@ export const SeatSelectionPage = () => {
 
   return (
     <div className="seat-page">
-      <HomeHeader userName="Nguyễn An" notifCount={3} />
+      <HomeHeader
+        userName={BOOKING_PAGE_DATA.user.userName}
+        notifCount={BOOKING_PAGE_DATA.user.notifCount}
+      />
 
       {/* Breadcrumb */}
       <nav className="seat-breadcrumb" aria-label="Breadcrumb">
-        <span>Trang chủ</span>
-        <i className="ti ti-chevron-right" aria-hidden="true" />
-        <span>Vé xe</span>
-        <i className="ti ti-chevron-right" aria-hidden="true" />
-        <span>Chọn ghế</span>
+        {BOOKING_PAGE_DATA.breadcrumb.map((item, idx) => (
+          <span key={`${item.label}-${idx}`}>
+            {idx > 0 && <i className="ti ti-chevron-right" aria-hidden="true" />}
+            {item.label}
+          </span>
+        ))}
       </nav>
 
       {/* Trip summary bar */}
       <div className="seat-trip-bar">
         <div className="seat-trip-bar__route">
-          <span className="seat-trip-bar__city">Hà Nội</span>
+          <span className="seat-trip-bar__city">{BOOKING_PAGE_DATA.trip.from}</span>
           <i className="ti ti-arrow-right" aria-hidden="true" />
-          <span className="seat-trip-bar__city">TP. Hồ Chí Minh</span>
+          <span className="seat-trip-bar__city">{BOOKING_PAGE_DATA.trip.to}</span>
         </div>
         <div className="seat-trip-bar__meta">
           <span>
-            <i className="ti ti-building" aria-hidden="true" /> GoRide Express
+            <i className="ti ti-building" aria-hidden="true" />{" "}
+            {BOOKING_PAGE_DATA.trip.operatorName}
           </span>
           <span>
-            <i className="ti ti-clock" aria-hidden="true" /> 06:00 → 14:00 (+1)
+            <i className="ti ti-clock" aria-hidden="true" />{" "}
+            {BOOKING_PAGE_DATA.trip.departTime} → {BOOKING_PAGE_DATA.trip.arriveTime}{" "}
+            {BOOKING_PAGE_DATA.trip.arriveNote ?? ""}
           </span>
           <span>
-            <i className="ti ti-calendar" aria-hidden="true" /> 11/05/2026
+            <i className="ti ti-calendar" aria-hidden="true" />{" "}
+            {BOOKING_PAGE_DATA.trip.date}
           </span>
           <span>
-            <i className="ti ti-clock-hour-4" aria-hidden="true" /> ~32 tiếng
+            <i className="ti ti-clock-hour-4" aria-hidden="true" />{" "}
+            {BOOKING_PAGE_DATA.trip.durationLabel}
           </span>
         </div>
         <div className="seat-trip-bar__price">
-          {formatVnd(UNIT_PRICE)} <span>/ ghế</span>
+          {formatVnd(BOOKING_PAGE_DATA.trip.unitPrice)} <span>/ ghế</span>
         </div>
       </div>
 
@@ -169,35 +234,30 @@ export const SeatSelectionPage = () => {
               <div className="seat-form__field">
                 <label>Họ và tên</label>
                 <Input
-                  placeholder="Nguyễn Văn An"
-                  defaultValue="Nguyễn Văn An"
+                  placeholder={BOOKING_PAGE_DATA.passenger.fullName}
+                  defaultValue={BOOKING_PAGE_DATA.passenger.fullName}
                 />
               </div>
               <div className="seat-form__field">
                 <label>Số điện thoại</label>
-                <Input placeholder="098 765 4321" defaultValue="098 765 4321" />
+                <Input
+                  placeholder={BOOKING_PAGE_DATA.passenger.phone}
+                  defaultValue={BOOKING_PAGE_DATA.passenger.phone}
+                />
               </div>
               <div className="seat-form__row2">
                 <div className="seat-form__field">
                   <label>Điểm lên xe</label>
                   <Select
-                    defaultValue="mydinh"
-                    options={[
-                      { value: "mydinh", label: "Mỹ Đình" },
-                      { value: "giapbat", label: "Giáp Bát" },
-                      { value: "nuocngam", label: "Nước Ngầm" },
-                    ]}
+                    defaultValue={BOOKING_PAGE_DATA.passenger.pickupPointDefault}
+                    options={BOOKING_PAGE_DATA.passenger.pickupPointOptions}
                   />
                 </div>
                 <div className="seat-form__field">
                   <label>Điểm xuống xe</label>
                   <Select
-                    defaultValue="mienDong"
-                    options={[
-                      { value: "mienDong", label: "Miền Đông" },
-                      { value: "mienTay", label: "Miền Tây" },
-                      { value: "binhTrieu", label: "Bình Triệu" },
-                    ]}
+                    defaultValue={BOOKING_PAGE_DATA.passenger.dropoffPointDefault}
+                    options={BOOKING_PAGE_DATA.passenger.dropoffPointOptions}
                   />
                 </div>
               </div>

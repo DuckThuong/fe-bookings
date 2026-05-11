@@ -9,6 +9,38 @@ interface SignInProps {
   form: FormInstance;
 }
 
+type SignInStep1Data = {
+  eyebrow: string;
+  fullName: {
+    label: string;
+    name: string;
+    requiredMessage: string;
+    placeholder: string;
+    iconAlt: string;
+  };
+  terms: {
+    requiredMessage: string;
+    tosLabel: string;
+    privacyLabel: string;
+  };
+};
+
+const SIGNIN_STEP1_DATA: SignInStep1Data = {
+  eyebrow: "Bước 1 / 3 — Thông tin tài khoản",
+  fullName: {
+    label: "Họ và tên",
+    name: "name",
+    requiredMessage: "Vui lòng nhập họ tên của bạn",
+    placeholder: "Nhập họ và tên của bạn",
+    iconAlt: "profile icon",
+  },
+  terms: {
+    requiredMessage: "Bạn cần đồng ý điều khoản",
+    tosLabel: "Điều khoản sử dụng",
+    privacyLabel: "Chính sách bảo mật",
+  },
+};
+
 export const Step1 = (props: SignInProps) => {
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
 
@@ -16,24 +48,24 @@ export const Step1 = (props: SignInProps) => {
     <>
       <div className="signin-header">
         <p className="signin-header__eyebrow">
-          Bước 1 / 3 — Thông tin tài khoản
+          {SIGNIN_STEP1_DATA.eyebrow}
         </p>
       </div>
       <div className="signin-form">
         <Form.Item
-          label="Họ và tên"
-          name="name"
-          rules={[{ required: true, message: "Vui lòng nhập họ tên của bạn" }]}
+          label={SIGNIN_STEP1_DATA.fullName.label}
+          name={SIGNIN_STEP1_DATA.fullName.name}
+          rules={[{ required: true, message: SIGNIN_STEP1_DATA.fullName.requiredMessage }]}
         >
           <Input
             type="text"
             size="large"
-            placeholder="Nhập họ và tên của bạn"
+            placeholder={SIGNIN_STEP1_DATA.fullName.placeholder}
             prefix={
               <img
                 src={profileIcn}
-                alt="profile icon"
-                style={{ width: 16, height: 16, marginRight: 8 }}
+                alt={SIGNIN_STEP1_DATA.fullName.iconAlt}
+                className="signin-icon--profile"
               />
             }
           />
@@ -53,7 +85,7 @@ export const Step1 = (props: SignInProps) => {
             validator: (_, value) =>
               value
                 ? Promise.resolve()
-                : Promise.reject(new Error("Bạn cần đồng ý điều khoản")),
+                : Promise.reject(new Error(SIGNIN_STEP1_DATA.terms.requiredMessage)),
           },
         ]}
         className="signin-terms-form"
@@ -61,8 +93,9 @@ export const Step1 = (props: SignInProps) => {
         <Checkbox className="signin-terms-checkbox">
           <span className="signin-terms__text">
             Tôi đồng ý với{" "}
-            <Link to={ROUTER_PATH.SUPPORT}>Điều khoản sử dụng</Link> và{" "}
-            <Link to={ROUTER_PATH.SUPPORT}>Chính sách bảo mật</Link> của GoRide.
+            <Link to={ROUTER_PATH.SUPPORT}>{SIGNIN_STEP1_DATA.terms.tosLabel}</Link> và{" "}
+            <Link to={ROUTER_PATH.SUPPORT}>{SIGNIN_STEP1_DATA.terms.privacyLabel}</Link>{" "}
+            của GoRide.
             Thông tin của bạn được bảo vệ theo tiêu chuẩn cao nhất.
           </span>
         </Checkbox>

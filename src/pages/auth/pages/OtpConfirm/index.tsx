@@ -8,14 +8,29 @@ import { useNavigate } from "react-router-dom";
 import "./style.scss";
 import privacyIcn from "@/assets/icons/privacy.svg";
 
-const COUNTDOWN_SECONDS = 60;
-const MAX_ATTEMPTS = 3;
+type OtpConfirmPageData = {
+  otpLength: number;
+  countdownSeconds: number;
+  maxAttempts: number;
+  maskedPhone: string;
+  otpRuleRequired: string;
+  otpRuleLen: string;
+};
+
+const OTP_CONFIRM_PAGE_DATA: OtpConfirmPageData = {
+  otpLength: 6,
+  countdownSeconds: 60,
+  maxAttempts: 3,
+  maskedPhone: "098 765 4321",
+  otpRuleRequired: "Vui lòng nhập mã OTP!",
+  otpRuleLen: "Mã OTP gồm đúng 6 chữ số.",
+};
 
 export const OtpConfirm = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [status, setStatus] = useState<0 | 1 | 2 | 3>(0);
-  const [seconds, setSeconds] = useState(COUNTDOWN_SECONDS);
+  const [seconds, setSeconds] = useState(OTP_CONFIRM_PAGE_DATA.countdownSeconds);
   const [canResend, setCanResend] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
 
@@ -23,7 +38,7 @@ export const OtpConfirm = () => {
 
   const startTimer = () => {
     clearInterval(timerRef.current!);
-    setSeconds(COUNTDOWN_SECONDS);
+    setSeconds(OTP_CONFIRM_PAGE_DATA.countdownSeconds);
     setCanResend(false);
     timerRef.current = setInterval(() => {
       setSeconds((s) => {
@@ -62,6 +77,9 @@ export const OtpConfirm = () => {
           const newAttempts = wrongAttempts + 1;
           setWrongAttempts(newAttempts);
           setStatus(3);
+          if (newAttempts >= OTP_CONFIRM_PAGE_DATA.maxAttempts) {
+            // Keep UX as-is for now; API integration can lock/resend later.
+          }
 
           setTimeout(() => {
             form.resetFields();
@@ -74,7 +92,8 @@ export const OtpConfirm = () => {
   };
 
   const CIRCUMFERENCE = 2 * Math.PI * 22;
-  const strokeOffset = CIRCUMFERENCE * (1 - seconds / COUNTDOWN_SECONDS);
+  const strokeOffset =
+    CIRCUMFERENCE * (1 - seconds / OTP_CONFIRM_PAGE_DATA.countdownSeconds);
   const isUrgent = seconds <= 15;
 
   const btnLabel =
@@ -129,18 +148,18 @@ export const OtpConfirm = () => {
           <p className="otp-header__sub">
             Chúng tôi đã gửi mã 6 chữ số đến
             <br />
-            <strong>098 765 4321</strong>
+            <strong>{OTP_CONFIRM_PAGE_DATA.maskedPhone}</strong>
           </p>
 
           <Form.Item
             name="otp"
             className="otp-form-item"
             rules={[
-              { required: true, message: "Vui lòng nhập mã OTP!" },
-              { len: 6, message: "Mã OTP gồm đúng 6 chữ số." },
+              { required: true, message: OTP_CONFIRM_PAGE_DATA.otpRuleRequired },
+              { len: OTP_CONFIRM_PAGE_DATA.otpLength, message: OTP_CONFIRM_PAGE_DATA.otpRuleLen },
             ]}
           >
-            <OTPInput length={6} />
+            <OTPInput length={OTP_CONFIRM_PAGE_DATA.otpLength} />
           </Form.Item>
 
           <CountDown

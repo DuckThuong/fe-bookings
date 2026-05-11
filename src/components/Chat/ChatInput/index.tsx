@@ -28,6 +28,40 @@ export interface ChatInputProps {
   } | null;
 }
 
+type ChatInputData = {
+  upload: {
+    accept: string;
+    uploadAriaLabel: string;
+  };
+  composer: {
+    regionAriaLabel: string;
+    textareaPlaceholder: string;
+  };
+  actions: {
+    emojiAriaLabel: string;
+    sendAriaLabel: string;
+    emojiPickerWidth: number;
+    emojiPickerHeight: number;
+  };
+};
+
+const CHAT_INPUT_DATA: ChatInputData = {
+  upload: {
+    accept: "image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt",
+    uploadAriaLabel: "Upload file",
+  },
+  composer: {
+    regionAriaLabel: "Vùng nhập tin nhắn",
+    textareaPlaceholder: "Nhập tin nhắn",
+  },
+  actions: {
+    emojiAriaLabel: "Open emoji picker",
+    sendAriaLabel: "Send message",
+    emojiPickerWidth: 320,
+    emojiPickerHeight: 400,
+  },
+};
+
 export const ChatInput = (props: ChatInputProps) => {
   const { showNotification } = useNotification();
   const [files, setFiles] = useState<File[]>([]);
@@ -247,7 +281,7 @@ export const ChatInput = (props: ChatInputProps) => {
     >
       <Upload
         showUploadList={false}
-        accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+        accept={CHAT_INPUT_DATA.upload.accept}
         multiple
         disabled={isBusy}
         beforeUpload={(file) => {
@@ -258,11 +292,14 @@ export const ChatInput = (props: ChatInputProps) => {
         <Button
           className="chat__input-col-1"
           disabled={isBusy}
-          aria-label="Upload file"
+          aria-label={CHAT_INPUT_DATA.upload.uploadAriaLabel}
           type="text"
         />
       </Upload>
-      <section className="chat__input-col-2" aria-label="Vùng nhập tin nhắn">
+      <section
+        className="chat__input-col-2"
+        aria-label={CHAT_INPUT_DATA.composer.regionAriaLabel}
+      >
         {previews.length > 0 && (
           <figure className="image_container">
             {previews.map((preview, index) => (
@@ -287,7 +324,7 @@ export const ChatInput = (props: ChatInputProps) => {
 
         <Input.TextArea
           ref={textareaRef}
-          placeholder={"Nhập tin nhắn"}
+          placeholder={CHAT_INPUT_DATA.composer.textareaPlaceholder}
           className="chat__input-col-2-textarea"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -315,7 +352,7 @@ export const ChatInput = (props: ChatInputProps) => {
             setShowEmojiPicker(!showEmojiPicker);
           }}
           disabled={isBusy}
-          aria-label="Open emoji picker"
+          aria-label={CHAT_INPUT_DATA.actions.emojiAriaLabel}
           type="text"
         >
           <img src={emoji} alt="" className="chat__input-emoji" />
@@ -327,7 +364,7 @@ export const ChatInput = (props: ChatInputProps) => {
             void sendMessage();
           }}
           disabled={isBusy}
-          aria-label="Send message"
+          aria-label={CHAT_INPUT_DATA.actions.sendAriaLabel}
           type="text"
         >
           <img src={send} alt="" className="chat__input-send" />
@@ -338,8 +375,8 @@ export const ChatInput = (props: ChatInputProps) => {
             <EmojiPicker
               onEmojiClick={handleEmojiClick}
               autoFocusSearch={false}
-              width={320}
-              height={400}
+              width={CHAT_INPUT_DATA.actions.emojiPickerWidth}
+              height={CHAT_INPUT_DATA.actions.emojiPickerHeight}
             />
           </div>
         )}
