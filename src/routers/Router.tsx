@@ -9,7 +9,7 @@ import { HomePage } from "@/pages/home/pages/Page1";
 import { TripPage } from "@/pages/home/pages/Page2";
 import { PromosPage } from "@/pages/home/pages/Page3";
 import { SupportPage } from "@/pages/home/pages/Page4";
-import { BookingPage } from "@/pages/home/pages/Page5";
+import { SeatSelectionPage } from "@/pages/booking/pages";
 
 export const WebRouter = () => (
   <Routes>
@@ -22,7 +22,7 @@ export const WebRouter = () => (
     {/* home */}
     <Route path={ROUTER_PATH.HOME} element={<HomePage />} />
     <Route path={ROUTER_PATH.TRIP} element={<TripPage />} />
-    <Route path={ROUTER_PATH.BOOKING} element={<BookingPage />} />
+    <Route path={ROUTER_PATH.BOOKING} element={<SeatSelectionPage />} />
     <Route path={ROUTER_PATH.PROMOS} element={<PromosPage />} />
     <Route path={ROUTER_PATH.SUPPORT} element={<SupportPage />} />
   </Routes>

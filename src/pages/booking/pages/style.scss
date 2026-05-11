@@ -1,0 +1,554 @@
+// style.scss — SeatSelectionPage
+
+$night:      #0a0e1a;
+$amber:      #f5a623;
+$amber-pale: #fff8ec;
+$muted:      #6b7280;
+$border:     #e5e7eb;
+$green-bg:   #f0fdf4;
+$green-bd:   #86efac;
+$green-text: #16a34a;
+
+// ─── Page ────────────────────────────────────────────────
+.seat-page {
+  min-height: 100vh;
+  background: #f4f5f7;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+// ─── Breadcrumb ───────────────────────────────────────────
+.seat-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: $muted;
+  padding: 14px 32px;
+
+  a { color: $muted; text-decoration: none; &:hover { color: $night; } }
+  i { font-size: 12px; }
+  span { color: $night; }
+}
+
+// ─── Trip bar ────────────────────────────────────────────
+.seat-trip-bar {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin: 0 32px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  &__route {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    i { font-size: 16px; color: $muted; }
+  }
+
+  &__city { font-size: 18px; font-weight: 500; color: $night; }
+
+  &__meta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: $muted;
+      i { font-size: 14px; }
+    }
+  }
+
+  &__price {
+    font-size: 20px;
+    font-weight: 500;
+    color: $night;
+    white-space: nowrap;
+    span { font-size: 12px; color: $muted; font-weight: 400; }
+  }
+}
+
+// ─── Main layout ─────────────────────────────────────────
+.seat-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  padding: 0 32px 40px;
+  align-items: start;
+}
+
+// ─── Vehicle tabs ─────────────────────────────────────────
+.seat-vtabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.seat-vtab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 0.5px solid $border;
+  font-size: 13px;
+  cursor: pointer;
+  background: #fff;
+  color: $muted;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  transition: all .15s;
+
+  &:hover { border-color: darken($border, 10%); }
+
+  &--active {
+    background: $night;
+    color: $amber;
+    border-color: $night;
+    font-weight: 500;
+  }
+
+  i { font-size: 15px; }
+}
+
+// ─── Map card ────────────────────────────────────────────
+.seat-map-card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  padding: 24px;
+
+  &__title {
+    font-size: 15px;
+    font-weight: 500;
+    color: $night;
+    margin-bottom: 4px;
+  }
+
+  &__sub {
+    font-size: 12px;
+    color: $muted;
+    margin-bottom: 18px;
+  }
+}
+
+// ─── Legend ──────────────────────────────────────────────
+.seat-legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: $muted;
+  }
+
+  &__dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    flex-shrink: 0;
+
+    &--avail    { background: $green-bg;   border: 1.5px solid $green-bd; }
+    &--selected { background: $night;      border: 1.5px solid $night; }
+    &--booked   { background: #f3f4f6;     border: 1.5px solid $border; }
+    &--vip      { background: $amber-pale; border: 1.5px solid $amber; }
+  }
+}
+
+// ─── Floor tabs ───────────────────────────────────────────
+.seat-floor-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.seat-floor-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 0.5px solid $border;
+  font-size: 12px;
+  cursor: pointer;
+  background: #fff;
+  color: $muted;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  transition: all .15s;
+
+  &:hover { border-color: darken($border, 10%); }
+
+  &--active {
+    background: $night;
+    color: $amber;
+    border-color: $night;
+    font-weight: 500;
+  }
+}
+
+// ─── Bus shell ────────────────────────────────────────────
+.seat-map__shell {
+  border: 2px solid $border;
+  border-radius: 20px 20px 12px 12px;
+  padding: 14px;
+  background: #f9fafb;
+}
+
+.seat-map__front {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px 12px 0 0;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.seat-map__driver {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: $muted;
+  i { font-size: 18px; }
+}
+
+.seat-map__wheel {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid $border;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  i { font-size: 16px; color: $muted; }
+}
+
+.seat-map__door {
+  width: 24px;
+  height: 36px;
+  border: 2px solid $border;
+  border-radius: 4px 4px 0 0;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  i { font-size: 12px; color: #9ca3af; }
+}
+
+.seat-map__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.seat-map__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.seat-map__row-num {
+  width: 18px;
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.seat-map__aisle { width: 20px; flex-shrink: 0; }
+
+// ─── Seat atom ────────────────────────────────────────────
+.seat-map__seat {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px 10px 6px 6px;
+  border: 1.5px solid $green-bd;
+  background: $green-bg;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+  position: relative;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 500;
+  color: $green-text;
+  user-select: none;
+
+  // Headrest nub
+  &::before {
+    content: '';
+    position: absolute;
+    top: -5px; left: 4px; right: 4px;
+    height: 5px;
+    background: inherit;
+    border: inherit;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+  }
+
+  &:hover:not(&--booked) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+  }
+
+  i { font-size: 13px; line-height: 1; }
+
+  &__seat-num { line-height: 1; margin-top: 2px; }
+
+  // States
+  &--selected {
+    background: $night;
+    border-color: $night;
+    color: $amber;
+    &::before { background: $night; border-color: $night; }
+  }
+
+  &--booked {
+    background: #f3f4f6;
+    border-color: $border;
+    color: #9ca3af;
+    cursor: not-allowed;
+    &::before { background: #f3f4f6; border-color: $border; }
+  }
+
+  &--vip {
+    background: $amber-pale;
+    border-color: $amber;
+    color: #854f0b;
+    &::before { background: $amber-pale; border-color: $amber; }
+
+    &.seat-map__seat--selected {
+      background: $amber;
+      border-color: $amber;
+      color: $night;
+      &::before { background: $amber; border-color: $amber; }
+    }
+  }
+
+  // Sleeper variant
+  &--sleeper {
+    width: 52px;
+    height: 36px;
+    flex-direction: row;
+    gap: 4px;
+    border-radius: 6px;
+
+    &::before { display: none; }
+  }
+}
+
+// ─── Summary panel ────────────────────────────────────────
+.seat-summary {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  padding: 20px;
+  position: sticky;
+  top: 20px;
+
+  &__title {
+    font-size: 14px;
+    font-weight: 500;
+    color: $night;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 0.5px solid $border;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    i { color: $amber; font-size: 16px; }
+  }
+
+  &__section-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    margin-bottom: 8px;
+  }
+}
+
+// ─── Passenger form ───────────────────────────────────────
+.seat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  &__field {
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: $muted;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin-bottom: 4px;
+    }
+
+    // antd input overrides
+    .ant-input, .ant-select-selector {
+      border-radius: 8px !important;
+      border-color: $border !important;
+      font-size: 13px !important;
+
+      &:focus, &:hover { border-color: $amber !important; }
+    }
+  }
+
+  &__row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+}
+
+// ─── Selected seats list ─────────────────────────────────
+.seat-selected-list {
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  &__empty {
+    font-size: 12px;
+    color: #9ca3af;
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: $night;
+  }
+
+  &__badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: $night;
+    color: $amber;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  &__remove {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 0.5px solid $border;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $muted;
+    font-size: 15px;
+    line-height: 1;
+    transition: all .15s;
+
+    &:hover { border-color: $night; color: $night; }
+  }
+}
+
+// ─── Price breakdown ─────────────────────────────────────
+.seat-price {
+  border-top: 0.5px solid $border;
+  padding-top: 14px;
+  margin-bottom: 16px;
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: $muted;
+    margin-bottom: 8px;
+
+    strong { color: $night; font-weight: 500; }
+
+    &--total {
+      font-size: 16px;
+      font-weight: 500;
+      color: $night;
+      border-top: 0.5px solid $border;
+      padding-top: 10px;
+      margin-top: 4px;
+    }
+  }
+}
+
+// ─── CTA button ──────────────────────────────────────────
+.seat-cta-btn {
+  &.ant-btn-primary {
+    height: 46px !important;
+    border-radius: 10px !important;
+    background: $night !important;
+    border-color: $night !important;
+    font-family: 'Be Vietnam Pro', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+
+    &:hover:not(:disabled) { opacity: .85 !important; }
+    &:disabled { opacity: .4 !important; }
+  }
+}
+
+.seat-cta-note {
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 8px;
+}
+
+// ─── Responsive ───────────────────────────────────────────
+@media (max-width: 900px) {
+  .seat-layout { grid-template-columns: 1fr; }
+  .seat-summary { position: static; }
+}
+
+@media (max-width: 600px) {
+  .seat-trip-bar  { margin: 0 16px 16px; }
+  .seat-breadcrumb{ padding: 12px 16px; }
+  .seat-layout    { padding: 0 16px 32px; }
+  .seat-vtabs     { flex-wrap: wrap; }
+
+  .seat-map__seat {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px 8px 5px 5px;
+    font-size: 9px;
+    i { font-size: 11px; }
+  }
+
+  .seat-map__seat--sleeper { width: 42px; height: 30px; }
+}
