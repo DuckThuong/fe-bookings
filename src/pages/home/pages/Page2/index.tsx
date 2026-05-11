@@ -49,9 +49,11 @@ export const TripPage = () => {
     }
     setFilters((prev) => {
       const without = prev.filter((k) => k !== "all");
-      return without.includes(key)
-        ? without.filter((k) => k !== key) || ["all"]
-        : [...without, key];
+      if (without.includes(key)) {
+        const next = without.filter((k) => k !== key);
+        return next.length ? next : ["all"];
+      }
+      return [...without, key];
     });
   };
 

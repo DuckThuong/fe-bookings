@@ -39,8 +39,8 @@ export const FilterBar = ({
         {FILTER_CHIPS.map((f) => (
           <button
             key={f.key}
-            className={`filter-chip${activeFilters.includes(f.key as any) ? " filter-chip--active" : ""}`}
-            onClick={() => onToggleFilter(f.key as any)}
+            className={`filter-chip${activeFilters.includes(f.key) ? " filter-chip--active" : ""}`}
+            onClick={() => onToggleFilter(f.key)}
           >
             {f.label}
           </button>
@@ -55,7 +55,7 @@ export const FilterBar = ({
           onChange={onSortChange}
           popupMatchSelectWidth={false}
           options={SORT_OPTIONS.map((o) => ({
-            value: o.key as any,
+            value: o.key,
             label: o.label,
           }))}
         />

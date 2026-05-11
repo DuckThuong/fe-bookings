@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { Button, DatePicker, Select, Tooltip } from "antd";
+import { AutoComplete, Button, DatePicker, Select, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { SEAT_TYPES, type SeatType } from "@/common/types/ticket";
+import pinnedIcn from "@/assets/icons/pinned.svg";
+import arrowDownIcn from "@/assets/icons/arrowDown.svg";
+import {
+  HOME_CITIES,
+  HOME_DESTINATIONS,
+  HOME_QUICK_ROUTES,
+} from "../../../shared/searchData";
 
 interface RouteField {
   city: string;
@@ -24,28 +31,20 @@ const DEFAULT_TO: RouteField = {
   station: "Bến xe Miền Đông",
 };
 
-const RouteFieldBox = ({
-  label,
-  value,
-  icon,
-  active,
-}: {
-  label: string;
-  value: RouteField;
-  icon: string;
-  active?: boolean;
-}) => (
-  <div className="sc-field-group">
-    <p className="sc-label">{label}</p>
-    <div className={`sc-field${active ? " sc-field--active" : ""}`}>
-      <span className="sc-field__icon">{icon}</span>
-      <div>
-        <div className="sc-field__city">{value.city}</div>
-        <div className="sc-field__station">{value.station}</div>
-      </div>
-    </div>
-  </div>
-);
+const STATIONS_BY_CITY: Record<string, string[]> = {
+  "Hà Nội": ["Bến xe Mỹ Đình", "Bến xe Giáp Bát", "Bến xe Nước Ngầm"],
+  "TP. Hồ Chí Minh": ["Bến xe Miền Đông", "Bến xe Miền Tây"],
+  "Đà Nẵng": ["Bến xe Trung tâm Đà Nẵng"],
+  "Hải Phòng": ["Bến xe Niệm Nghĩa", "Bến xe Cầu Rào"],
+  "Cần Thơ": ["Bến xe Trung tâm Cần Thơ"],
+  "Đà Lạt": ["Bến xe Liên tỉnh Đà Lạt"],
+  "Nha Trang": ["Bến xe Phía Nam Nha Trang"],
+  Huế: ["Bến xe phía Nam Huế"],
+  Vinh: ["Bến xe Vinh"],
+  "Vũng Tàu": ["Bến xe Vũng Tàu"],
+};
+
+const getDefaultStation = (city: string) => STATIONS_BY_CITY[city]?.[0] ?? "";
 
 const PassengerCounter = ({
   value,
@@ -55,7 +54,9 @@ const PassengerCounter = ({
   onChange: (v: number) => void;
 }) => (
   <div className="sc-field-group">
-    <p className="sc-label">👤 Hành khách</p>
+    <p className="sc-label">
+      👤 Hành khách / <span className="sc-pax-hint">người lớn</span>
+    </p>
     <div className="sc-field sc-field--pax">
       <button
         className="sc-pax-btn"
@@ -73,7 +74,6 @@ const PassengerCounter = ({
         +
       </button>
     </div>
-    <p className="sc-pax-hint">người lớn</p>
   </div>
 );
 
@@ -84,9 +84,32 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
   const [passengers, setPax] = useState(1);
   const [seatType, setSeat] = useState<SeatType>("all");
 
+  const fromOptions = [...HOME_CITIES]
+    .filter(
+      (c) => c.toLowerCase().includes(from.city.toLowerCase()) && from.city,
+    )
+    .map((c) => ({ value: c, label: c }));
+
+  const toOptions = [...HOME_DESTINATIONS]
+    .filter((c) => c.toLowerCase().includes(to.city.toLowerCase()) && to.city)
+    .map((c) => ({ value: c, label: c }));
+
   const handleSwap = () => {
     setFrom(to);
     setTo(from);
+  };
+
+  const applyQuickRoute = (fromCity: string, toCity: string) => {
+    setFrom((prev) => ({
+      ...prev,
+      city: fromCity,
+      station: getDefaultStation(fromCity) || prev.station,
+    }));
+    setTo((prev) => ({
+      ...prev,
+      city: toCity,
+      station: getDefaultStation(toCity) || prev.station,
+    }));
   };
 
   const handleSearch = () => {
@@ -102,7 +125,40 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
   return (
     <div className="search-card">
       <div className="search-card__row">
-        <RouteFieldBox label="📍 Điểm đi" value={from} icon="📌" active />
+        <div className="search-card__route">
+          <div className="hero__search-field">
+            <span className="hero__field-icon">
+              <img src={pinnedIcn} alt="From" width={14} height={14} />
+            </span>
+            <AutoComplete
+              value={from.city}
+              options={fromOptions}
+              onChange={(value) =>
+                setFrom((prev) => ({
+                  ...prev,
+                  city: value,
+                  station: STATIONS_BY_CITY[value]?.includes(prev.station)
+                    ? prev.station
+                    : getDefaultStation(value) || prev.station,
+                }))
+              }
+              className="hero__autocomplete"
+              placeholder="Điểm đi"
+              popupMatchSelectWidth={false}
+            />
+          </div>
+
+          <Select
+            value={from.station}
+            onChange={(station) => setFrom((prev) => ({ ...prev, station }))}
+            className="search-card__station"
+            placeholder="Chọn bến xe"
+            options={(STATIONS_BY_CITY[from.city] ?? []).map((s) => ({
+              value: s,
+              label: s,
+            }))}
+          />
+        </div>
 
         <Tooltip title="Đổi chiều">
           <button
@@ -114,7 +170,40 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
           </button>
         </Tooltip>
 
-        <RouteFieldBox label="📍 Điểm đến" value={to} icon="🏁" />
+        <div className="search-card__route">
+          <div className="hero__search-field">
+            <span className="hero__field-icon">
+              <img src={arrowDownIcn} alt="To" width={14} height={14} />
+            </span>
+            <AutoComplete
+              value={to.city}
+              options={toOptions}
+              onChange={(value) =>
+                setTo((prev) => ({
+                  ...prev,
+                  city: value,
+                  station: STATIONS_BY_CITY[value]?.includes(prev.station)
+                    ? prev.station
+                    : getDefaultStation(value) || prev.station,
+                }))
+              }
+              className="hero__autocomplete"
+              placeholder="Điểm đến"
+              popupMatchSelectWidth={false}
+            />
+          </div>
+
+          <Select
+            value={to.station}
+            onChange={(station) => setTo((prev) => ({ ...prev, station }))}
+            className="search-card__station"
+            placeholder="Chọn bến xe"
+            options={(STATIONS_BY_CITY[to.city] ?? []).map((s) => ({
+              value: s,
+              label: s,
+            }))}
+          />
+        </div>
 
         <div className="sc-field-group">
           <p className="sc-label">📅 Ngày đi</p>
@@ -139,10 +228,24 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
         </Button>
       </div>
 
+      <div className="search-card__quick">
+        <span className="sc-label sc-label--inline">Tuyến phổ biến:</span>
+        <div className="search-card__quick-tags">
+          {HOME_QUICK_ROUTES.map((r) => (
+            <button
+              key={`${r.from}-${r.to}`}
+              className="search-card__quick-tag"
+              onClick={() => applyQuickRoute(r.from, r.to)}
+              type="button"
+            >
+              {r.from} → {r.to}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="search-card__seat-row">
-        <span className="sc-label" style={{ marginBottom: 0 }}>
-          Loại ghế
-        </span>
+        <span className="sc-label sc-label--inline">Loại ghế</span>
         <div className="search-card__seat-chips">
           {SEAT_TYPES.map((s) => (
             <button

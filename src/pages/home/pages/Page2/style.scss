@@ -16,11 +16,14 @@ $radius-md: 12px;
 $radius-lg: 16px;
 $radius-xl: 24px;
 
+$font-sans: "Be Vietnam Pro", sans-serif;
+$font-serif: "Cormorant Garamond", serif;
+
 // ─── Page shell ──────────────────────────────────────────
 .booking-page {
   min-height: 100vh;
   background: $bg;
-  font-family: "Be Vietnam Pro", sans-serif;
+  font-family: $font-sans;
 
   &__search-wrap {
     padding: 0 32px;
@@ -75,7 +78,7 @@ $radius-xl: 24px;
     color: $white;
     line-height: 1.25;
     margin-bottom: 4px;
-    font-family: "Cormorant Garamond", serif;
+    font-family: $font-serif;
   }
 
   &__sub {
@@ -91,6 +94,7 @@ $radius-xl: 24px;
     font-size: 100px;
     opacity: 0.07;
     pointer-events: none;
+    -webkit-user-select: none;
     user-select: none;
   }
 
@@ -171,7 +175,7 @@ $radius-xl: 24px;
       border-color: $night !important;
       font-size: 14px !important;
       font-weight: 600 !important;
-      font-family: "Be Vietnam Pro", sans-serif !important;
+      font-family: $font-sans !important;
       white-space: nowrap;
       transition: all 0.15s !important;
 
@@ -179,6 +183,23 @@ $radius-xl: 24px;
         opacity: 0.85 !important;
         transform: translateY(-1px);
       }
+    }
+  }
+
+  &__route {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  &__station {
+    width: 100% !important;
+
+    .ant-select-selector {
+      height: 44px !important;
+      border-radius: $radius-md !important;
+      align-items: center;
     }
   }
 
@@ -198,9 +219,40 @@ $radius-xl: 24px;
     gap: 8px;
     flex-wrap: wrap;
   }
+
+  &__quick {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  &__quick-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__quick-tag {
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid $border;
+    background: $white;
+    color: $night;
+    cursor: pointer;
+    font-family: $font-sans;
+    transition: all 0.15s;
+
+    &:hover {
+      border-color: $amber;
+      background: $amber-pale;
+      color: darken($amber, 10%);
+    }
+  }
 }
 
-// ─── Shared field parts ───────────────────────────────────
 .sc-field-group {
   display: flex;
   flex-direction: column;
@@ -214,6 +266,10 @@ $radius-xl: 24px;
   text-transform: uppercase;
   color: $muted;
   margin-bottom: 5px;
+}
+
+.sc-label--inline {
+  margin-bottom: 0;
 }
 
 .sc-field {
@@ -240,6 +296,8 @@ $radius-xl: 24px;
   &--pax {
     justify-content: space-between;
     cursor: default;
+    min-height: 0px !important;
+    height: 30px !important;
   }
 
   &__icon {
@@ -292,10 +350,12 @@ $radius-xl: 24px;
 }
 
 .sc-pax-hint {
-  font-size: 11px;
+  font-size: 11px !important;
+  font-weight: 400;
   color: $muted;
   text-align: center;
   margin-top: 3px;
+  text-transform: none !important;
 }
 
 // ─── Seat / filter chips ──────────────────────────────────
@@ -306,7 +366,7 @@ $radius-xl: 24px;
   border: 1px solid $border;
   background: $white;
   font-size: 12px;
-  font-family: "Be Vietnam Pro", sans-serif;
+  font-family: $font-sans;
   color: $muted;
   cursor: pointer;
   white-space: nowrap;
@@ -516,7 +576,7 @@ $radius-xl: 24px;
     font-size: 22px;
     font-weight: 700;
     color: $night;
-    font-family: "Cormorant Garamond", serif;
+    font-family: $font-serif;
     line-height: 1.1;
   }
 
@@ -595,7 +655,7 @@ $radius-xl: 24px;
     font-size: 22px;
     font-weight: 700;
     color: $night;
-    font-family: "Cormorant Garamond", serif;
+    font-family: $font-serif;
     line-height: 1;
   }
 
@@ -641,7 +701,7 @@ $radius-xl: 24px;
     border-radius: $radius-sm !important;
     background: $night !important;
     border-color: $night !important;
-    font-family: "Be Vietnam Pro", sans-serif !important;
+    font-family: $font-sans !important;
     font-weight: 600 !important;
     transition: opacity 0.15s !important;
 
@@ -652,7 +712,7 @@ $radius-xl: 24px;
 
   &--outline.ant-btn-default {
     border-radius: $radius-sm !important;
-    font-family: "Be Vietnam Pro", sans-serif !important;
+    font-family: $font-sans !important;
     font-weight: 600 !important;
     color: $night !important;
 

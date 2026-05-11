@@ -5,45 +5,23 @@ import pinnedIcn from "@/assets/icons/pinned.svg";
 import swapIcn from "@/assets/icons/swap.svg";
 import arrowDownIcn from "@/assets/icons/arrowDown.svg";
 import datePickerIcn from "@/assets/icons/datePicker.svg";
-
-const POPULAR_ROUTES = [
-  "Hà Nội → Đà Nẵng",
-  "HCM → Đà Lạt",
-  "Hà Nội → HCM",
-  "HCM → Nha Trang",
-  "Hà Nội → Hải Phòng",
-  "HCM → Cần Thơ",
-];
-
-const QUICK_ROUTES = [
-  { from: "Hà Nội", to: "Đà Nẵng" },
-  { from: "HCM", to: "Đà Lạt" },
-  { from: "Hà Nội", to: "Vinh" },
-  { from: "HCM", to: "Vũng Tàu" },
-];
+import { Banner } from "@/pages/auth/component/Banner";
+import {
+  HOME_CITIES,
+  HOME_DESTINATIONS,
+  HOME_POPULAR_ROUTES,
+  HOME_QUICK_ROUTES,
+} from "../../../shared/searchData";
 
 export const HeroBanner = () => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
-  const fromOptions = [
-    "Hà Nội",
-    "TP. Hồ Chí Minh",
-    "Đà Nẵng",
-    "Hải Phòng",
-    "Cần Thơ",
-  ]
+  const fromOptions = [...HOME_CITIES]
     .filter((c) => c.toLowerCase().includes(from.toLowerCase()) && from)
     .map((c) => ({ value: c, label: c }));
 
-  const toOptions = [
-    "Đà Nẵng",
-    "Đà Lạt",
-    "Nha Trang",
-    "Huế",
-    "Vinh",
-    "Vũng Tàu",
-  ]
+  const toOptions = [...HOME_DESTINATIONS]
     .filter((c) => c.toLowerCase().includes(to.toLowerCase()) && to)
     .map((c) => ({ value: c, label: c }));
 
@@ -59,6 +37,9 @@ export const HeroBanner = () => {
 
   return (
     <section className="hero">
+      <div className="hero__animated-banner" aria-hidden="true">
+        <Banner />
+      </div>
       <div className="hero__blob hero__blob--1" />
       <div className="hero__blob hero__blob--2" />
 
@@ -151,7 +132,7 @@ export const HeroBanner = () => {
           <div className="hero__quick">
             <span className="hero__quick-label">Tuyến phổ biến:</span>
             <div className="hero__quick-tags">
-              {QUICK_ROUTES.map((r) => (
+              {HOME_QUICK_ROUTES.map((r) => (
                 <button
                   key={`${r.from}-${r.to}`}
                   className="hero__quick-tag"
@@ -169,7 +150,7 @@ export const HeroBanner = () => {
       <div className="hero__ticker">
         <span className="hero__ticker-label">🔥 Đang hot:</span>
         <div className="hero__ticker-track">
-          {[...POPULAR_ROUTES, ...POPULAR_ROUTES].map((r, i) => (
+          {[...HOME_POPULAR_ROUTES, ...HOME_POPULAR_ROUTES].map((r, i) => (
             <span key={i} className="hero__ticker-item">
               {r}
             </span>
