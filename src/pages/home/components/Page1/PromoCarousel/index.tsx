@@ -1,4 +1,4 @@
-import { Button, message } from "antd";
+import { Button, Typography, message } from "antd";
 import { useRef } from "react";
 
 interface PromoCarouselProps {
@@ -17,7 +17,9 @@ export const PromoCarousel = ({ data }: PromoCarouselProps) => {
     <section className="section promo-section">
       <div className="section__head">
         <h3 className="section__title">Khuyến mãi</h3>
-        <a className="section__more">Tất cả ưu đãi →</a>
+        <Typography.Link className="section__more">
+          Tất cả ưu đãi →
+        </Typography.Link>
       </div>
 
       <div className="promo-track" ref={trackRef}>
@@ -60,7 +62,9 @@ export const PromoCarousel = ({ data }: PromoCarouselProps) => {
             <br />
             ưu đãi
           </p>
-          <a className="promo-card__cta-link">Khám phá →</a>
+          <Typography.Link className="promo-card__cta-link">
+            Khám phá →
+          </Typography.Link>
         </div>
       </div>
     </section>

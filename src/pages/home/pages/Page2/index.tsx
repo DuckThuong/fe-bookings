@@ -4,9 +4,12 @@ import {
   type SortKey,
   type Trip,
 } from "@/common/types/ticket";
+import { ROUTER_PATH } from "@/routers/Route";
 import { ScrollTopButton } from "@/components/ScrollTopButton";
 import { HomeHeader } from "@/components/TopBar";
+import { Button } from "antd";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BookingHero } from "../../components/Page2/BookingHero";
 import { FilterBar } from "../../components/Page2/FilterBar";
 import { SearchCard } from "../../components/Page2/SearchCard";
@@ -27,6 +30,7 @@ const FAKE_USER = {
 const PAGE_SIZE = 10;
 
 export const TripPage = () => {
+  const navigate = useNavigate();
   const [searchMeta, setSearchMeta] = useState(INITIAL_SEARCH);
 
   const [activeFilters, setFilters] = useState<FilterKey[]>(["all"]);
@@ -63,7 +67,14 @@ export const TripPage = () => {
   };
 
   const handleBook = (trip: Trip) => {
-    console.log("Booking trip:", trip.id);
+    navigate(ROUTER_PATH.BOOKING, {
+      state: {
+        from: trip.departure.city,
+        to: trip.arrival.city,
+        date: searchMeta.date,
+        trip,
+      },
+    });
   };
 
   const displayedTrips = [...trips].sort((a, b) => {
@@ -112,14 +123,14 @@ export const TripPage = () => {
 
         <div className="booking-page__actions">
           {hasMoreTrips && (
-            <button
+            <Button
               className="booking-page__action-btn booking-page__action-btn--primary"
-              type="button"
+              type="primary"
               onClick={handleLoadMore}
             >
               Xem thêm {Math.min(PAGE_SIZE, displayedTrips.length - visibleCount)}{" "}
               chuyến
-            </button>
+            </Button>
           )}
 
           <ScrollTopButton className="booking-page__action-btn booking-page__action-btn--ghost" />

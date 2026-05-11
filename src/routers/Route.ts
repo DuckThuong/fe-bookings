@@ -10,6 +10,7 @@ export const ROUTER_NAME = {
   // home
   HOME: "home",
   TRIP: "trip",
+  BOOKING: "booking",
   PROMOS: "promos",
   SUPPORT: "support",
 };
@@ -24,6 +25,7 @@ export const ROUTER_PATH = {
   // home
   HOME: `${ROUTER}/${ROUTER_NAME.HOME}`,
   TRIP: `${ROUTER}/${ROUTER_NAME.TRIP}`,
+  BOOKING: `${ROUTER}/${ROUTER_NAME.BOOKING}`,
   PROMOS: `${ROUTER}/${ROUTER_NAME.PROMOS}`,
   SUPPORT: `${ROUTER}/${ROUTER_NAME.SUPPORT}`,
 };

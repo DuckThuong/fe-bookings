@@ -1,8 +1,10 @@
 import { InputPhoneNumber } from "@pages/auth/component/InputPhoneNumber";
 import { Checkbox, Form, Input, type FormInstance } from "antd";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import "../style.scss";
 import profileIcn from "@/assets/icons/profile.svg";
+import { ROUTER_PATH } from "@/routers/Route";
 interface SignInProps {
   form: FormInstance;
 }
@@ -58,9 +60,10 @@ export const Step1 = (props: SignInProps) => {
       >
         <Checkbox className="signin-terms-checkbox">
           <span className="signin-terms__text">
-            Tôi đồng ý với <a href="/terms">Điều khoản sử dụng</a> và{" "}
-            <a href="/privacy">Chính sách bảo mật</a> của GoRide. Thông tin của
-            bạn được bảo vệ theo tiêu chuẩn cao nhất.
+            Tôi đồng ý với{" "}
+            <Link to={ROUTER_PATH.SUPPORT}>Điều khoản sử dụng</Link> và{" "}
+            <Link to={ROUTER_PATH.SUPPORT}>Chính sách bảo mật</Link> của GoRide.
+            Thông tin của bạn được bảo vệ theo tiêu chuẩn cao nhất.
           </span>
         </Checkbox>
       </Form.Item>

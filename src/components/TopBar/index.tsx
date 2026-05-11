@@ -1,4 +1,4 @@
-import { Badge, Avatar, Dropdown, Menu } from "antd";
+import { Badge, Avatar, Button, Dropdown, Menu } from "antd";
 import type { MenuProps } from "antd";
 import { Logo } from "@/components/Logo";
 import profileIcn from "@/assets/icons/profile.svg";
@@ -64,6 +64,15 @@ export const HomeHeader = ({
       return currentPath === navPath;
     }
 
+    if (navPath === ROUTER_PATH.TRIP) {
+      return (
+        currentPath === navPath ||
+        currentPath.startsWith(`${navPath}/`) ||
+        currentPath === ROUTER_PATH.BOOKING ||
+        currentPath.startsWith(`${ROUTER_PATH.BOOKING}/`)
+      );
+    }
+
     return currentPath === navPath || currentPath.startsWith(`${navPath}/`);
   };
 
@@ -95,9 +104,9 @@ export const HomeHeader = ({
         <div className="home-header__actions">
           {/* Notification bell */}
           <Badge count={notifCount} size="small" color="#f5a623">
-            <button className="home-header__icon-btn" aria-label="Thông báo">
+            <Button className="home-header__icon-btn" aria-label="Thông báo">
               <img src={bellIcn} alt="Bell" width={20} height={20} />
-            </button>
+            </Button>
           </Badge>
 
           {/* Avatar dropdown */}
@@ -112,7 +121,7 @@ export const HomeHeader = ({
               />
             )}
           >
-            <button className="home-header__avatar-btn">
+            <Button className="home-header__avatar-btn">
               <Avatar size={34} className="home-header__avatar">
                 {userName.charAt(0).toUpperCase()}
               </Avatar>
@@ -123,7 +132,7 @@ export const HomeHeader = ({
                 width={10}
                 height={10}
               />
-            </button>
+            </Button>
           </Dropdown>
         </div>
       </div>

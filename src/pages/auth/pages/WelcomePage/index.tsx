@@ -2,7 +2,7 @@ import { Button } from "antd";
 import { Banner } from "../../component/Banner";
 import "./style.scss";
 import { Logo } from "../../../../components/Logo";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTER_PATH } from "../../../../routers/Route";
 
 export const WelcomePage = () => {
@@ -82,8 +82,9 @@ export const WelcomePage = () => {
         </Button>
 
         <p className="welcome-form__footer">
-          Bằng cách tiếp tục, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a>{" "}
-          &amp; <a href="#">Chính sách bảo mật</a>.
+          Bằng cách tiếp tục, bạn đồng ý với{" "}
+          <Link to={ROUTER_PATH.SUPPORT}>Điều khoản dịch vụ</Link> &amp;{" "}
+          <Link to={ROUTER_PATH.SUPPORT}>Chính sách bảo mật</Link>.
         </p>
       </div>
     </div>

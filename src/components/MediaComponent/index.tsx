@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import { LeftOutlined, RightOutlined, CloseOutlined } from "@ant-design/icons";
 import "./style.scss";
 
@@ -122,18 +122,20 @@ export const MediaGallery = ({ media, className = "" }: MediaGalleryProps) => {
 
             {media.length > 1 && (
               <>
-                <button
+                <Button
                   className="media-viewer__nav media-viewer__nav--prev"
                   onClick={handlePrev}
+                  type="text"
                 >
                   <LeftOutlined />
-                </button>
-                <button
+                </Button>
+                <Button
                   className="media-viewer__nav media-viewer__nav--next"
                   onClick={handleNext}
+                  type="text"
                 >
                   <RightOutlined />
-                </button>
+                </Button>
               </>
             )}
 

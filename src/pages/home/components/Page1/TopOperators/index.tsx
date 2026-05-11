@@ -1,5 +1,5 @@
 import { LOGO_OPERATORS_COLORS } from "@/common/constants/constants";
-import { Rate } from "antd";
+import { Button, Rate, Typography } from "antd";
 
 interface HomeProps {
   data: any;
@@ -9,12 +9,12 @@ export const TopOperators = ({ data }: HomeProps) => {
     <section className="section operator-section">
       <div className="section__head">
         <h3 className="section__title">Nhà xe nổi bật</h3>
-        <a className="section__more">Tất cả nhà xe →</a>
+        <Typography.Link className="section__more">Tất cả nhà xe →</Typography.Link>
       </div>
 
       <div className="operator-list">
         {data.map((op: any, idx: number) => (
-          <button key={op.id} className="operator-card">
+          <Button key={op.id} className="operator-card" type="text">
             <span
               className={`operator-card__rank${idx < 3 ? " operator-card__rank--top" : ""}`}
             >
@@ -53,7 +53,7 @@ export const TopOperators = ({ data }: HomeProps) => {
             </div>
 
             <span className="operator-card__arrow">›</span>
-          </button>
+          </Button>
         ))}
       </div>
     </section>

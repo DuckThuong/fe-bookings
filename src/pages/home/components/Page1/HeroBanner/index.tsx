@@ -6,6 +6,8 @@ import swapIcn from "@/assets/icons/swap.svg";
 import arrowDownIcn from "@/assets/icons/arrowDown.svg";
 import datePickerIcn from "@/assets/icons/datePicker.svg";
 import { Banner } from "@/pages/auth/component/Banner";
+import { ROUTER_PATH } from "@/routers/Route";
+import { useNavigate } from "react-router-dom";
 import {
   HOME_CITIES,
   HOME_DESTINATIONS,
@@ -14,8 +16,10 @@ import {
 } from "../../../shared/searchData";
 
 export const HeroBanner = () => {
+  const navigate = useNavigate();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [date, setDate] = useState(dayjs());
 
   const fromOptions = [...HOME_CITIES]
     .filter((c) => c.toLowerCase().includes(from.toLowerCase()) && from)
@@ -89,13 +93,14 @@ export const HeroBanner = () => {
             </div>
 
             {/* Swap */}
-            <button
+            <Button
               className="hero__swap-btn"
               onClick={handleSwap}
               title="Đổi chiều"
+              type="text"
             >
               <img src={swapIcn} alt="Swap" width={14} height={14} />
-            </button>
+            </Button>
 
             {/* To */}
             <div className="hero__search-field">
@@ -117,6 +122,8 @@ export const HeroBanner = () => {
           <DatePicker
             className="hero__datepicker"
             placeholder="Chọn ngày đi"
+            value={date}
+            onChange={(d) => d && setDate(d)}
             format="DD/MM/YYYY"
             disabledDate={(d) => d.isBefore(dayjs().startOf("day"))}
             suffixIcon={
@@ -124,7 +131,20 @@ export const HeroBanner = () => {
             }
           />
 
-          <Button type="primary" block className="hero__search-btn">
+          <Button
+            type="primary"
+            block
+            className="hero__search-btn"
+            onClick={() =>
+              navigate(ROUTER_PATH.BOOKING, {
+                state: {
+                  from: from || "Hà Nội",
+                  to: to || "TP. Hồ Chí Minh",
+                  date: date.format("DD/MM/YYYY"),
+                },
+              })
+            }
+          >
             Tìm chuyến xe
           </Button>
 
@@ -133,13 +153,15 @@ export const HeroBanner = () => {
             <span className="hero__quick-label">Tuyến phổ biến:</span>
             <div className="hero__quick-tags">
               {HOME_QUICK_ROUTES.map((r) => (
-                <button
+                <Button
                   key={`${r.from}-${r.to}`}
                   className="hero__quick-tag"
                   onClick={() => applyQuickRoute(r.from, r.to)}
+                  type="default"
+                  size="small"
                 >
                   {r.from} → {r.to}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

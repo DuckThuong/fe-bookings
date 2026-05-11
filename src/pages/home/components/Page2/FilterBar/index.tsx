@@ -4,7 +4,7 @@ import {
   type FilterKey,
   type SortKey,
 } from "@/common/types/ticket";
-import { Select } from "antd";
+import { Button, Select } from "antd";
 
 interface FilterBarProps {
   activeFilters: FilterKey[];
@@ -37,13 +37,15 @@ export const FilterBar = ({
 
       <div className="filter-bar__chips">
         {FILTER_CHIPS.map((f) => (
-          <button
+          <Button
             key={f.key}
             className={`filter-chip${activeFilters.includes(f.key) ? " filter-chip--active" : ""}`}
             onClick={() => onToggleFilter(f.key)}
+            type="default"
+            size="small"
           >
             {f.label}
-          </button>
+          </Button>
         ))}
       </div>
 

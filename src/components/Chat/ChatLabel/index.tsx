@@ -1,5 +1,6 @@
 import "../style.scss";
 import { DownloadOutlined, EyeOutlined } from "@ant-design/icons";
+import { Button, Typography } from "antd";
 import tick from "../../../assets/svg/tick.svg";
 import doubleTick from "../../../assets/svg/doubleTick.svg";
 import type { MessageAttachmentResponseDto } from "../../../api/dtos/chat.dto";
@@ -80,18 +81,18 @@ export const ChatLabel = (props: ChatLabelProps) => {
                   {imageAttachments.length > 0 && (
                     <div className="chat__label-attachments-images">
                       {imageAttachments.map((item, index) => (
-                        <button
-                          type="button"
+                        <Button
                           key={`${item.url}-${index}`}
                           className="chat__label-attachments-image-item"
                           onClick={() => handleOpenImage(index)}
                           aria-label={`Xem ảnh ${item.fileName || index + 1}`}
+                          type="text"
                         >
                           <img
                             src={item.url}
                             alt={item.fileName || `image-${index + 1}`}
                           />
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   )}
@@ -109,27 +110,24 @@ export const ChatLabel = (props: ChatLabelProps) => {
                           <div className="chat__label-file-actions">
                             {item.url ? (
                               <>
-                                <a
-                                  href={item.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <Typography.Link
                                   className="chat__label-file-link"
                                   title="Mở file"
                                   aria-label={`Mở ${item.fileName || "tệp đính kèm"}`}
+                                  href={item.url}
+                                  target="_blank"
                                 >
                                   <EyeOutlined aria-hidden="true" />
-                                </a>
-                                <a
-                                  href={item.url}
-                                  download={item.fileName || true}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                </Typography.Link>
+                                <Typography.Link
                                   className="chat__label-file-link"
                                   title="Tải file"
                                   aria-label={`Tải ${item.fileName || "tệp đính kèm"}`}
+                                  href={item.url}
+                                  target="_blank"
                                 >
                                   <DownloadOutlined aria-hidden="true" />
-                                </a>
+                                </Typography.Link>
                               </>
                             ) : (
                               <span

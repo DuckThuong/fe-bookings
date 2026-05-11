@@ -1,5 +1,6 @@
 import { PROMOS } from "@/common/types/home";
 import { HomeHeader } from "@/components/TopBar";
+import { Button } from "antd";
 import "./style.scss";
 
 const FAKE_USER = {
@@ -28,8 +29,7 @@ export const PromosPage = () => {
           {PROMOS.map((promo) => (
             <article
               key={promo.id}
-              className="promo-item"
-              style={{ background: promo.bg, color: promo.textColor ?? "#fff" }}
+              className={`promo-item promo-item--${promo.id}`}
             >
               <div className="promo-item__head">
                 <span className="promo-item__discount">{promo.discount}</span>
@@ -41,9 +41,9 @@ export const PromosPage = () => {
 
               <div className="promo-item__code-wrap">
                 <span className="promo-item__code">{promo.code}</span>
-                <button className="promo-item__copy-btn" type="button">
+                <Button className="promo-item__copy-btn" type="default" size="small">
                   Sao chép mã
-                </button>
+                </Button>
               </div>
             </article>
           ))}

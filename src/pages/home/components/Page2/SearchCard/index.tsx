@@ -58,21 +58,23 @@ const PassengerCounter = ({
       👤 Hành khách / <span className="sc-pax-hint">người lớn</span>
     </p>
     <div className="sc-field sc-field--pax">
-      <button
+      <Button
         className="sc-pax-btn"
         onClick={() => onChange(Math.max(1, value - 1))}
         aria-label="Giảm"
+        type="text"
       >
         −
-      </button>
+      </Button>
       <span className="sc-pax-num">{value}</span>
-      <button
+      <Button
         className="sc-pax-btn"
         onClick={() => onChange(Math.min(9, value + 1))}
         aria-label="Tăng"
+        type="text"
       >
         +
-      </button>
+      </Button>
     </div>
   </div>
 );
@@ -161,13 +163,14 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
         </div>
 
         <Tooltip title="Đổi chiều">
-          <button
+          <Button
             className="search-card__swap"
             onClick={handleSwap}
             aria-label="Đổi chiều"
+            type="text"
           >
             ⇌
-          </button>
+          </Button>
         </Tooltip>
 
         <div className="search-card__route">
@@ -233,14 +236,15 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
         <div className="search-card__quick-viewport">
           <div className="search-card__quick-track">
             {[...HOME_QUICK_ROUTES, ...HOME_QUICK_ROUTES].map((r, idx) => (
-              <button
+              <Button
                 key={`${r.from}-${r.to}-${idx}`}
                 className="search-card__quick-tag"
                 onClick={() => applyQuickRoute(r.from, r.to)}
-                type="button"
+                type="default"
+                size="small"
               >
                 {r.from} → {r.to}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -250,13 +254,15 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
         <span className="sc-label sc-label--inline">Loại ghế</span>
         <div className="search-card__seat-chips">
           {SEAT_TYPES.map((s) => (
-            <button
+            <Button
               key={s.key}
               className={`seat-chip${seatType === s.key ? " seat-chip--active" : ""}`}
               onClick={() => setSeat(s.key)}
+              type="default"
+              size="small"
             >
               {s.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

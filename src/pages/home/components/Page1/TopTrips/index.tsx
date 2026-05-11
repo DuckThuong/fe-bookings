@@ -1,7 +1,7 @@
 import { LOGO_COLORS } from "@/common/constants/constants";
 import { formatMoney } from "@/common/contexts/format";
 import { seatColor } from "@/common/contexts/helper";
-import { Button } from "antd";
+import { Button, Typography } from "antd";
 import arrowToIcn from "@/assets/icons/arrowTo.svg";
 interface HomeProps {
   data: any;
@@ -11,7 +11,7 @@ export const TopTrips = ({ data }: HomeProps) => {
     <section className="section trip-section">
       <div className="section__head">
         <h3 className="section__title">Chuyến xe được đặt nhiều nhất</h3>
-        <a className="section__more">Xem tất cả →</a>
+        <Typography.Link className="section__more">Xem tất cả →</Typography.Link>
       </div>
 
       <div className="trip-grid">

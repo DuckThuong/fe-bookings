@@ -6,7 +6,7 @@ import "./style.scss";
 import { InputState } from "./../../../../common/constants/constants";
 import { ROUTER_PATH } from "@/routers/Route";
 import { Button, Form } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import googleIcn from "@/assets/icons/google.svg";
 import facebookIcn from "@/assets/icons/facebook.svg";
 import appleIcn from "@/assets/icons/apple.svg";
@@ -104,29 +104,29 @@ export const Login = () => {
         </div>
 
         <div className="login-social">
-          <button className="login-social__btn" type="button">
+          <Button className="login-social__btn" type="default">
             <img src={googleIcn} alt="Google" className="login-social__icon" />
             Google
-          </button>
-          <button className="login-social__btn" type="button">
+          </Button>
+          <Button className="login-social__btn" type="default">
             <img
               src={facebookIcn}
               alt="Facebook"
               className="login-social__icon"
             />
             Facebook
-          </button>
-          <button className="login-social__btn" type="button">
+          </Button>
+          <Button className="login-social__btn" type="default">
             <img src={appleIcn} alt="Apple" className="login-social__icon" />
             Apple
-          </button>
+          </Button>
         </div>
 
         <p className="login-footer">
           Chưa có tài khoản?
-          <a href={ROUTER_PATH.SIGNIN} className="login-footer__link">
+          <Link to={ROUTER_PATH.SIGNIN} className="login-footer__link">
             Đăng ký ngay
-          </a>
+          </Link>
         </p>
       </div>
 

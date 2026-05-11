@@ -57,6 +57,7 @@
 }
 
 .promo-item {
+  color: #fff;
   border-radius: 16px;
   padding: 18px;
   display: flex;
@@ -113,14 +114,39 @@
   }
 
   &__copy-btn {
-    border: none;
-    background: rgba(255, 255, 255, 0.18);
-    color: inherit;
-    border-radius: 8px;
-    padding: 5px 10px;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
+    &.ant-btn {
+      background: rgba(255, 255, 255, 0.18);
+      color: inherit;
+      border: none;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      box-shadow: none;
+    }
+  }
+
+  &--p1 {
+    background: #0a0e1a;
+    color: #fff;
+  }
+
+  &--p2 {
+    background: #f5a623;
+    color: #0a0e1a;
+
+    .promo-item__code-wrap {
+      border-color: rgba(10, 14, 26, 0.35);
+    }
+
+    .promo-item__copy-btn.ant-btn {
+      background: rgba(10, 14, 26, 0.12);
+      color: #0a0e1a;
+    }
+  }
+
+  &--p3 {
+    background: #1a3a2a;
+    color: #fff;
   }
 }
 

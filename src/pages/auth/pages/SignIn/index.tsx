@@ -11,7 +11,7 @@ import { ROUTER_PATH } from "@/routers/Route";
 import type { SignInDto } from "@api/dtos/SignIn.dto";
 import { Button, Form, Steps } from "antd";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import back from "../../../../assets/icons/back.svg";
 import { Step1 } from "./steps/Step1";
 import { Step2 } from "./steps/Step2";
@@ -129,9 +129,9 @@ export const SignIn = () => {
 
         <p className="signin-login-link">
           Đã có tài khoản?{" "}
-          <a href={ROUTER_PATH.LOGIN} className="signin-login-link__a">
+          <Link to={ROUTER_PATH.LOGIN} className="signin-login-link__a">
             Đăng nhập ngay
-          </a>
+          </Link>
         </p>
         <div className="signin-benefits">
           {BENEFITS.map((b, i) => (
