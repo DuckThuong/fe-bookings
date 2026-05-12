@@ -5,7 +5,6 @@
   animation: fadeUp 0.45s #{$d} ease forwards;
 }
 
-// ─── Page Shell ──────────────────────────────────────────
 .home-page {
   min-height: 100vh;
   background: $bg;
@@ -25,7 +24,6 @@
   gap: 48px;
 }
 
-// ─── Header ──────────────────────────────────────────────
 .home-header {
   background: $white;
   border-bottom: 1px solid $border;
@@ -148,7 +146,6 @@
   }
 }
 
-// ─── Hero Banner ─────────────────────────────────────────
 .hero {
   background: $night;
   position: relative;
@@ -239,7 +236,6 @@
     }
   }
 
-  // ── Copy side
   &__copy {
     color: $white;
   }
@@ -304,7 +300,6 @@
     }
   }
 
-  // ── Search card
   &__search-card {
     background: $white;
     border-radius: $radius-lg;
@@ -427,7 +422,6 @@
     }
   }
 
-  // Quick routes
   &__quick {
     display: flex;
     flex-wrap: wrap;
@@ -465,7 +459,6 @@
     }
   }
 
-  // Ticker
   &__ticker {
     max-width: 1160px;
     margin: 40px auto 0;
@@ -547,7 +540,6 @@
   }
 }
 
-// ─── Section Common ───────────────────────────────────────
 .section {
   @include fadeUp(0.05s);
 
@@ -580,7 +572,6 @@
   }
 }
 
-// ─── Service Grid ─────────────────────────────────────────
 .service-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -669,7 +660,6 @@
   }
 }
 
-// ─── Promo Carousel ───────────────────────────────────────
 .promo-track {
   display: flex;
   gap: 14px;
@@ -798,7 +788,6 @@
     font-family: "Be Vietnam Pro", sans-serif;
   }
 
-  // CTA card
   &--cta {
     background: $white;
     border: 2px dashed $border;
@@ -837,7 +826,6 @@
   }
 }
 
-// ─── Operators ────────────────────────────────────────────
 .operator-list {
   display: flex;
   flex-direction: column;
@@ -968,7 +956,6 @@
   }
 }
 
-// ─── Trip Grid ────────────────────────────────────────────
 .trip-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1121,7 +1108,6 @@
   }
 }
 
-// ─── Responsive global ───────────────────────────────────
 @media (max-width: 480px) {
   .home-content {
     padding: 0 12px 40px;

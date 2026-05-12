@@ -5,7 +5,6 @@
   animation: fadeUp18 0.5s #{$delay} ease forwards;
 }
 
-// ─── Page ────────────────────────────────────────────────
 .auth__otp {
   min-height: 100vh;
   background: #f4f5f7;
@@ -18,13 +17,11 @@
   gap: 0;
 }
 
-// ─── Logo ────────────────────────────────────────────────
 .auth__logo {
   margin-bottom: 28px;
   @include fadeUp(0.05s);
 }
 
-// ─── Card ────────────────────────────────────────────────
 .auth__otp-card {
   width: 100%;
   max-width: 420px;
@@ -42,7 +39,6 @@
   align-items: center;
 }
 
-// ─── Header icon ─────────────────────────────────────────
 .otp-header__icon-wrap {
   position: relative;
   width: 72px;
@@ -120,13 +116,11 @@
   }
 }
 
-// ─── OTP Form.Item ────────────────────────────────────────
 .otp-form-item {
   width: 100%;
   margin-bottom: 4px !important;
   @include fadeUp(0.4s);
 
-  // Label override
   .ant-form-item-label > label {
     font-size: 12px;
     font-weight: 600;
@@ -134,7 +128,6 @@
     letter-spacing: 0.3px;
   }
 
-  // Ant validation error style
   .ant-form-item-explain-error {
     font-size: 12px;
     text-align: center;
@@ -142,7 +135,6 @@
   }
 }
 
-// ─── Custom error message ────────────────────────────────
 .otp-err-msg {
   font-size: 12.5px;
   color: $red;
@@ -152,13 +144,11 @@
   @include fadeUp(0s);
 }
 
-// ─── Resend ───────────────────────────────────────────────
 .otp-resend {
   margin-bottom: 0;
   @include fadeUp(0.5s);
 
   &__btn {
-    // Override antd link button
     &.ant-btn-link {
       font-family: "Be Vietnam Pro", sans-serif !important;
       font-size: 13px !important;
@@ -187,7 +177,6 @@
   }
 }
 
-// ─── Action area ─────────────────────────────────────────
 .auth__otp-action {
   width: 100%;
   max-width: 420px;
@@ -199,7 +188,6 @@
   @include fadeUp(0.58s);
 }
 
-// ─── Submit button (antd override) ───────────────────────
 .otp-btn {
   &.ant-btn-primary {
     height: 50px !important;
@@ -240,7 +228,6 @@
   }
 }
 
-// ─── Back link ────────────────────────────────────────────
 .otp-back {
   font-size: 12.5px;
   color: $muted;
@@ -265,7 +252,6 @@
   }
 }
 
-// ─── Security note ────────────────────────────────────────
 .otp-security {
   display: flex;
   align-items: flex-start;
@@ -292,7 +278,6 @@
   }
 }
 
-// ─── Responsive ───────────────────────────────────────────
 @media (max-width: 480px) {
   .auth__otp-card {
     padding: 32px 20px 24px;

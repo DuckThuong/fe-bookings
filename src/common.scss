@@ -1,6 +1,5 @@
 @use "./color" as *;
 
-// ─── Design tokens (shared) ────────────────────────────────
 $night: #0a0e1a;
 $night-2: #151b2e;
 $navy: #0f1629;
@@ -25,7 +24,6 @@ $radius-sm: 10px;
 $radius-md: 16px;
 $radius-lg: 24px;
 
-// ─── Animations (shared) ───────────────────────────────────
 @keyframes fadeUp {
   from {
     opacity: 0;

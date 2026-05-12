@@ -16,13 +16,11 @@
   font-family: "Be Vietnam Pro", sans-serif;
 }
 
-// ─── Logo ────────────────────────────────────────────────
 .signin-logo {
   margin-bottom: 24px;
   @include fadeUp(0.05s);
 }
 
-// ─── Card ────────────────────────────────────────────────
 .signin-card {
   width: 100%;
   max-width: 460px;
@@ -35,7 +33,6 @@
   overflow: hidden;
 }
 
-// ─── Steps ───────────────────────────────────────────────
 .signin-card {
   .ant-steps {
     &-item {
@@ -74,7 +71,6 @@
 .signin-content {
   margin-top: 32px;
 }
-// ─── Header ──────────────────────────────────────────────
 .signin-header {
   margin-bottom: 24px;
   @include fadeUp(0.25s);

@@ -1,5 +1,3 @@
-// style.scss — SeatSelectionPage
-
 $night: #0a0e1a;
 $amber: #f5a623;
 $amber-pale: #fff8ec;
@@ -9,14 +7,12 @@ $green-bg: #f0fdf4;
 $green-bd: #86efac;
 $green-text: #16a34a;
 
-// ─── Page ────────────────────────────────────────────────
 .seat-page {
   min-height: 100vh;
   background: #f4f5f7;
   font-family: "Be Vietnam Pro", sans-serif;
 }
 
-// ─── Breadcrumb ───────────────────────────────────────────
 .seat-breadcrumb {
   display: flex;
   align-items: center;
@@ -40,7 +36,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Trip bar ────────────────────────────────────────────
 .seat-trip-bar {
   background: #fff;
   border: 0.5px solid $border;
@@ -98,7 +93,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Main layout ─────────────────────────────────────────
 .seat-layout {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -107,7 +101,6 @@ $green-text: #16a34a;
   align-items: start;
 }
 
-// ─── Vehicle tabs ─────────────────────────────────────────
 .seat-vtabs {
   display: flex;
   gap: 8px;
@@ -144,7 +137,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Map card ────────────────────────────────────────────
 .seat-map-card {
   background: #fff;
   border: 0.5px solid $border;
@@ -165,7 +157,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Legend ──────────────────────────────────────────────
 .seat-legend {
   display: flex;
   gap: 16px;
@@ -205,7 +196,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Floor tabs ───────────────────────────────────────────
 .seat-floor-tabs {
   display: flex;
   gap: 6px;
@@ -238,7 +228,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Bus shell ────────────────────────────────────────────
 .seat-map__shell {
   border: 2px solid $border;
   border-radius: 20px 20px 12px 12px;
@@ -322,7 +311,6 @@ $green-text: #16a34a;
   flex-shrink: 0;
 }
 
-// ─── Seat atom ────────────────────────────────────────────
 .seat-map__seat {
   width: 44px;
   height: 44px;
@@ -342,7 +330,6 @@ $green-text: #16a34a;
   color: $green-text;
   user-select: none;
 
-  // Headrest nub
   &::before {
     content: "";
     position: absolute;
@@ -371,7 +358,6 @@ $green-text: #16a34a;
     margin-top: 2px;
   }
 
-  // States
   &--selected {
     background: $night;
     border-color: $night;
@@ -413,7 +399,6 @@ $green-text: #16a34a;
     }
   }
 
-  // Sleeper variant
   &--sleeper {
     width: 52px;
     height: 36px;
@@ -427,7 +412,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Summary panel ────────────────────────────────────────
 .seat-summary {
   background: #fff;
   border: 0.5px solid $border;
@@ -462,7 +446,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Passenger form ───────────────────────────────────────
 .seat-form {
   display: flex;
   flex-direction: column;
@@ -480,7 +463,6 @@ $green-text: #16a34a;
       margin-bottom: 4px;
     }
 
-    // antd input overrides
     .ant-input,
     .ant-select-selector {
       border-radius: 8px !important;
@@ -501,7 +483,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Selected seats list ─────────────────────────────────
 .seat-selected-list {
   min-height: 48px;
   display: flex;
@@ -569,7 +550,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── Price breakdown ─────────────────────────────────────
 .seat-price {
   border-top: 0.5px solid $border;
   padding-top: 14px;
@@ -598,7 +578,6 @@ $green-text: #16a34a;
   }
 }
 
-// ─── CTA button ──────────────────────────────────────────
 .seat-cta-btn {
   &.ant-btn-primary {
     height: 46px !important;
@@ -625,7 +604,6 @@ $green-text: #16a34a;
   margin-top: 8px;
 }
 
-// ─── Responsive ───────────────────────────────────────────
 @media (max-width: 900px) {
   .seat-layout {
     grid-template-columns: 1fr;
@@ -665,9 +643,6 @@ $green-text: #16a34a;
   }
 }
 
-// ── Thêm vào cuối style.scss hiện tại ────────────────────
-// Các class .seat-* hiện tại giữ nguyên, chỉ bổ sung phần extras
-
 $night: #0a0e1a;
 $amber: #f5a623;
 $amber-pale: #fff8ec;
@@ -676,7 +651,6 @@ $border: #e5e7eb;
 $green-text: #16a34a;
 $green-bg: #f0fdf4;
 
-// ─── Extras wrapper (bên dưới seat map card) ─────────────
 .seat-extras {
   display: flex;
   flex-direction: column;
@@ -684,7 +658,6 @@ $green-bg: #f0fdf4;
   margin-top: 12px;
 }
 
-// ─── Shared card shell ────────────────────────────────────
 .extras-card {
   background: #fff;
   border: 0.5px solid $border;
@@ -721,7 +694,6 @@ $green-bg: #f0fdf4;
   }
 }
 
-// ─── Operator card ────────────────────────────────────────
 .extras-op-card {
   background: #fff;
   border: 0.5px solid $border;
@@ -825,7 +797,6 @@ $green-bg: #f0fdf4;
   }
 }
 
-// ─── Add-on list ─────────────────────────────────────────
 .extras-addon-list {
   padding: 6px 10px;
 }
@@ -937,7 +908,6 @@ $green-bg: #f0fdf4;
   }
 }
 
-// ─── Qty stepper ─────────────────────────────────────────
 .extras-qty {
   display: flex;
   align-items: center;
@@ -974,7 +944,6 @@ $green-bg: #f0fdf4;
   }
 }
 
-// ─── Promo section ────────────────────────────────────────
 .extras-promo-input-row {
   display: flex;
   gap: 8px;
@@ -1081,7 +1050,6 @@ $green-bg: #f0fdf4;
   }
 }
 
-// ─── Policy rows ─────────────────────────────────────────
 .extras-policy {
   display: flex;
   align-items: flex-start;
@@ -1142,7 +1110,6 @@ $green-bg: #f0fdf4;
   }
 }
 
-// ─── Price row — promo discount ─────────────────────────-
 .seat-price__row--promo {
   color: $green-text !important;
 

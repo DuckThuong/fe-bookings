@@ -30,7 +30,9 @@ export const OtpConfirm = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [status, setStatus] = useState<0 | 1 | 2 | 3>(0);
-  const [seconds, setSeconds] = useState(OTP_CONFIRM_PAGE_DATA.countdownSeconds);
+  const [seconds, setSeconds] = useState(
+    OTP_CONFIRM_PAGE_DATA.countdownSeconds,
+  );
   const [canResend, setCanResend] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
 
@@ -77,10 +79,6 @@ export const OtpConfirm = () => {
           const newAttempts = wrongAttempts + 1;
           setWrongAttempts(newAttempts);
           setStatus(3);
-          if (newAttempts >= OTP_CONFIRM_PAGE_DATA.maxAttempts) {
-            // Keep UX as-is for now; API integration can lock/resend later.
-          }
-
           setTimeout(() => {
             form.resetFields();
             setStatus(0);
@@ -155,8 +153,14 @@ export const OtpConfirm = () => {
             name="otp"
             className="otp-form-item"
             rules={[
-              { required: true, message: OTP_CONFIRM_PAGE_DATA.otpRuleRequired },
-              { len: OTP_CONFIRM_PAGE_DATA.otpLength, message: OTP_CONFIRM_PAGE_DATA.otpRuleLen },
+              {
+                required: true,
+                message: OTP_CONFIRM_PAGE_DATA.otpRuleRequired,
+              },
+              {
+                len: OTP_CONFIRM_PAGE_DATA.otpLength,
+                message: OTP_CONFIRM_PAGE_DATA.otpRuleLen,
+              },
             ]}
           >
             <OTPInput length={OTP_CONFIRM_PAGE_DATA.otpLength} />

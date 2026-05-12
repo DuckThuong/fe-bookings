@@ -1,4 +1,3 @@
-// ─── Design tokens ───────────────────────────────────────
 $night: #0a0e1a;
 $night-2: #151b2e;
 $amber: #f5a623;
@@ -36,7 +35,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Page shell ──────────────────────────────────────────
 .booking-page {
   min-height: 100vh;
   background: $bg;
@@ -45,7 +43,7 @@ $font-serif: "Cormorant Garamond", serif;
 
   &__search-wrap {
     padding: 0 32px;
-    margin-top: -56px; // floats over hero bottom curve
+    margin-top: -56px;
     position: relative;
     z-index: 10;
 
@@ -105,7 +103,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Hero ────────────────────────────────────────────────
 .booking-hero {
   background: $night;
   padding: 36px 32px 80px;
@@ -155,7 +152,6 @@ $font-serif: "Cormorant Garamond", serif;
     }
   }
 
-  // Bottom curve scoop
   &::after {
     content: "";
     position: absolute;
@@ -250,7 +246,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Search card ─────────────────────────────────────────
 .search-card {
   background: $white;
   border: 1px solid $border;
@@ -288,7 +283,7 @@ $font-serif: "Cormorant Garamond", serif;
     transition: all 0.15s;
     color: $muted;
     align-self: center;
-    margin-top: 20px; // align with field (label height)
+    margin-top: 20px;
 
     &:hover {
       border-color: $amber;
@@ -347,7 +342,6 @@ $font-serif: "Cormorant Garamond", serif;
     }
   }
 
-  // Seat type row
   &__seat-row {
     display: flex;
     align-items: center;
@@ -528,7 +522,6 @@ $font-serif: "Cormorant Garamond", serif;
   text-transform: none !important;
 }
 
-// ─── Seat / filter chips ──────────────────────────────────
 .seat-chip,
 .filter-chip {
   padding: 5px 14px;
@@ -556,7 +549,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Filter bar ───────────────────────────────────────────
 .filter-bar {
   margin-bottom: 16px;
 
@@ -620,7 +612,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Trip list ────────────────────────────────────────────
 .trip-list {
   display: flex;
   flex-direction: column;
@@ -631,7 +622,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Trip card ────────────────────────────────────────────
 .trip-card {
   background: $white;
   border: 1px solid $border;
@@ -665,7 +655,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Operator header ──────────────────────────────────────
 .tc-operator {
   display: flex;
   align-items: center;
@@ -730,7 +719,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Route timeline ───────────────────────────────────────
 .tc-route {
   display: flex;
   align-items: center;
@@ -807,7 +795,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Price panel ─────────────────────────────────────────
 .tc-price {
   display: flex;
   flex-direction: column;
@@ -893,7 +880,6 @@ $font-serif: "Cormorant Garamond", serif;
   }
 }
 
-// ─── Amenities ────────────────────────────────────────────
 .tc-amenities {
   display: flex;
   gap: 16px;
@@ -911,7 +897,6 @@ $font-serif: "Cormorant Garamond", serif;
   gap: 4px;
 }
 
-// ─── Responsive ───────────────────────────────────────────
 @media (max-width: 480px) {
   .trip-card {
     padding: 16px;

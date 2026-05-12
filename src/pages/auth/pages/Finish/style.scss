@@ -5,7 +5,6 @@
   animation: fadeUp18 0.5s #{$delay} ease forwards;
 }
 
-// ─── Page ────────────────────────────────────────────────
 .auth__finish {
   min-height: 100vh;
   background: #f4f5f7;
@@ -20,7 +19,6 @@
   overflow: hidden;
 }
 
-// ─── Confetti canvas ─────────────────────────────────────
 .finish__confetti {
   position: fixed;
   inset: 0;
@@ -28,7 +26,6 @@
   z-index: 0;
 }
 
-// ─── Logo ────────────────────────────────────────────────
 .finish__logo-fade {
   margin-bottom: 28px;
   position: relative;
@@ -36,7 +33,6 @@
   @include fadeUp(0.05s);
 }
 
-// ─── Card ────────────────────────────────────────────────
 .finish__card {
   width: 100%;
   max-width: 420px;
@@ -53,7 +49,6 @@
   z-index: 1;
 }
 
-// ─── Icon ────────────────────────────────────────────────
 .finish__icon-wrap {
   position: relative;
   width: 72px;
@@ -113,7 +108,6 @@
   opacity: 0;
 }
 
-// ─── Text ─────────────────────────────────────────────────
 .finish__eyebrow {
   font-size: 10.5px;
   letter-spacing: 2.5px;
@@ -150,7 +144,6 @@
   }
 }
 
-// ─── Pills ────────────────────────────────────────────────
 .finish__pills {
   display: flex;
   gap: 8px;
@@ -186,7 +179,6 @@
   }
 }
 
-// ─── Action area ─────────────────────────────────────────
 .finish__action {
   width: 100%;
   max-width: 420px;
@@ -200,7 +192,6 @@
   @include fadeUp(0.6s);
 }
 
-// ─── CTA button ──────────────────────────────────────────
 .finish__btn {
   &.ant-btn-primary {
     height: 50px !important;
@@ -225,7 +216,6 @@
   }
 }
 
-// ─── Hint ─────────────────────────────────────────────────
 .finish__hint {
   display: flex;
   align-items: center;
@@ -241,7 +231,6 @@
   }
 }
 
-// ─── Responsive ───────────────────────────────────────────
 @media (max-width: 480px) {
   .finish__card {
     padding: 32px 20px 24px;
