@@ -19,13 +19,11 @@ import { HomeHeader } from "@/components/TopBar";
 import { Button, Input, Select } from "antd";
 import { useCallback, useState } from "react";
 import { BusMap } from "../component/BusMap";
-import {
-  AddonItem,
-  OperatorCard,
-  PolicyCard,
-  PromoSection,
-} from "../component/SelectionSeat";
 import "./style.scss";
+import { OperatorCard } from "../component/OperatorCard";
+import { AddonItem } from "../component/AddonItem";
+import { PromoSection } from "../component/PromoSection";
+import { PolicyCard } from "../component/PolicyCard";
 
 export const BOOKING_PAGE_DATA: BookingPageData = {
   user: { userName: "Nguyễn An", notifCount: 3 },
@@ -287,10 +285,8 @@ export const SeatSelectionPage = () => {
               </div>
             </div>
 
-            {/* 3. Mã khuyến mãi */}
             <PromoSection applied={promoCode} onApply={setPromoCode} />
 
-            {/* 4. Chính sách nhà xe */}
             <PolicyCard />
           </div>
         </div>
