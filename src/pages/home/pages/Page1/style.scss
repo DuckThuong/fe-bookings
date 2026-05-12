@@ -111,6 +111,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    height: fit-content;
     background: none;
     border: 1px solid $border;
     border-radius: 999px;
@@ -137,7 +138,6 @@
     font-size: 13px;
     font-weight: 600;
     color: $night;
-
     @media (max-width: 480px) {
       display: none;
     }

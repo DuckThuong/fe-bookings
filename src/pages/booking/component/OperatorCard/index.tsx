@@ -1,5 +1,5 @@
 import { OPERATOR_AMENITIES } from "@/common/constants/booking";
-import { BOOKING_PAGE_DATA } from "../../pages";
+import { BOOKING_PAGE_DATA } from "../../pages/Page1";
 
 export const OperatorCard = () => (
   <div className="extras-op-card">

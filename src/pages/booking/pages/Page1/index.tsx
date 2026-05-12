@@ -18,12 +18,12 @@ import type {
 import { HomeHeader } from "@/components/TopBar";
 import { Button, Input, Select } from "antd";
 import { useCallback, useState } from "react";
-import { BusMap } from "../component/BusMap";
+import { BusMap } from "../../component/BusMap";
 import "./style.scss";
-import { OperatorCard } from "../component/OperatorCard";
-import { AddonItem } from "../component/AddonItem";
-import { PromoSection } from "../component/PromoSection";
-import { PolicyCard } from "../component/PolicyCard";
+import { OperatorCard } from "../../component/OperatorCard";
+import { AddonItem } from "../../component/AddonItem";
+import { PromoSection } from "../../component/PromoSection";
+import { PolicyCard } from "../../component/PolicyCard";
 
 export const BOOKING_PAGE_DATA: BookingPageData = {
   user: { userName: "Nguyễn An", notifCount: 3 },
@@ -132,7 +132,9 @@ export const SeatSelectionPage = () => {
         {BOOKING_PAGE_DATA.breadcrumb.map((item, idx) => (
           <span key={`${item.label}-${idx}`}>
             {idx > 0 && (
-              <i className="ti ti-chevron-right" aria-hidden="true" />
+              <span className="seat-breadcrumb__sep" aria-hidden="true">
+                /
+              </span>
             )}
             {idx < BOOKING_PAGE_DATA.breadcrumb.length - 1 ? (
               <a href="#">{item.label}</a>
@@ -149,7 +151,7 @@ export const SeatSelectionPage = () => {
           <span className="seat-trip-bar__city">
             {BOOKING_PAGE_DATA.trip.from}
           </span>
-          <i className="ti ti-arrow-right" aria-hidden="true" />
+          →
           <span className="seat-trip-bar__city">
             {BOOKING_PAGE_DATA.trip.to}
           </span>

@@ -9,7 +9,7 @@ import { HomePage } from "@/pages/home/pages/Page1";
 import { TripPage } from "@/pages/home/pages/Page2";
 import { PromosPage } from "@/pages/home/pages/Page3";
 import { SupportPage } from "@/pages/home/pages/Page4";
-import { SeatSelectionPage } from "@/pages/booking/pages";
+import { SeatSelectionPage } from "@/pages/booking/pages/Page1";
 
 export const WebRouter = () => (
   <Routes>
