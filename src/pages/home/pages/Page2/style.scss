@@ -19,11 +19,29 @@ $radius-xl: 24px;
 $font-sans: "Be Vietnam Pro", sans-serif;
 $font-serif: "Cormorant Garamond", serif;
 
+@mixin fadeUp($d: 0s) {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.45s #{$d} ease forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 // ─── Page shell ──────────────────────────────────────────
 .booking-page {
   min-height: 100vh;
   background: $bg;
   font-family: $font-sans;
+  @include fadeUp(0s);
 
   &__search-wrap {
     padding: 0 32px;
@@ -38,6 +56,7 @@ $font-serif: "Cormorant Garamond", serif;
 
   &__content {
     padding: 24px 32px 48px;
+    @include fadeUp(0.12s);
 
     @media (max-width: 768px) {
       padding: 16px 16px 40px;

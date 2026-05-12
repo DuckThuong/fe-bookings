@@ -1,9 +1,27 @@
 @use "../../../../common" as *;
 
+@mixin fadeUp($d: 0s) {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.45s #{$d} ease forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .support-page {
   min-height: 100vh;
   background: $bg;
   font-family: "Be Vietnam Pro", sans-serif;
+  @include fadeUp(0s);
 }
 
 .support-main {
@@ -123,4 +141,3 @@
     color: #8b93a5;
   }
 }
-
