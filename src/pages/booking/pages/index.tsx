@@ -3,38 +3,27 @@ import "./style.scss";
 import { useState, useCallback } from "react";
 import { Button, Input, Select } from "antd";
 import { HomeHeader } from "@/components/TopBar";
-import { FEE_RATE, MAX_SEATS, UNIT_PRICE, VEHICLES } from "@/common/constants/booking";
+import {
+  FEE_RATE,
+  MAX_SEATS,
+  UNIT_PRICE,
+  VEHICLES,
+} from "@/common/constants/booking";
 import { formatVnd, getVehicleLayout } from "@/common/contexts/booking";
-import type { VehicleConfig, VehicleType } from "@/common/types/booking";
+import type {
+  BookingPageData,
+  VehicleConfig,
+  VehicleType,
+} from "@/common/types/booking";
 import { BusMap } from "../component/BusMap";
-
-type BookingPageData = {
-  user: { userName: string; notifCount: number };
-  breadcrumb: { label: string }[];
-  trip: {
-    from: string;
-    to: string;
-    operatorName: string;
-    departTime: string;
-    arriveTime: string;
-    arriveNote?: string;
-    date: string;
-    durationLabel: string;
-    unitPrice: number;
-  };
-  passenger: {
-    fullName: string;
-    phone: string;
-    pickupPointDefault: string;
-    dropoffPointDefault: string;
-    pickupPointOptions: Array<{ value: string; label: string }>;
-    dropoffPointOptions: Array<{ value: string; label: string }>;
-  };
-};
 
 const BOOKING_PAGE_DATA: BookingPageData = {
   user: { userName: "Nguyễn An", notifCount: 3 },
-  breadcrumb: [{ label: "Trang chủ" }, { label: "Vé xe" }, { label: "Chọn ghế" }],
+  breadcrumb: [
+    { label: "Trang chủ" },
+    { label: "Vé xe" },
+    { label: "Chọn ghế" },
+  ],
   trip: {
     from: "Hà Nội",
     to: "TP. Hồ Chí Minh",
@@ -106,7 +95,9 @@ export const SeatSelectionPage = () => {
       <nav className="seat-breadcrumb" aria-label="Breadcrumb">
         {BOOKING_PAGE_DATA.breadcrumb.map((item, idx) => (
           <span key={`${item.label}-${idx}`}>
-            {idx > 0 && <i className="ti ti-chevron-right" aria-hidden="true" />}
+            {idx > 0 && (
+              <i className="ti ti-chevron-right" aria-hidden="true" />
+            )}
             {item.label}
           </span>
         ))}
@@ -115,9 +106,13 @@ export const SeatSelectionPage = () => {
       {/* Trip summary bar */}
       <div className="seat-trip-bar">
         <div className="seat-trip-bar__route">
-          <span className="seat-trip-bar__city">{BOOKING_PAGE_DATA.trip.from}</span>
+          <span className="seat-trip-bar__city">
+            {BOOKING_PAGE_DATA.trip.from}
+          </span>
           <i className="ti ti-arrow-right" aria-hidden="true" />
-          <span className="seat-trip-bar__city">{BOOKING_PAGE_DATA.trip.to}</span>
+          <span className="seat-trip-bar__city">
+            {BOOKING_PAGE_DATA.trip.to}
+          </span>
         </div>
         <div className="seat-trip-bar__meta">
           <span>
@@ -126,7 +121,8 @@ export const SeatSelectionPage = () => {
           </span>
           <span>
             <i className="ti ti-clock" aria-hidden="true" />{" "}
-            {BOOKING_PAGE_DATA.trip.departTime} → {BOOKING_PAGE_DATA.trip.arriveTime}{" "}
+            {BOOKING_PAGE_DATA.trip.departTime} →{" "}
+            {BOOKING_PAGE_DATA.trip.arriveTime}{" "}
             {BOOKING_PAGE_DATA.trip.arriveNote ?? ""}
           </span>
           <span>
@@ -249,14 +245,18 @@ export const SeatSelectionPage = () => {
                 <div className="seat-form__field">
                   <label>Điểm lên xe</label>
                   <Select
-                    defaultValue={BOOKING_PAGE_DATA.passenger.pickupPointDefault}
+                    defaultValue={
+                      BOOKING_PAGE_DATA.passenger.pickupPointDefault
+                    }
                     options={BOOKING_PAGE_DATA.passenger.pickupPointOptions}
                   />
                 </div>
                 <div className="seat-form__field">
                   <label>Điểm xuống xe</label>
                   <Select
-                    defaultValue={BOOKING_PAGE_DATA.passenger.dropoffPointDefault}
+                    defaultValue={
+                      BOOKING_PAGE_DATA.passenger.dropoffPointDefault
+                    }
                     options={BOOKING_PAGE_DATA.passenger.dropoffPointOptions}
                   />
                 </div>

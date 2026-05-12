@@ -24,3 +24,26 @@ export interface VehicleConfig {
   isSleeper?: boolean;
 }
 
+export type BookingPageData = {
+  user: { userName: string; notifCount: number };
+  breadcrumb: { label: string }[];
+  trip: {
+    from: string;
+    to: string;
+    operatorName: string;
+    departTime: string;
+    arriveTime: string;
+    arriveNote?: string;
+    date: string;
+    durationLabel: string;
+    unitPrice: number;
+  };
+  passenger: {
+    fullName: string;
+    phone: string;
+    pickupPointDefault: string;
+    dropoffPointDefault: string;
+    pickupPointOptions: Array<{ value: string; label: string }>;
+    dropoffPointOptions: Array<{ value: string; label: string }>;
+  };
+};
