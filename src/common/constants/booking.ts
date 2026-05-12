@@ -1,9 +1,12 @@
-import type { RowDef, SeatDef, SeatStatus, VehicleConfig, VehicleType } from "@/common/types/booking";
+import type {
+  RowDef,
+  SeatDef,
+  SeatStatus,
+  VehicleConfig,
+  VehicleType,
+} from "@/common/types/booking";
 
-const createSeat = (
-  id: string,
-  status: SeatStatus = "available",
-): SeatDef => ({
+const createSeat = (id: string, status: SeatStatus = "available"): SeatDef => ({
   id,
   status,
 });
@@ -137,4 +140,152 @@ export const VEHICLES: Record<VehicleType, VehicleConfig> = {
 export const UNIT_PRICE = 350000;
 export const FEE_RATE = 0.05;
 export const MAX_SEATS = 4;
+export const PICKUP_PRICE = 50_000;
 
+export const OPERATOR_AMENITIES = [
+  { icon: "wifi", label: "Wifi 5G" },
+  { icon: "air-conditioning", label: "Điều hoà" },
+  { icon: "plug", label: "Sạc USB" },
+  { icon: "device-tv", label: "Màn hình" },
+  { icon: "bowl", label: "Bữa nhẹ" },
+  { icon: "shield-check", label: "Bảo hiểm" },
+] as const;
+
+// ──────────────────────────────────────────────────────────
+// ADD-ON SERVICES
+// ──────────────────────────────────────────────────────────
+export type AddonService = {
+  id: string;
+  icon: string;
+  name: string;
+  desc: string;
+  price: number; // 0 = miễn phí
+  hasQty?: boolean; // true = dùng stepper thay checkbox
+};
+
+export const ADDON_SERVICES: AddonService[] = [
+  {
+    id: "insurance",
+    icon: "shield-check",
+    name: "Bảo hiểm chuyến đi",
+    desc: "Bồi thường đến 50 triệu — tai nạn, mất hành lý",
+    price: 30_000,
+  },
+  {
+    id: "meal",
+    icon: "tools-kitchen-2",
+    name: "Suất ăn cao cấp",
+    desc: "Cơm hộp nóng giao tận ghế — Việt Nam / Hàn Quốc",
+    price: 45_000,
+  },
+  {
+    id: "baggage",
+    icon: "luggage",
+    name: "Hành lý thêm",
+    desc: "Cho phép thêm 1 kiện ≤ 20 kg vào khoang xe",
+    price: 0,
+  },
+  {
+    id: "pillow",
+    icon: "bed",
+    name: "Gối + chăn cao cấp",
+    desc: "Bộ gối chăn fleece mềm, sạch — đảm bảo vệ sinh",
+    price: 15_000,
+  },
+  {
+    id: "pickup",
+    icon: "map-pin",
+    name: "Đưa đón tận nơi",
+    desc: "Bán kính ≤ 5 km từ bến xe — đặt thêm sau khi chọn ghế",
+    price: PICKUP_PRICE,
+    hasQty: true,
+  },
+];
+
+// ──────────────────────────────────────────────────────────
+// PROMO CODES
+// ──────────────────────────────────────────────────────────
+export type PromoCode = {
+  code: string;
+  icon: string; // tabler icon name (ti-xxx)
+  discount: string; // display label
+  desc: string;
+  type: "fixed" | "percent";
+  value: number; // fixed: VND amount | percent: 0–1
+  max?: number; // percent only: cap in VND
+  minOrder?: number; // minimum order value
+};
+
+export const PROMO_CODES: PromoCode[] = [
+  {
+    code: "RIDE50",
+    icon: "ti-ticket",
+    discount: "Giảm 50.000đ",
+    desc: "Đơn từ 300k",
+    type: "fixed",
+    value: 50_000,
+    minOrder: 300_000,
+  },
+  {
+    code: "GORIDE10",
+    icon: "ti-ticket",
+    discount: "Giảm 10%",
+    desc: "Tối đa 100k",
+    type: "percent",
+    value: 0.1,
+    max: 100_000,
+  },
+  {
+    code: "NEWBIE",
+    icon: "ti-gift",
+    discount: "-30% lần đầu",
+    desc: "Khách mới",
+    type: "percent",
+    value: 0.3,
+    max: 150_000,
+  },
+];
+
+// ──────────────────────────────────────────────────────────
+// POLICIES
+// ──────────────────────────────────────────────────────────
+export type PolicyTagVariant = "green" | "amber" | "red";
+
+export type Policy = {
+  icon: string;
+  title: string;
+  desc: string;
+  tagLabel: string;
+  tagVariant: PolicyTagVariant;
+};
+
+export const POLICIES: Policy[] = [
+  {
+    icon: "clock-cancel",
+    title: "Huỷ vé",
+    desc: "Hoàn 80% nếu huỷ trước 24h khởi hành. Hoàn 50% nếu huỷ trước 6h.",
+    tagLabel: "Linh hoạt",
+    tagVariant: "green",
+  },
+  {
+    icon: "clock-edit",
+    title: "Đổi vé",
+    desc: "Đổi ngày / giờ miễn phí 1 lần, thực hiện trước 12h khởi hành.",
+    tagLabel: "1 lần",
+    tagVariant: "amber",
+  },
+  {
+    icon: "backpack",
+    title: "Hành lý",
+    desc: "Miễn phí 1 kiện ≤ 20 kg và xách tay ≤ 7 kg. Kiện thêm 50.000đ / kiện.",
+    tagLabel: "Miễn phí",
+    tagVariant: "green",
+  },
+  {
+    icon: "smoking-no",
+    title: "Nội quy xe",
+    desc: "Không hút thuốc, không thực phẩm mùi nồng, lên xe đúng giờ.",
+    tagLabel: "Bắt buộc",
+    tagVariant: "red",
+  },
+];

@@ -10,7 +10,9 @@ export const ServiceGrid = ({ data }: HomeProps) => {
     <section className="section service-section">
       <div className="section__head">
         <h3 className="section__title">Dịch vụ</h3>
-        <Typography.Link className="section__more">Xem tất cả →</Typography.Link>
+        <Typography.Link className="section__more">
+          Xem tất cả →
+        </Typography.Link>
       </div>
 
       <div className="service-grid">
@@ -24,8 +26,10 @@ export const ServiceGrid = ({ data }: HomeProps) => {
               </span>
             )}
             <span className="service-card__icon">{s.icon}</span>
-            <span className="service-card__label">{s.label}</span>
-            <span className="service-card__desc">{s.desc}</span>
+            <div className="content">
+              <span className="service-card__label">{s.label}</span>
+              <span className="service-card__desc">{s.desc}</span>
+            </div>
           </Button>
         ))}
       </div>

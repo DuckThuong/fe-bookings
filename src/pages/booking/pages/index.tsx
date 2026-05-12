@@ -1,11 +1,11 @@
 import "./style.scss";
 
-import { useState, useCallback } from "react";
-import { Button, Input, Select } from "antd";
-import { HomeHeader } from "@/components/TopBar";
 import {
+  ADDON_SERVICES,
   FEE_RATE,
   MAX_SEATS,
+  PICKUP_PRICE,
+  PROMO_CODES,
   UNIT_PRICE,
   VEHICLES,
 } from "@/common/constants/booking";
@@ -15,9 +15,19 @@ import type {
   VehicleConfig,
   VehicleType,
 } from "@/common/types/booking";
+import { HomeHeader } from "@/components/TopBar";
+import { Button, Input, Select } from "antd";
+import { useCallback, useState } from "react";
 import { BusMap } from "../component/BusMap";
+import {
+  AddonItem,
+  OperatorCard,
+  PolicyCard,
+  PromoSection,
+} from "../component/SelectionSeat";
+import "./style.scss";
 
-const BOOKING_PAGE_DATA: BookingPageData = {
+export const BOOKING_PAGE_DATA: BookingPageData = {
   user: { userName: "Nguyễn An", notifCount: 3 },
   breadcrumb: [
     { label: "Trang chủ" },
@@ -28,6 +38,7 @@ const BOOKING_PAGE_DATA: BookingPageData = {
     from: "Hà Nội",
     to: "TP. Hồ Chí Minh",
     operatorName: "GoRide Express",
+    operatorCode: "GR",
     departTime: "06:00",
     arriveTime: "14:00",
     arriveNote: "(+1)",
@@ -57,18 +68,17 @@ export const SeatSelectionPage = () => {
   const [vehicleType, setVehicleType] = useState<VehicleType>("16");
   const [floor, setFloor] = useState<1 | 2>(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [addons, setAddons] = useState<Set<string>>(new Set());
+  const [pickupQty, setPickupQty] = useState(0);
+  const [promoCode, setPromoCode] = useState<string | null>(null);
 
   const cfg = VEHICLES[vehicleType];
 
   const toggleSeat = useCallback((id: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        if (next.size >= MAX_SEATS) return prev;
-        next.add(id);
-      }
+      if (next.has(id)) next.delete(id);
+      else if (next.size < MAX_SEATS) next.add(id);
       return next;
     });
   }, []);
@@ -79,10 +89,38 @@ export const SeatSelectionPage = () => {
     setSelected(new Set());
   };
 
+  const toggleAddon = (id: string) =>
+    setAddons((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+
+  const changePickupQty = (d: number) =>
+    setPickupQty((q) => Math.max(0, Math.min(4, q + d)));
+
   const seats = [...selected];
   const subTotal = seats.length * UNIT_PRICE;
   const fee = Math.round(subTotal * FEE_RATE);
-  const total = subTotal + fee;
+
+  const addonsTotal =
+    ADDON_SERVICES.filter((a) => !a.hasQty && addons.has(a.id)).reduce(
+      (s, a) => s + a.price,
+      0,
+    ) +
+    pickupQty * PICKUP_PRICE;
+
+  const promo = PROMO_CODES.find((p) => p.code === promoCode);
+  const promoDiscount = promo
+    ? promo.type === "fixed"
+      ? promo.value
+      : Math.min(
+          Math.round((subTotal + addonsTotal) * promo.value),
+          promo.max ?? Infinity,
+        )
+    : 0;
+
+  const total = Math.max(0, subTotal + fee + addonsTotal - promoDiscount);
 
   return (
     <div className="seat-page">
@@ -98,7 +136,11 @@ export const SeatSelectionPage = () => {
             {idx > 0 && (
               <i className="ti ti-chevron-right" aria-hidden="true" />
             )}
-            {item.label}
+            {idx < BOOKING_PAGE_DATA.breadcrumb.length - 1 ? (
+              <a href="#">{item.label}</a>
+            ) : (
+              item.label
+            )}
           </span>
         ))}
       </nav>
@@ -139,9 +181,9 @@ export const SeatSelectionPage = () => {
         </div>
       </div>
 
-      {/* Main grid */}
+      {/* ── Main grid — layout giữ nguyên ───────────────── */}
       <div className="seat-layout">
-        {/* LEFT — map */}
+        {/* LEFT — map + extras mới thêm */}
         <div>
           {/* Vehicle tabs */}
           <div className="seat-vtabs">
@@ -149,7 +191,9 @@ export const SeatSelectionPage = () => {
               ([key, v]) => (
                 <Button
                   key={key}
-                  className={`seat-vtab${vehicleType === key ? " seat-vtab--active" : ""}`}
+                  className={`seat-vtab${
+                    vehicleType === key ? " seat-vtab--active" : ""
+                  }`}
                   onClick={() => handleVehicleChange(key)}
                   type="text"
                 >
@@ -165,33 +209,32 @@ export const SeatSelectionPage = () => {
             <div className="seat-map-card__title">{cfg.mapTitle}</div>
             <div className="seat-map-card__sub">{cfg.mapSub}</div>
 
-            {/* Legend */}
             <div className="seat-legend">
-              <div className="seat-legend__item">
-                <div className="seat-legend__dot seat-legend__dot--avail" />
-                Còn trống
-              </div>
-              <div className="seat-legend__item">
-                <div className="seat-legend__dot seat-legend__dot--selected" />
-                Đã chọn
-              </div>
-              <div className="seat-legend__item">
-                <div className="seat-legend__dot seat-legend__dot--booked" />
-                Đã đặt
-              </div>
-              <div className="seat-legend__item">
-                <div className="seat-legend__dot seat-legend__dot--vip" />
-                VIP
-              </div>
+              {(
+                [
+                  { cls: "avail", label: "Còn trống" },
+                  { cls: "selected", label: "Đã chọn" },
+                  { cls: "booked", label: "Đã đặt" },
+                  { cls: "vip", label: "VIP" },
+                ] as const
+              ).map((l) => (
+                <div key={l.cls} className="seat-legend__item">
+                  <div
+                    className={`seat-legend__dot seat-legend__dot--${l.cls}`}
+                  />
+                  {l.label}
+                </div>
+              ))}
             </div>
 
-            {/* Floor tabs */}
             {cfg.floors > 1 && (
               <div className="seat-floor-tabs">
                 {([1, 2] as const).map((f) => (
                   <Button
                     key={f}
-                    className={`seat-floor-tab${floor === f ? " seat-floor-tab--active" : ""}`}
+                    className={`seat-floor-tab${
+                      floor === f ? " seat-floor-tab--active" : ""
+                    }`}
                     onClick={() => {
                       setFloor(f);
                       setSelected(new Set());
@@ -199,7 +242,9 @@ export const SeatSelectionPage = () => {
                     type="text"
                   >
                     <i
-                      className={`ti ${f === 1 ? "ti-layers-subtract" : "ti-layers"}`}
+                      className={`ti ${
+                        f === 1 ? "ti-layers-subtract" : "ti-layers"
+                      }`}
                       aria-hidden="true"
                     />
                     {f === 1 ? "Tầng dưới" : "Tầng trên"}
@@ -215,9 +260,42 @@ export const SeatSelectionPage = () => {
               onToggle={toggleSeat}
             />
           </div>
+
+          {/* ── EXTRAS — thêm mới bên dưới map ── */}
+          <div className="seat-extras">
+            {/* 1. Nhà xe + tiện ích */}
+            <OperatorCard />
+
+            {/* 2. Dịch vụ đi kèm */}
+            <div className="extras-card">
+              <div className="extras-card__hd">
+                <i className="ti ti-sparkles" aria-hidden="true" />
+                <span className="extras-card__title">Dịch vụ đi kèm</span>
+                <span className="extras-card__badge">Tuỳ chọn</span>
+              </div>
+              <div className="extras-addon-list">
+                {ADDON_SERVICES.map((addon) => (
+                  <AddonItem
+                    key={addon.id}
+                    addon={addon}
+                    selected={addons.has(addon.id)}
+                    qty={addon.hasQty ? pickupQty : undefined}
+                    onToggle={toggleAddon}
+                    onChangeQty={addon.hasQty ? changePickupQty : undefined}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Mã khuyến mãi */}
+            <PromoSection applied={promoCode} onApply={setPromoCode} />
+
+            {/* 4. Chính sách nhà xe */}
+            <PolicyCard />
+          </div>
         </div>
 
-        {/* RIGHT — summary */}
+        {/* RIGHT — summary (giữ nguyên, chỉ thêm dòng add-ons + promo vào giá) */}
         <div>
           <div className="seat-summary">
             <div className="seat-summary__title">
@@ -249,6 +327,7 @@ export const SeatSelectionPage = () => {
                       BOOKING_PAGE_DATA.passenger.pickupPointDefault
                     }
                     options={BOOKING_PAGE_DATA.passenger.pickupPointOptions}
+                    style={{ width: "100%" }}
                   />
                 </div>
                 <div className="seat-form__field">
@@ -258,12 +337,12 @@ export const SeatSelectionPage = () => {
                       BOOKING_PAGE_DATA.passenger.dropoffPointDefault
                     }
                     options={BOOKING_PAGE_DATA.passenger.dropoffPointOptions}
+                    style={{ width: "100%" }}
                   />
                 </div>
               </div>
             </div>
 
-            {/* Selected seats */}
             <div className="seat-summary__section-label">Ghế đã chọn</div>
             <div className="seat-selected-list">
               {seats.length === 0 ? (
@@ -292,16 +371,31 @@ export const SeatSelectionPage = () => {
               )}
             </div>
 
-            {/* Price */}
             <div className="seat-price">
               <div className="seat-price__row">
                 <span>Giá vé ({seats.length} ghế)</span>
                 <strong>{seats.length ? formatVnd(subTotal) : "0đ"}</strong>
               </div>
+
+              {addonsTotal > 0 && (
+                <div className="seat-price__row">
+                  <span>Dịch vụ bổ sung</span>
+                  <strong>{formatVnd(addonsTotal)}</strong>
+                </div>
+              )}
+
               <div className="seat-price__row">
                 <span>Phí dịch vụ (5%)</span>
                 <strong>{seats.length ? formatVnd(fee) : "0đ"}</strong>
               </div>
+
+              {promoDiscount > 0 && (
+                <div className="seat-price__row seat-price__row--promo">
+                  <span>Giảm giá ({promoCode})</span>
+                  <strong>−{formatVnd(promoDiscount)}</strong>
+                </div>
+              )}
+
               <div className="seat-price__row seat-price__row--total">
                 <span>Tổng cộng</span>
                 <strong>{seats.length ? formatVnd(total) : "0đ"}</strong>

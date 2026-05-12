@@ -30,6 +30,7 @@ export type BookingPageData = {
   trip: {
     from: string;
     to: string;
+    operatorCode: string;
     operatorName: string;
     departTime: string;
     arriveTime: string;

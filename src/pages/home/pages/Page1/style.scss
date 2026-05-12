@@ -598,7 +598,7 @@
 .service-card {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 6px;
   padding: 16px 8px;
@@ -608,6 +608,13 @@
   cursor: pointer;
   transition: all 0.2s;
   font-family: "Be Vietnam Pro", sans-serif;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
 
   &:hover {
     border-color: $amber;
