@@ -1,7 +1,7 @@
 .scroll-top-btn.ant-float-btn {
   right: 20px;
-  bottom: 24px;
-
+  bottom: 12px;
+  position: fixed;
   .ant-float-btn-body {
     background: #0a0e1a;
     color: #fff;
@@ -21,4 +21,3 @@
     bottom: 16px;
   }
 }
-
