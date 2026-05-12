@@ -291,15 +291,13 @@ export const SeatSelectionPage = () => {
           </div>
         </div>
 
-        {/* RIGHT — summary (giữ nguyên, chỉ thêm dòng add-ons + promo vào giá) */}
-        <div>
+        <div className="seat-summary-card">
           <div className="seat-summary">
             <div className="seat-summary__title">
               <i className="ti ti-ticket" aria-hidden="true" />
               Thông tin đặt vé
             </div>
 
-            {/* Passenger form */}
             <div className="seat-form">
               <div className="seat-form__field">
                 <label>Họ và tên</label>
@@ -403,7 +401,6 @@ export const SeatSelectionPage = () => {
               block
               className="seat-cta-btn"
               disabled={seats.length === 0}
-              icon={<i className="ti ti-lock" aria-hidden="true" />}
             >
               Xác nhận đặt vé
             </Button>

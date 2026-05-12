@@ -419,6 +419,12 @@ $green-text: #16a34a;
   padding: 20px;
   position: sticky;
   top: 20px;
+  align-self: start;
+
+  &-card {
+    margin-top: 50px;
+    height: 100%;
+  }
 
   &__title {
     font-size: 14px;
@@ -592,6 +598,7 @@ $green-text: #16a34a;
       opacity: 0.85 !important;
     }
     &:disabled {
+      background-color: $amber-pale !important;
       opacity: 0.4 !important;
     }
   }
