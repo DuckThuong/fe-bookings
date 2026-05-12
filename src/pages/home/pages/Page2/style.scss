@@ -1,3 +1,4 @@
+@use "../../../../common" as *;
 $night: #0a0e1a;
 $night-2: #151b2e;
 $amber: #f5a623;
@@ -18,28 +19,11 @@ $radius-xl: 24px;
 $font-sans: "Be Vietnam Pro", sans-serif;
 $font-serif: "Cormorant Garamond", serif;
 
-@mixin fadeUp($d: 0s) {
-  opacity: 0;
-  transform: translateY(12px);
-  animation: fadeUp 0.45s #{$d} ease forwards;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .booking-page {
   min-height: 100vh;
   background: $bg;
   font-family: $font-sans;
-  @include fadeUp(0s);
+  @include fadeUpSecond(0s);
 
   &__search-wrap {
     padding: 0 32px;
@@ -54,7 +38,7 @@ $font-serif: "Cormorant Garamond", serif;
 
   &__content {
     padding: 24px 32px 48px;
-    @include fadeUp(0.12s);
+    @include fadeUpSecond(0.4s);
 
     @media (max-width: 768px) {
       padding: 16px 16px 40px;
@@ -118,6 +102,7 @@ $font-serif: "Cormorant Garamond", serif;
     pointer-events: none;
     opacity: 0.45;
     z-index: 0;
+    @include fadeUpSecond(0.2s);
 
     .banner-svg {
       position: absolute;
@@ -172,6 +157,7 @@ $font-serif: "Cormorant Garamond", serif;
     text-transform: uppercase;
     color: $amber;
     margin-bottom: 8px;
+    @include fadeUpSecond(0.22s);
   }
 
   &__title {
@@ -183,6 +169,7 @@ $font-serif: "Cormorant Garamond", serif;
     line-height: 1.25;
     margin-bottom: 4px;
     font-family: $font-serif;
+    @include fadeUpSecond(0.24s);
   }
 
   &__sub {
@@ -190,6 +177,7 @@ $font-serif: "Cormorant Garamond", serif;
     z-index: 1;
     font-size: 13px;
     color: rgba($white, 0.5);
+    @include fadeUpSecond(0.26s);
   }
 
   &__deco {
@@ -203,6 +191,7 @@ $font-serif: "Cormorant Garamond", serif;
     pointer-events: none;
     -webkit-user-select: none;
     user-select: none;
+    @include fadeUpSecond(0.28s);
   }
 
   @media (max-width: 768px) {
@@ -252,6 +241,7 @@ $font-serif: "Cormorant Garamond", serif;
   border-radius: $radius-xl;
   padding: 24px 28px;
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+  @include fadeUpSecond(0.3s);
 
   &__row {
     display: grid;
