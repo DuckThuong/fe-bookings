@@ -1,13 +1,14 @@
 @use "../../../../common" as *;
-// style.scss — BookingConfirmPage
 
+// ─── Shared tokens (mirror SeatSelectionPage) ────────────
 $night: #0a0e1a;
 $amber: #f5a623;
 $amber-pale: #fff8ec;
 $muted: #6b7280;
 $border: #e5e7eb;
-$green: #16a34a;
 $green-bg: #f0fdf4;
+$green-bd: #86efac;
+$green-text: #16a34a;
 
 // ─── Keyframes ───────────────────────────────────────────
 @keyframes fadeUp {
@@ -22,14 +23,14 @@ $green-bg: #f0fdf4;
 }
 
 // ─── Page ────────────────────────────────────────────────
-.booking-confirm-page {
+.booking-info-page {
   min-height: 100vh;
   background: #f4f5f7;
   font-family: "Be Vietnam Pro", sans-serif;
   font-size: 13px;
 }
 
-// ─── Progress stepper ─────────────────────────────────────
+// ─── Progress stepper (unchanged — shared component) ─────
 .confirm-progress {
   background: #fff;
   border-bottom: 0.5px solid $border;
@@ -51,7 +52,6 @@ $green-bg: #f0fdf4;
   position: relative;
   min-width: 90px;
 
-  // Connector line
   &:not(:last-child)::after {
     content: "";
     position: absolute;
@@ -90,7 +90,6 @@ $green-bg: #f0fdf4;
       border-color: $amber;
       color: $night;
     }
-
     .confirm-step--active & {
       background: $night;
       border-color: $night;
@@ -107,19 +106,20 @@ $green-bg: #f0fdf4;
 
     .confirm-step--done &,
     .confirm-step--active & {
-      color: var(--color-text-primary, $night);
+      color: $night;
     }
   }
 }
 
-// ─── Breadcrumb ───────────────────────────────────────────
-.confirm-bc {
+// ─── Breadcrumb ──────────────────────────────────────────
+// Matches .seat-breadcrumb exactly
+.info-bc {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
+  gap: 6px;
+  font-size: 12px;
   color: $muted;
-  padding: 10px 24px;
+  padding: 14px 32px; // ← was 10px 24px
 
   a {
     color: $muted;
@@ -132,32 +132,36 @@ $green-bg: #f0fdf4;
     color: $night;
   }
   i {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 
 // ─── Main layout ─────────────────────────────────────────
-.confirm-layout {
+// Matches .seat-layout: 1fr 300px, 32px horizontal padding
+.info-layout {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 16px;
-  padding: 0 24px 40px;
-  max-width: 1000px;
-  margin: 0 auto;
+  grid-template-columns: 1fr 300px; // ← was 1fr 350px
+  gap: 20px;
+  padding: 0 32px 40px; // ← was 20px 24px 40px
+  align-items: start;
 }
 
-.confirm-left {
+.info-left {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-.confirm-right {
-  position: sticky;
-  top: 110px;
+  gap: 16px;
 }
 
-// ─── Ticket card ─────────────────────────────────────────
-.confirm-ticket {
+// Mirrors .seat-summary sticky behaviour
+.info-right {
+  position: sticky;
+  top: 20px; // ← was 140px
+  align-self: start;
+}
+
+// ─── Trip summary card ───────────────────────────────────
+// Styled like .seat-map-card
+.info-trip-card {
   background: #fff;
   border: 0.5px solid $border;
   border-radius: 12px;
@@ -165,77 +169,42 @@ $green-bg: #f0fdf4;
   animation: fadeUp 0.35s ease;
 
   &__header {
-    background: $night;
-    padding: 14px 20px;
     display: flex;
     align-items: center;
-    gap: 12px;
-  }
-
-  &__logo {
-    width: 38px;
-    height: 38px;
-    border-radius: 9px;
-    background: $amber;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    color: $night;
-    flex-shrink: 0;
-  }
-
-  &__op-info {
-    flex: 1;
-  }
-  &__op-name {
+    gap: 8px;
+    padding: 14px 24px; // ← matches seat-map-card padding
+    border-bottom: 0.5px solid $border;
+    background: #fafbfc;
     font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-  }
-  &__op-type {
-    font-size: 11px;
-    color: rgba(#fff, 0.5);
-    margin-top: 1px;
+    font-weight: 500;
+    color: $night;
+
+    i {
+      font-size: 16px;
+      color: $amber;
+    }
   }
 
-  &__badges {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  // Route section
   &__route {
     display: flex;
     align-items: center;
-    padding: 18px 22px;
-    position: relative;
-
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 22px;
-      right: 22px;
-      height: 0.5px;
-      background: $border;
-    }
+    padding: 18px 24px;
+    gap: 14px;
   }
 
   &__endpoint {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
 
     &--right {
       text-align: right;
+      flex: 1;
     }
   }
 
   &__time {
-    font-size: 26px;
+    font-size: 26px; // ← bumped to match confirm-ticket__time
     font-weight: 500;
     color: $night;
     line-height: 1;
@@ -252,203 +221,47 @@ $green-bg: #f0fdf4;
     font-weight: 500;
     color: $night;
   }
-  &__station {
-    font-size: 11px;
-    color: $muted;
-  }
 
   &__journey {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     padding: 0 14px;
   }
 
   &__duration {
     font-size: 11px;
-    color: $muted;
     font-weight: 500;
-  }
-  &__stops {
-    font-size: 10px;
-    color: #9ca3af;
+    color: $muted;
   }
 
   &__line {
-    display: flex;
-    align-items: center;
-    gap: 4px;
     width: 100%;
-    i {
-      font-size: 14px;
-      color: #9ca3af;
-    }
-  }
-
-  &__dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    border: 1.5px solid $border;
-    background: #fff;
-    flex-shrink: 0;
-  }
-
-  &__dash {
-    flex: 1;
-    height: 0.5px;
+    height: 1px;
     background: $border;
   }
-
-  // Punch divider
-  &__punch {
-    display: flex;
-    align-items: center;
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: -8px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #f4f5f7;
-      border: 0.5px solid $border;
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      right: -8px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #f4f5f7;
-      border: 0.5px solid $border;
-    }
-  }
-
-  &__punch-line {
-    flex: 1;
-    border-top: 1.5px dashed $border;
-    margin: 0 14px;
-  }
-
-  // Detail grid
-  &__details {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    padding: 4px 0;
-  }
-
-  &__detail-item {
-    padding: 13px 18px;
-    border-right: 0.5px solid $border;
-
-    &:last-child {
-      border-right: none;
-    }
-  }
-
-  &__detail-label {
-    font-size: 10px;
-    font-weight: 500;
-    color: $muted;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-bottom: 4px;
-  }
-
-  &__detail-val {
-    font-size: 13px;
-    font-weight: 500;
-    color: $night;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-
-    i {
-      font-size: 14px;
-      color: $amber;
-    }
-  }
-
-  // Seats row
-  &__seats {
-    padding: 13px 18px;
-    border-top: 0.5px solid $border;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  &__seats-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: $muted;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-
-  &__seat-chips {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  &__seat-chip {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 12px;
-    border-radius: 7px;
-    background: $night;
-    color: $amber;
-    font-size: 12px;
-    font-weight: 500;
-
-    i {
-      font-size: 13px;
-    }
-  }
 }
 
-// Ticket badge
-.confirm-tbadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  padding: 3px 9px;
-  border-radius: 4px;
-  font-weight: 500;
-  background: rgba($amber, 0.15);
-  color: $amber;
-  border: 0.5px solid rgba($amber, 0.3);
-
-  i {
-    font-size: 11px;
-  }
-}
-
-// ─── Section card ─────────────────────────────────────────
-.confirm-section {
+// ─── Seats card ──────────────────────────────────────────
+.info-seats-card {
   background: #fff;
   border: 0.5px solid $border;
   border-radius: 12px;
   overflow: hidden;
   animation: fadeUp 0.35s ease;
 
-  &__hd {
+  &__header {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 13px 18px;
+    padding: 14px 24px;
     border-bottom: 0.5px solid $border;
+    background: #fafbfc;
+    font-size: 14px;
+    font-weight: 500;
+    color: $night;
 
     i {
       font-size: 16px;
@@ -456,395 +269,179 @@ $green-bg: #f0fdf4;
     }
   }
 
-  &__title {
-    font-size: 13px;
-    font-weight: 500;
-    color: $night;
-    flex: 1;
-  }
-
-  &__edit {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    color: $muted;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-family: inherit;
-    padding: 4px 8px;
-    border-radius: 5px;
-    transition: background 0.15s;
-
-    i {
-      font-size: 13px;
-    }
-
-    &:hover {
-      background: #f3f4f6;
-      color: $night;
-    }
+  &__content {
+    padding: 16px 24px;
   }
 }
 
-// Info grid (passenger)
-.confirm-info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.info-seats-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.confirm-info-item {
-  padding: 13px 18px;
-  border-right: 0.5px solid $border;
-  border-bottom: 0.5px solid $border;
-
-  &:nth-child(2n) {
-    border-right: none;
-  }
-  &:nth-last-child(-n + 2) {
-    border-bottom: none;
-  }
-
-  &__label {
-    font-size: 10px;
-    font-weight: 500;
-    color: $muted;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-bottom: 3px;
-  }
-
-  &__val {
-    font-size: 13px;
-    font-weight: 500;
-    color: $night;
-  }
-}
-
-// Addons list (confirmed)
-.confirm-addon-list {
-  padding: 6px 12px;
-}
-
-.confirm-addon-item {
+// Mirrors .seat-selected-list__badge + seat chip
+.info-seat-chip {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: $night;
+  color: $amber;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid $amber;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 6px;
-  border-bottom: 0.5px solid $border;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &__icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 7px;
-    background: $amber-pale;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    i {
-      font-size: 15px;
-      color: $amber;
-    }
-  }
-
-  &__name {
-    flex: 1;
-    font-size: 12px;
-    font-weight: 500;
-    color: $night;
-  }
-
-  &__price {
-    font-size: 12px;
-    font-weight: 500;
-    color: $night;
-
-    &--free {
-      color: $green;
-    }
-  }
+  justify-content: center;
 }
 
-// Policy note
-.confirm-policy-note {
+// ─── Right panel — summary + form card ───────────────────
+// Mirrors .seat-summary exactly
+.info-form-card {
   background: #fff;
   border: 0.5px solid $border;
   border-radius: 12px;
-  padding: 14px 18px;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-
-  > i {
-    font-size: 16px;
-    color: $amber;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
+  padding: 20px;
+  animation: fadeUp 0.35s ease;
 
   &__title {
-    font-size: 12px;
-    font-weight: 500;
-    color: $night;
-    margin-bottom: 4px;
-  }
-
-  &__desc {
-    font-size: 11px;
-    color: $muted;
-    line-height: 1.6;
-    strong {
-      font-weight: 600;
-      color: $night;
-    }
-  }
-}
-
-// ─── Summary panel ────────────────────────────────────────
-.confirm-summary {
-  background: #fff;
-  border: 0.5px solid $border;
-  border-radius: 12px;
-  padding: 18px;
-
-  &__title {
-    font-size: 13px;
-    font-weight: 500;
-    color: $night;
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 0.5px solid $border;
     display: flex;
     align-items: center;
     gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: $night;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 0.5px solid $border;
+
     i {
       color: $amber;
       font-size: 16px;
     }
   }
-
-  &__sep {
-    height: 0.5px;
-    background: $border;
-    margin: 12px 0;
-  }
-
-  &__section-label {
-    font-size: 10px;
-    font-weight: 500;
-    color: $muted;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-bottom: 8px;
-  }
 }
 
-// Countdown
-.confirm-countdown {
-  background: $amber-pale;
-  border: 0.5px solid rgba($amber, 0.3);
-  border-radius: 8px;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-
-  > i {
-    font-size: 18px;
-    color: $amber;
-    flex-shrink: 0;
-  }
-
-  &__timer {
-    font-size: 20px;
-    font-weight: 700;
-    color: $amber;
-    font-variant-numeric: tabular-nums;
-    min-width: 44px;
-  }
-
-  &__text {
-    font-size: 11px;
-    color: #854f0b;
-    line-height: 1.4;
-  }
-}
-
-// Price rows
-.confirm-price {
-  margin-bottom: 0;
-
-  &__row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: $muted;
-    margin-bottom: 8px;
-    align-items: center;
-
-    strong {
-      color: $night;
-      font-weight: 500;
-    }
-
-    &--promo strong {
-      color: $green;
-    }
-
-    &--total {
-      font-size: 15px;
-      font-weight: 600;
-      color: $night;
-      border-top: 0.5px solid $border;
-      padding-top: 10px;
-      margin-top: 4px;
-    }
-  }
-}
-
-// Payment methods
-.confirm-pay-methods {
+// ─── Form — mirrors .seat-form exactly ───────────────────
+.info-form {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.confirm-pay-opt {
-  display: flex;
-  align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1.5px solid $border;
-  cursor: pointer;
-  transition: all 0.15s;
-  background: #f9fafb;
+  margin-bottom: 16px;
 
-  &--sel {
-    border-color: $amber;
-    background: $amber-pale;
+  &__field {
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: $muted;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    :global(.ant-input),
+    :global(.ant-select-selector) {
+      border-radius: 8px !important;
+      border-color: $border !important;
+      font-size: 13px !important;
+      font-family: "Be Vietnam Pro", sans-serif !important;
+
+      &:focus,
+      &:hover {
+        border-color: $amber !important;
+      }
+    }
+
+    :global(.ant-input::placeholder) {
+      color: #d1d5db;
+    }
+
+    :global(.ant-input-focused),
+    :global(.ant-select-focused .ant-select-selector) {
+      border-color: $amber !important;
+      box-shadow: 0 0 0 2px rgba($amber, 0.1) !important;
+    }
+  }
+
+  &__row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  // Action buttons sit below the form
+  &__actions {
+    display: flex;
+    gap: 10px;
+    border-top: 0.5px solid $border;
+    padding-top: 14px;
+    margin-top: 4px;
   }
 }
 
-.confirm-pay-radio {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 1.5px solid $border;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s;
+// ─── Buttons — mirror .seat-cta-btn ──────────────────────
+.info-btn-secondary {
+  height: 46px !important;
+  border-radius: 10px !important;
+  font-family: "Be Vietnam Pro", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
 
-  .confirm-pay-opt--sel & {
-    border-color: $amber;
-    background: $amber;
-  }
-}
-
-.confirm-pay-radio-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #fff;
-  display: none;
-
-  .confirm-pay-opt--sel & {
-    display: block;
-  }
-}
-
-.confirm-pay-icon {
-  width: 32px;
-  height: 24px;
-  border-radius: 4px;
-  background: #fff;
-  border: 0.5px solid $border;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  i {
-    font-size: 15px;
-  }
-}
-
-.confirm-pay-name {
-  font-size: 12px;
-  font-weight: 500;
-  color: $night;
-}
-.confirm-pay-desc {
-  font-size: 10px;
-  color: $muted;
-}
-
-// CTA
-.confirm-cta-btn {
-  &.ant-btn-primary {
-    height: 46px !important;
-    border-radius: 9px !important;
-    background: $night !important;
-    border-color: $night !important;
-    font-family: "Be Vietnam Pro", sans-serif !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    margin-bottom: 8px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 6px !important;
+  &:global(.ant-btn-default) {
+    border-color: $border !important;
+    color: $muted !important;
+    transition: all 0.2s !important;
 
     &:hover {
-      opacity: 0.88 !important;
+      border-color: $amber !important;
+      color: $amber !important;
+      background: $amber-pale !important;
     }
   }
 }
 
-.confirm-cta-note {
-  font-size: 10px;
-  color: #9ca3af;
-  text-align: center;
+.info-btn-primary {
+  height: 46px !important;
+  border-radius: 10px !important;
+  font-family: "Be Vietnam Pro", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+
+  &:global(.ant-btn-primary) {
+    background: $night !important;
+    border-color: $night !important;
+
+    &:hover {
+      opacity: 0.85 !important;
+    }
+  }
 }
 
-// ─── Responsive ───────────────────────────────────────────
+// ─── Responsive ──────────────────────────────────────────
 @media (max-width: 768px) {
-  .confirm-layout {
-    grid-template-columns: 1fr;
-    padding: 0 16px 32px;
+  .info-bc {
+    padding: 12px 16px;
   }
 
-  .confirm-right {
+  .info-layout {
+    grid-template-columns: 1fr;
+    padding: 0 16px 40px;
+  }
+
+  .info-right {
     position: static;
   }
 
-  .confirm-ticket__details {
-    grid-template-columns: 1fr 1fr;
-
-    .confirm-ticket__detail-item {
-      border-bottom: 0.5px solid $border;
-
-      &:nth-child(2n) {
-        border-right: none;
-      }
-      &:nth-last-child(-n + 2) {
-        border-bottom: none;
-      }
-    }
+  .info-form__row2 {
+    grid-template-columns: 1fr;
   }
 
-  .confirm-steps {
-    .confirm-step {
-      min-width: 70px;
-    }
+  .info-trip-card__time {
+    font-size: 20px;
+  }
+
+  .info-form__actions {
+    flex-direction: column-reverse;
   }
 }

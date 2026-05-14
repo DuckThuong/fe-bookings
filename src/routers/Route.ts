@@ -11,6 +11,8 @@ export const ROUTER_NAME = {
   HOME: "home",
   TRIP: "trip",
   BOOKING: "booking",
+  BOOKING_INFO: "booking-info",
+  BOOKING_CONFIRM: "booking-confirm",
   PROMOS: "promos",
   SUPPORT: "support",
 };
@@ -26,6 +28,8 @@ export const ROUTER_PATH = {
   HOME: `${ROUTER}/${ROUTER_NAME.HOME}`,
   TRIP: `${ROUTER}/${ROUTER_NAME.TRIP}`,
   BOOKING: `${ROUTER}/${ROUTER_NAME.BOOKING}`,
+  BOOKING_INFO: `${ROUTER}/${ROUTER_NAME.BOOKING_INFO}`,
+  BOOKING_CONFIRM: `${ROUTER}/${ROUTER_NAME.BOOKING_CONFIRM}`,
   PROMOS: `${ROUTER}/${ROUTER_NAME.PROMOS}`,
   SUPPORT: `${ROUTER}/${ROUTER_NAME.SUPPORT}`,
 };

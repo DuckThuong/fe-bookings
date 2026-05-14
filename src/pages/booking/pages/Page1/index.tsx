@@ -18,12 +18,14 @@ import type {
 import { HomeHeader } from "@/components/TopBar";
 import { Button, Input, Select } from "antd";
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTER_PATH } from "@/routers/Route";
 import { BusMap } from "../../component/BusMap";
-import "./style.scss";
 import { OperatorCard } from "../../component/OperatorCard";
 import { AddonItem } from "../../component/AddonItem";
 import { PromoSection } from "../../component/PromoSection";
 import { PolicyCard } from "../../component/PolicyCard";
+import ProgressSteps from "../../component/ProgressSteps";
 
 export const BOOKING_PAGE_DATA: BookingPageData = {
   user: { userName: "Nguyễn An", notifCount: 3 },
@@ -70,6 +72,7 @@ export const SeatSelectionPage = () => {
   const [pickupQty, setPickupQty] = useState(0);
   const [promoCode, setPromoCode] = useState<string | null>(null);
 
+  const navigate = useNavigate();
   const cfg = VEHICLES[vehicleType];
 
   const toggleSeat = useCallback((id: string) => {
@@ -120,12 +123,43 @@ export const SeatSelectionPage = () => {
 
   const total = Math.max(0, subTotal + fee + addonsTotal - promoDiscount);
 
+  const handleProceedToConfirm = () => {
+    const confirmSeats = seats.map((id) => ({ id, label: id }));
+    const confirmAddons = ADDON_SERVICES.filter(
+      (addon) => addons.has(addon.id) && (!addon.hasQty || pickupQty > 0),
+    ).map((addon) => ({
+      id: addon.id,
+      icon: addon.icon,
+      name: addon.name,
+      price: addon.hasQty ? addon.price * pickupQty : addon.price,
+    }));
+
+    navigate(ROUTER_PATH.BOOKING_INFO, {
+      state: {
+        data: {
+          pageData: BOOKING_PAGE_DATA,
+          seats: confirmSeats,
+          addons: confirmAddons,
+          subTotal,
+          addonsTotal,
+          fee,
+          promoCode,
+          promoDiscount,
+          total,
+          holdSeconds: 600,
+        },
+      },
+    });
+  };
+
   return (
     <div className="seat-page">
       <HomeHeader
         userName={BOOKING_PAGE_DATA.user.userName}
         notifCount={BOOKING_PAGE_DATA.user.notifCount}
       />
+
+      <ProgressSteps activeIdx={0} />
 
       {/* Breadcrumb */}
       <nav className="seat-breadcrumb" aria-label="Breadcrumb">
@@ -403,6 +437,7 @@ export const SeatSelectionPage = () => {
               block
               className="seat-cta-btn"
               disabled={seats.length === 0}
+              onClick={handleProceedToConfirm}
             >
               Xác nhận đặt vé
             </Button>
