@@ -32,7 +32,7 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
   },
 ];
 
-export const STEPS = [
+export const CONFIRM_STEPS = [
   { label: "Chọn tuyến" },
   { label: "Chọn ghế" },
   { label: "Xác nhận" },

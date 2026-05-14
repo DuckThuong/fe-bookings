@@ -1,9 +1,9 @@
-import { STEPS } from "../../constants/booking.constants";
+import { BOOKING_STEPS } from "../../constants/booking.constants";
 
 const ProgressSteps = ({ activeIdx }: { activeIdx: number }) => (
   <div className="confirm-progress">
     <div className="confirm-steps">
-      {STEPS.map((s, i) => {
+      {BOOKING_STEPS.map((s, i) => {
         const done = i < activeIdx;
         const active = i === activeIdx;
         return (

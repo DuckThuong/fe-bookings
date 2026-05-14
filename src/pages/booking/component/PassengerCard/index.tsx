@@ -1,4 +1,5 @@
 import type { BookingPageData } from "@/common/types/booking";
+import { getDropoffPointLabel, getPickupPointLabel } from "../../utils/booking.utils";
 
 const PassengerCard = ({
   passenger,
@@ -22,17 +23,11 @@ const PassengerCard = ({
         { label: "Số điện thoại", val: passenger.phone },
         {
           label: "Điểm lên xe",
-          val:
-            passenger.pickupPointOptions.find(
-              (o) => o.value === passenger.pickupPointDefault,
-            )?.label ?? "—",
+          val: getPickupPointLabel(passenger),
         },
         {
           label: "Điểm xuống xe",
-          val:
-            passenger.dropoffPointOptions.find(
-              (o) => o.value === passenger.dropoffPointDefault,
-            )?.label ?? "—",
+          val: getDropoffPointLabel(passenger),
         },
       ].map((item) => (
         <div key={item.label} className="confirm-info-item">

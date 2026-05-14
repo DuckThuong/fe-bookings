@@ -2,6 +2,7 @@ import type {
   BookingConfirmData,
   SelectedSeat,
 } from "../../types/confirm.types";
+import { getDropoffPointLabel, getPickupPointLabel } from "../../utils/booking.utils";
 
 const TicketCard = ({
   data,
@@ -39,9 +40,7 @@ const TicketCard = ({
           <div className="confirm-ticket__time">{trip.departTime}</div>
           <div className="confirm-ticket__city">{trip.from}</div>
           <div className="confirm-ticket__station">
-            {data.pageData.passenger.pickupPointOptions.find(
-              (o) => o.value === data.pageData.passenger.pickupPointDefault,
-            )?.label ?? "—"}
+            {getPickupPointLabel(data.pageData.passenger)}
           </div>
         </div>
 
@@ -69,9 +68,7 @@ const TicketCard = ({
           </div>
           <div className="confirm-ticket__city">{trip.to}</div>
           <div className="confirm-ticket__station">
-            {data.pageData.passenger.dropoffPointOptions.find(
-              (o) => o.value === data.pageData.passenger.dropoffPointDefault,
-            )?.label ?? "—"}
+            {getDropoffPointLabel(data.pageData.passenger)}
           </div>
         </div>
       </div>
@@ -89,18 +86,12 @@ const TicketCard = ({
           {
             label: "Điểm lên xe",
             icon: "ti-map-pin",
-            val:
-              data.pageData.passenger.pickupPointOptions.find(
-                (o) => o.value === data.pageData.passenger.pickupPointDefault,
-              )?.label ?? "—",
+            val: getPickupPointLabel(data.pageData.passenger),
           },
           {
             label: "Điểm xuống xe",
             icon: "ti-map-pin-2",
-            val:
-              data.pageData.passenger.dropoffPointOptions.find(
-                (o) => o.value === data.pageData.passenger.dropoffPointDefault,
-              )?.label ?? "—",
+            val: getDropoffPointLabel(data.pageData.passenger),
           },
         ].map((d) => (
           <div key={d.label} className="confirm-ticket__detail-item">
