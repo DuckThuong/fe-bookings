@@ -12,6 +12,9 @@ import { SupportPage } from "@/pages/home/pages/Page4";
 import { SeatSelectionPage } from "@/pages/booking/pages/Page1";
 import { BookingInfoRoute } from "@/pages/booking/pages/Page2";
 import { BookingConfirmRoute } from "@/pages/booking/pages/Page3";
+import BookingSuccessRoute, {
+  BookingSuccessPage,
+} from "@/pages/booking/pages/Page4";
 
 export const WebRouter = () => (
   <Routes>
@@ -29,6 +32,10 @@ export const WebRouter = () => (
     <Route
       path={ROUTER_PATH.BOOKING_CONFIRM}
       element={<BookingConfirmRoute />}
+    />
+    <Route
+      path={ROUTER_PATH.BOOKING_SUCCESS}
+      element={<BookingSuccessRoute />}
     />
     <Route path={ROUTER_PATH.PROMOS} element={<PromosPage />} />
     <Route path={ROUTER_PATH.SUPPORT} element={<SupportPage />} />

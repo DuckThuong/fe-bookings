@@ -28,11 +28,11 @@ import { PolicyCard } from "../../component/PolicyCard";
 import ProgressSteps from "../../component/ProgressSteps";
 
 export const BOOKING_PAGE_DATA: BookingPageData = {
-  user: { userName: "Nguyễn An", notifCount: 3 },
+  user: { userName: "Nguyễn An", notifCount: 3, phone: "098 765 4321" },
   breadcrumb: [
-    { label: "Trang chủ" },
-    { label: "Vé xe" },
-    { label: "Chọn ghế" },
+    { label: "Trang chủ", href: ROUTER_PATH.HOME },
+    { label: "Vé xe", href: ROUTER_PATH.BOOKING },
+    { label: "Chọn ghế", href: ROUTER_PATH.BOOKING_INFO },
   ],
   trip: {
     from: "Hà Nội",
@@ -171,7 +171,7 @@ export const SeatSelectionPage = () => {
               </span>
             )}
             {idx < BOOKING_PAGE_DATA.breadcrumb.length - 1 ? (
-              <a href="#">{item.label}</a>
+              <a href={item.href}>{item.label}</a>
             ) : (
               item.label
             )}

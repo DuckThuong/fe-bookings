@@ -19,7 +19,6 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
   );
 
   const handleContinue = () => {
-    // Update pageData with form values
     const updatedData = {
       ...data,
       pageData: {
@@ -34,14 +33,12 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
       },
     };
 
-    // Navigate to booking confirm page (step 3)
     navigate(ROUTER_PATH.BOOKING_CONFIRM, {
       state: { data: updatedData },
     });
   };
 
   const handleBack = () => {
-    // Go back to seat selection
     navigate(ROUTER_PATH.BOOKING);
   };
 

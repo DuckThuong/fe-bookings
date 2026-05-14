@@ -1,0 +1,88 @@
+import { Button, message } from "antd";
+import type { TripInfo } from "../../types/confirm.types";
+
+interface SuccessHeroProps {
+  bookingId: TripInfo["bookingId"];
+  phone: string;
+}
+
+const SuccessHero = ({ bookingId, phone }: SuccessHeroProps) => {
+  const handleCopy = () => {
+    navigator.clipboard?.writeText(bookingId);
+    message.success("Đã sao chép mã đặt vé");
+  };
+
+  return (
+    <div className="success-hero">
+      <div className="success-hero__ring-wrap">
+        <div className="success-hero__ring-pulse" />
+        <div className="success-hero__ring-pulse success-hero__ring-pulse--2" />
+        <svg
+          className="success-hero__check-svg"
+          viewBox="0 0 88 88"
+          fill="none"
+        >
+          <circle
+            cx="44"
+            cy="44"
+            r="42"
+            fill="#dcfce7"
+            stroke="#22c55e"
+            strokeWidth="1.5"
+          />
+          <path
+            className="success-hero__check-path"
+            d="M26 44l13 13 23-22"
+            stroke="#16a34a"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+
+      <div className="success-hero__booking-id">
+        <i className="ti ti-ticket" aria-hidden="true" />
+        Mã đặt vé:&nbsp;<span>{bookingId}</span>
+        <button
+          onClick={handleCopy}
+          className="success-hero__copy-btn"
+          title="Sao chép"
+          aria-label="Sao chép mã đặt vé"
+        >
+          <i className="ti ti-copy" aria-hidden="true" />
+        </button>
+      </div>
+
+      <h1 className="success-hero__title">Đặt vé thành công!</h1>
+      <p className="success-hero__sub">
+        Vé điện tử đã được gửi đến <strong>{phone}</strong> và email của bạn.
+        <br />
+        Chúc bạn có một hành trình thật tuyệt vời.
+      </p>
+
+      <div className="success-hero__actions">
+        <Button
+          className="success-hero__btn-primary"
+          icon={<i className="ti ti-download" aria-hidden="true" />}
+        >
+          Tải vé PDF
+        </Button>
+        <Button
+          className="success-hero__btn-outline"
+          icon={<i className="ti ti-share" aria-hidden="true" />}
+        >
+          Chia sẻ vé
+        </Button>
+        <Button
+          className="success-hero__btn-ghost"
+          icon={<i className="ti ti-home" aria-hidden="true" />}
+        >
+          Về trang chủ
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default SuccessHero;

@@ -1,4 +1,4 @@
-import { STEPS } from "@/common/constants/constants";
+import { STEPS } from "../../constants/booking.constants";
 
 const ProgressSteps = ({ activeIdx }: { activeIdx: number }) => (
   <div className="confirm-progress">

@@ -1,0 +1,83 @@
+$night: #0a0e1a;
+$amber: #f5a623;
+$border: #e5e7eb;
+$muted: #6b7280;
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.booking-success-page {
+  min-height: 100vh;
+  background: #f4f5f7;
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 13px;
+}
+
+// ─── Breadcrumb ───────────────────────────────────────────
+.success-bc {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: $muted;
+  padding: 10px 24px;
+
+  a {
+    color: $muted;
+    text-decoration: none;
+    &:hover {
+      color: $night;
+    }
+  }
+
+  span {
+    color: $night;
+  }
+
+  i {
+    font-size: 11px;
+  }
+}
+
+// ─── Page body ────────────────────────────────────────────
+.success-page-body {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ─── Main grid ────────────────────────────────────────────
+.success-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 16px;
+  animation: fadeUp 0.4s 0.1s ease both;
+}
+
+.success-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// ─── Responsive ───────────────────────────────────────────
+@media (max-width: 768px) {
+  .success-page-body {
+    padding: 0 16px 32px;
+  }
+
+  .success-main-grid {
+    grid-template-columns: 1fr;
+  }
+}

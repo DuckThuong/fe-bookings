@@ -2,7 +2,7 @@ import { formatVnd } from "@/common/contexts/booking";
 import { useCountdown } from "@/common/contexts/helper";
 import { HomeHeader } from "@/components/TopBar";
 import { Button } from "antd";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ROUTER_PATH } from "@/routers/Route";
 import { useState } from "react";
 import AddonsCard from "../../component/AddonsCard";
@@ -14,11 +14,23 @@ import type { BookingConfirmData } from "../../types/confirm.types";
 import "./style.scss";
 
 export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
+  const navigate = useNavigate();
   const [payMethod, setPayMethod] = useState("card");
   const timer = useCountdown(data.holdSeconds ?? 600);
-
   const handleConfirm = () => {
-    console.log("confirm booking, payment:", payMethod);
+    const updatedData = {
+      ...data,
+      pageData: {
+        ...data.pageData,
+        passenger: {
+          ...data.pageData.passenger,
+        },
+      },
+    };
+
+    navigate(ROUTER_PATH.BOOKING_SUCCESS, {
+      state: { data: updatedData },
+    });
   };
 
   const handleEdit = (section: string) => {

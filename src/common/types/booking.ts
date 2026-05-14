@@ -25,8 +25,8 @@ export interface VehicleConfig {
 }
 
 export type BookingPageData = {
-  user: { userName: string; notifCount: number };
-  breadcrumb: { label: string }[];
+  user: { userName: string; notifCount: number; phone: string | null };
+  breadcrumb: { label: string; href: string }[];
   trip: {
     from: string;
     to: string;
