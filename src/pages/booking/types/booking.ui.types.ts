@@ -1,9 +1,3 @@
-/**
- * Comprehensive type definitions for Booking UI
- * This file contains all data types used across the booking flow
- */
-
-// ==================== USER & AUTH ====================
 export type UserInfo = {
   userName: string;
   notifCount: number;
@@ -15,7 +9,6 @@ export type BreadcrumbItem = {
   href: string;
 };
 
-// ==================== PASSENGER ====================
 export type PointOption = {
   value: string;
   label: string;
@@ -30,7 +23,6 @@ export type PassengerInfo = {
   dropoffPointOptions: PointOption[];
 };
 
-// ==================== TRIP ====================
 export type TripInfo = {
   from: string;
   to: string;
@@ -44,7 +36,6 @@ export type TripInfo = {
   unitPrice: number;
 };
 
-// ==================== SEAT ====================
 export type SeatStatus = "available" | "booked" | "vip";
 
 export type SeatDef = {
@@ -62,7 +53,6 @@ export type RowDef = {
   seats: (SeatDef | null)[];
 };
 
-// ==================== ADDON SERVICE ====================
 export type AddonService = {
   id: string;
   icon: string;
@@ -79,7 +69,6 @@ export type ConfirmedAddon = {
   price: number;
 };
 
-// ==================== PROMO CODE ====================
 export type PromoCode = {
   code: string;
   icon: string;
@@ -90,7 +79,6 @@ export type PromoCode = {
   max?: number;
 };
 
-// ==================== PAYMENT ====================
 export type PaymentMethod = {
   id: string;
   icon: string;
@@ -105,7 +93,6 @@ export type PaymentMethodInfo = {
   last4: string;
 };
 
-// ==================== POLICY ====================
 export type PolicyItem = {
   icon: string;
   title: string;
@@ -114,13 +101,11 @@ export type PolicyItem = {
   desc: string;
 };
 
-// ==================== OPERATOR AMENITY ====================
 export type OperatorAmenity = {
   icon: string;
   label: string;
 };
 
-// ==================== VEHICLE ====================
 export type VehicleType = "16" | "24" | "32" | "40" | "45";
 
 export type VehicleConfig = {
@@ -132,7 +117,6 @@ export type VehicleConfig = {
   isSleeper: boolean;
 };
 
-// ==================== NOTIFICATION ====================
 export type NotifColorClass = "green" | "amber" | "blue";
 
 export type NotifItem = {
@@ -143,7 +127,6 @@ export type NotifItem = {
   desc: string;
 };
 
-// ==================== NEXT ACTION ====================
 export type NextAction = {
   id: string;
   icon: string;
@@ -152,7 +135,6 @@ export type NextAction = {
   prompt: string;
 };
 
-// ==================== BOOKING PAGE DATA ====================
 export type BookingPageData = {
   user: UserInfo;
   breadcrumb: BreadcrumbItem[];
@@ -160,7 +142,6 @@ export type BookingPageData = {
   passenger: PassengerInfo;
 };
 
-// ==================== BOOKING CONFIRM DATA ====================
 export type BookingConfirmData = {
   pageData: BookingPageData;
   seats: SelectedSeat[];
@@ -174,7 +155,6 @@ export type BookingConfirmData = {
   holdSeconds?: number;
 };
 
-// ==================== BOOKING SUCCESS DATA ====================
 export type BookingSuccessTripInfo = {
   bookingId: string;
   operatorShortName: string;
@@ -204,7 +184,6 @@ export type BookingSuccessData = BookingConfirmData & {
   nextActions: NextAction[];
 };
 
-// ==================== STEP ====================
 export type StepItem = {
   label: string;
 };
