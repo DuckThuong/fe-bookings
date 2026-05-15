@@ -1,4 +1,4 @@
-import { PAYMENT_METHODS } from "../../constants/confirm.constants";
+import { mockPaymentMethods } from "../../mocks/booking.mock.data";
 
 const PaymentSelector = ({
   selected,
@@ -8,7 +8,7 @@ const PaymentSelector = ({
   onChange: (id: string) => void;
 }) => (
   <div className="confirm-pay-methods">
-    {PAYMENT_METHODS.map((m) => (
+    {mockPaymentMethods.map((m) => (
       <div
         key={m.id}
         className={`confirm-pay-opt${

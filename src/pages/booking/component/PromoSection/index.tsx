@@ -1,4 +1,4 @@
-import { PROMO_CODES } from "@/common/constants/booking";
+import { mockPromoCodes } from "../../mocks/booking.mock.data";
 import { useState } from "react";
 
 export const PromoSection = ({
@@ -12,7 +12,7 @@ export const PromoSection = ({
 
   const handleApply = () => {
     const code = input.trim().toUpperCase();
-    onApply(PROMO_CODES.find((p) => p.code === code) ? code : null);
+    onApply(mockPromoCodes.find((p) => p.code === code) ? code : null);
   };
 
   const handleTagClick = (code: string) => {
@@ -45,7 +45,7 @@ export const PromoSection = ({
         </button>
       </div>
       <div className="extras-promo-tags">
-        {PROMO_CODES.map((p) => (
+        {mockPromoCodes.map((p) => (
           <div
             key={p.code}
             className={`extras-promo-tag${

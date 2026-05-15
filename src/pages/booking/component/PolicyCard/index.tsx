@@ -1,4 +1,4 @@
-import { POLICIES } from "@/common/constants/booking";
+import { mockPolicies } from "../../mocks/booking.mock.data";
 
 export const PolicyCard = () => (
   <div className="extras-card">
@@ -6,7 +6,7 @@ export const PolicyCard = () => (
       <i className="ti ti-clipboard-list" aria-hidden="true" />
       <span className="extras-card__title">Chính sách nhà xe</span>
     </div>
-    {POLICIES.map((p) => (
+    {mockPolicies.map((p) => (
       <div key={p.title} className="extras-policy">
         <i className={`ti ti-${p.icon}`} aria-hidden="true" />
         <div className="extras-policy__body">

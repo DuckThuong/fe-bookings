@@ -26,43 +26,9 @@ import { AddonItem } from "../../component/AddonItem";
 import { PromoSection } from "../../component/PromoSection";
 import { PolicyCard } from "../../component/PolicyCard";
 import ProgressSteps from "../../component/ProgressSteps";
+import { mockBookingPageData } from "../../mocks/booking.mock.data";
 
-export const BOOKING_PAGE_DATA: BookingPageData = {
-  user: { userName: "Nguyễn An", notifCount: 3, phone: "098 765 4321" },
-  breadcrumb: [
-    { label: "Trang chủ", href: ROUTER_PATH.HOME },
-    { label: "Vé xe", href: ROUTER_PATH.BOOKING },
-    { label: "Chọn ghế", href: ROUTER_PATH.BOOKING_INFO },
-  ],
-  trip: {
-    from: "Hà Nội",
-    to: "TP. Hồ Chí Minh",
-    operatorName: "GoRide Express",
-    operatorCode: "GR",
-    departTime: "06:00",
-    arriveTime: "14:00",
-    arriveNote: "(+1)",
-    date: "11/05/2026",
-    durationLabel: "~32 tiếng",
-    unitPrice: UNIT_PRICE,
-  },
-  passenger: {
-    fullName: "Nguyễn Văn An",
-    phone: "098 765 4321",
-    pickupPointDefault: "mydinh",
-    dropoffPointDefault: "mienDong",
-    pickupPointOptions: [
-      { value: "mydinh", label: "Mỹ Đình" },
-      { value: "giapbat", label: "Giáp Bát" },
-      { value: "nuocngam", label: "Nước Ngầm" },
-    ],
-    dropoffPointOptions: [
-      { value: "mienDong", label: "Miền Đông" },
-      { value: "mienTay", label: "Miền Tây" },
-      { value: "binhTrieu", label: "Bình Triệu" },
-    ],
-  },
-};
+export const BOOKING_PAGE_DATA = mockBookingPageData;
 
 export const SeatSelectionPage = () => {
   const [vehicleType, setVehicleType] = useState<VehicleType>("16");
