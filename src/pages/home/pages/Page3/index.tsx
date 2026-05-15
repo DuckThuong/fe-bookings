@@ -11,10 +11,7 @@ const FAKE_USER = {
 export const PromosPage = () => {
   return (
     <div className="promos-page">
-      <HomeHeader
-        userName={FAKE_USER.userName}
-        notifCount={FAKE_USER.notifCount}
-      />
+      <HomeHeader />
 
       <main className="promos-main">
         <section className="promos-hero">

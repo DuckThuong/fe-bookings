@@ -39,10 +39,7 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
 
   return (
     <div className="booking-confirm-page">
-      <HomeHeader
-        userName={data.pageData.user.userName}
-        notifCount={data.pageData.user.notifCount}
-      />
+      <HomeHeader />
 
       <ProgressSteps activeIdx={2} />
 

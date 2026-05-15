@@ -15,10 +15,7 @@ const FAKE_USER = {
 export const HomePage = () => {
   return (
     <div className="home-page">
-      <HomeHeader
-        userName={FAKE_USER.userName}
-        notifCount={FAKE_USER.notifCount}
-      />
+      <HomeHeader />
 
       <main className="home-main">
         <HeroBanner />

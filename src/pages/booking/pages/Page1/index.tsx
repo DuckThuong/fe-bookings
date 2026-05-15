@@ -120,10 +120,7 @@ export const SeatSelectionPage = () => {
 
   return (
     <div className="seat-page">
-      <HomeHeader
-        userName={BOOKING_PAGE_DATA.user.userName}
-        notifCount={BOOKING_PAGE_DATA.user.notifCount}
-      />
+      <HomeHeader />
 
       <ProgressSteps activeIdx={0} />
 

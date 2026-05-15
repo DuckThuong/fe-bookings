@@ -9,11 +9,7 @@ import bellIcn from "@/assets/icons/bell.svg";
 import chevronDownIcn from "@/assets/icons/chevron-down.svg";
 import { ROUTER_PATH } from "@/routers/Route";
 import { Link, useLocation } from "react-router-dom";
-
-interface HomeHeaderProps {
-  userName?: string;
-  notifCount?: number;
-}
+import { useUser } from "@/common/contexts/UserContext";
 
 const NAV_ITEMS = [
   { label: "Trang chủ", href: ROUTER_PATH.HOME },
@@ -47,11 +43,10 @@ const USER_MENU_ITEMS: MenuProps["items"] = [
   },
 ];
 
-export const HomeHeader = ({
-  userName = "Khách",
-  notifCount = 3,
-}: HomeHeaderProps) => {
+export const HomeHeader = () => {
   const { pathname } = useLocation();
+  const { user } = useUser();
+  const { userName, notifCount } = user;
 
   const isNavItemActive = (href: string) => {
     const normalize = (path: string) =>
@@ -123,9 +118,9 @@ export const HomeHeader = ({
           >
             <Button className="home-header__avatar-btn">
               <Avatar size={34} className="home-header__avatar">
-                {userName.charAt(0).toUpperCase()}
+                {userName?.charAt(0).toUpperCase() || "K"}
               </Avatar>
-              <span className="home-header__username">{userName}</span>
+              <span className="home-header__username">{userName || "Khách"}</span>
               <img
                 src={chevronDownIcn}
                 alt="Chevron Down"

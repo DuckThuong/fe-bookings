@@ -97,10 +97,7 @@ export const TripPage = () => {
 
   return (
     <div className="booking-page">
-      <HomeHeader
-        userName={FAKE_USER.userName}
-        notifCount={FAKE_USER.notifCount}
-      />
+      <HomeHeader />
       <BookingHero />
 
       <div className="booking-page__search-wrap">

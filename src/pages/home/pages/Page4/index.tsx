@@ -30,10 +30,7 @@ const FAKE_USER = {
 export const SupportPage = () => {
   return (
     <div className="support-page">
-      <HomeHeader
-        userName={FAKE_USER.userName}
-        notifCount={FAKE_USER.notifCount}
-      />
+      <HomeHeader />
 
       <main className="support-main">
         <section className="support-hero">
