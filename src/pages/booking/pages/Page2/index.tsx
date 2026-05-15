@@ -1,34 +1,33 @@
 import { HomeHeader } from "@/components/TopBar";
-import { Button, Input, Select } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ROUTER_PATH } from "@/routers/Route";
-import { useState } from "react";
 import ProgressSteps from "../../component/ProgressSteps";
 import type { BookingConfirmData } from "../../types/confirm.types";
 import "./style.scss";
 
 export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState(data.pageData.passenger.fullName);
-  const [phone, setPhone] = useState(data.pageData.passenger.phone);
-  const [pickupPoint, setPickupPoint] = useState(
-    data.pageData.passenger.pickupPointDefault,
-  );
-  const [dropoffPoint, setDropoffPoint] = useState(
-    data.pageData.passenger.dropoffPointDefault,
-  );
+  const [form] = Form.useForm();
 
-  const handleContinue = () => {
+  const initialValues = {
+    fullName: data.pageData.passenger.fullName,
+    phone: data.pageData.passenger.phone,
+    pickupPoint: data.pageData.passenger.pickupPointDefault,
+    dropoffPoint: data.pageData.passenger.dropoffPointDefault,
+  };
+
+  const handleContinue = (values: typeof initialValues) => {
     const updatedData = {
       ...data,
       pageData: {
         ...data.pageData,
         passenger: {
           ...data.pageData.passenger,
-          fullName,
-          phone,
-          pickupPointDefault: pickupPoint,
-          dropoffPointDefault: dropoffPoint,
+          fullName: values.fullName,
+          phone: values.phone,
+          pickupPointDefault: values.pickupPoint,
+          dropoffPointDefault: values.dropoffPoint,
         },
       },
     };
@@ -69,60 +68,84 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
 
       {/* Main grid */}
       <div className="info-layout">
-        {/* LEFT */}
+        {/* LEFT - Compact summary */}
         <div className="info-left">
-          {/* Trip summary card */}
-          <div className="info-trip-card">
-            <div className="info-trip-card__header">
-              <i className="ti ti-route" aria-hidden="true" />
-              <span>Hành trình</span>
+          <div className="info-summary-card">
+            <div className="info-summary-card__header">
+              <i className="ti ti-ticket" aria-hidden="true" />
+              <span>Tóm tắt đặt vé</span>
             </div>
-            <div className="info-trip-card__route">
-              <div className="info-trip-card__endpoint">
-                <div className="info-trip-card__time">
-                  {data.pageData.trip.departTime}
-                </div>
-                <div className="info-trip-card__city">
-                  {data.pageData.trip.from}
-                </div>
-              </div>
-              <div className="info-trip-card__journey">
-                <div className="info-trip-card__duration">
-                  {data.pageData.trip.durationLabel}
-                </div>
-                <div className="info-trip-card__line" />
-              </div>
-              <div className="info-trip-card__endpoint info-trip-card__endpoint--right">
-                <div className="info-trip-card__time">
-                  {data.pageData.trip.arriveTime}
-                  {data.pageData.trip.arriveNote}
-                </div>
-                <div className="info-trip-card__city">
-                  {data.pageData.trip.to}
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Seats card */}
-          <div className="info-seats-card">
-            <div className="info-seats-card__header">
-              <i className="ti ti-chair" aria-hidden="true" />
-              <span>Ghế đã chọn</span>
-            </div>
-            <div className="info-seats-card__content">
-              <div className="info-seats-list">
-                {data.seats.map((seat) => (
-                  <div key={seat.id} className="info-seat-chip">
-                    {seat.id}
+            {/* Trip info */}
+            <div className="info-summary-card__section">
+              <div className="info-summary-card__section-title">
+                <i className="ti ti-route" aria-hidden="true" />
+                Hành trình
+              </div>
+              <div className="info-summary-card__trip">
+                <div className="info-summary-card__trip-point">
+                  <div className="info-summary-card__time">
+                    {data.pageData.trip.departTime}
                   </div>
+                  <div className="info-summary-card__city">
+                    {data.pageData.trip.from}
+                  </div>
+                </div>
+                <div className="info-summary-card__trip-arrow">
+                  <i className="ti ti-arrow-right" aria-hidden="true" />
+                </div>
+                <div className="info-summary-card__trip-point">
+                  <div className="info-summary-card__time">
+                    {data.pageData.trip.arriveTime}
+                    {data.pageData.trip.arriveNote && (
+                      <span className="info-summary-card__note">
+                    {data.pageData.trip.arriveNote}
+                  </span>
+                    )}
+                  </div>
+                  <div className="info-summary-card__city">
+                    {data.pageData.trip.to}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Seats */}
+            <div className="info-summary-card__section">
+              <div className="info-summary-card__section-title">
+                <i className="ti ti-chair" aria-hidden="true" />
+                Ghế đã chọn
+              </div>
+              <div className="info-summary-card__seats">
+                {data.seats.map((seat) => (
+                  <span key={seat.id} className="info-summary-card__seat">
+                    {seat.id}
+                  </span>
                 ))}
               </div>
             </div>
+
+            {/* Addons */}
+            {data.addons.length > 0 && (
+              <div className="info-summary-card__section">
+                <div className="info-summary-card__section-title">
+                  <i className="ti ti-package" aria-hidden="true" />
+                  Dịch vụ thêm
+                </div>
+                <div className="info-summary-card__addons">
+                  {data.addons.map((addon) => (
+                    <div key={addon.id} className="info-summary-card__addon">
+                      <i className={`ti ${addon.icon}`} aria-hidden="true" />
+                      <span>{addon.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* RIGHT */}
+        {/* RIGHT - Passenger form */}
         <div className="info-right">
           <div className="info-form-card">
             <div className="info-form-card__title">
@@ -131,65 +154,86 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
             </div>
 
             {/* Form fields */}
-            <div className="info-form">
-              <div className="info-form__field">
-                <label>Họ và tên</label>
+            <Form
+              form={form}
+              initialValues={initialValues}
+              onFinish={handleContinue}
+              layout="vertical"
+              className="info-form"
+            >
+              <Form.Item
+                label="Họ và tên"
+                name="fullName"
+                rules={[{ required: true, message: "Vui lòng nhập họ và tên" }]}
+              >
                 <Input
                   placeholder="Nhập họ và tên"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  size="large"
                 />
-              </div>
+              </Form.Item>
 
-              <div className="info-form__field">
-                <label>Số điện thoại</label>
+              <Form.Item
+                label="Số điện thoại"
+                name="phone"
+                rules={[
+                  { required: true, message: "Vui lòng nhập số điện thoại" },
+                  { pattern: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ" },
+                ]}
+              >
                 <Input
                   placeholder="Nhập số điện thoại"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  size="large"
                 />
-              </div>
+              </Form.Item>
 
               <div className="info-form__row2">
-                <div className="info-form__field">
-                  <label>Điểm lên xe</label>
+                <Form.Item
+                  label="Điểm lên xe"
+                  name="pickupPoint"
+                  rules={[{ required: true, message: "Vui lòng chọn điểm lên xe" }]}
+                >
                   <Select
-                    value={pickupPoint}
-                    onChange={setPickupPoint}
                     options={data.pageData.passenger.pickupPointOptions}
+                    size="large"
                     style={{ width: "100%" }}
+                    placeholder="Chọn điểm lên xe"
                   />
-                </div>
-                <div className="info-form__field">
-                  <label>Điểm xuống xe</label>
+                </Form.Item>
+                <Form.Item
+                  label="Điểm xuống xe"
+                  name="dropoffPoint"
+                  rules={[{ required: true, message: "Vui lòng chọn điểm xuống xe" }]}
+                >
                   <Select
-                    value={dropoffPoint}
-                    onChange={setDropoffPoint}
                     options={data.pageData.passenger.dropoffPointOptions}
+                    size="large"
                     style={{ width: "100%" }}
+                    placeholder="Chọn điểm xuống xe"
                   />
-                </div>
+                </Form.Item>
               </div>
-            </div>
 
-            <div className="info-form__actions">
-              <Button
-                type="default"
-                block
-                onClick={handleBack}
-                className="info-btn-secondary"
-              >
-                ← Quay lại
-              </Button>
-              <Button
-                type="primary"
-                block
-                onClick={handleContinue}
-                className="info-btn-primary"
-              >
-                Tiếp tục →
-              </Button>
-            </div>
+              <div className="info-form__actions">
+                <Button
+                  type="default"
+                  block
+                  onClick={handleBack}
+                  className="info-btn-secondary"
+                  size="large"
+                >
+                  ← Quay lại
+                </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  className="info-btn-primary"
+                  size="large"
+                >
+                  Tiếp tục →
+                </Button>
+              </div>
+            </Form>
           </div>
         </div>
       </div>

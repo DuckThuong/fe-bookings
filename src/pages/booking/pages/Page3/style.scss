@@ -26,7 +26,7 @@ $green-bg: #f0fdf4;
   min-height: 100vh;
   background: #f4f5f7;
   font-family: "Be Vietnam Pro", sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
 }
 
 // ─── Progress stepper ─────────────────────────────────────
@@ -117,7 +117,7 @@ $green-bg: #f0fdf4;
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 12.5px;
   color: $muted;
   padding: 10px 24px;
 
@@ -190,12 +190,12 @@ $green-bg: #f0fdf4;
     flex: 1;
   }
   &__op-name {
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 600;
     color: #fff;
   }
   &__op-type {
-    font-size: 11px;
+    font-size: 11.5px;
     color: rgba(#fff, 0.5);
     margin-top: 1px;
   }
@@ -236,7 +236,7 @@ $green-bg: #f0fdf4;
 
   &__time {
     font-size: 26px;
-    font-weight: 500;
+    font-weight: 600;
     color: $night;
     line-height: 1;
   }
@@ -244,16 +244,16 @@ $green-bg: #f0fdf4;
   &__arrive-note {
     font-size: 12px;
     color: $muted;
-    font-weight: 400;
+    font-weight: 500;
   }
 
   &__city {
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 500;
     color: $night;
   }
   &__station {
-    font-size: 11px;
+    font-size: 11.5px;
     color: $muted;
   }
 
@@ -267,12 +267,12 @@ $green-bg: #f0fdf4;
   }
 
   &__duration {
-    font-size: 11px;
+    font-size: 11.5px;
     color: $muted;
     font-weight: 500;
   }
   &__stops {
-    font-size: 10px;
+    font-size: 10.5px;
     color: #9ca3af;
   }
 
@@ -354,17 +354,17 @@ $green-bg: #f0fdf4;
   }
 
   &__detail-label {
-    font-size: 10px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 700;
     color: $muted;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 1px;
     margin-bottom: 4px;
   }
 
   &__detail-val {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 13.5px;
+    font-weight: 600;
     color: $night;
     display: flex;
     align-items: center;
@@ -388,10 +388,10 @@ $green-bg: #f0fdf4;
 
   &__seats-label {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 700;
     color: $muted;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 1px;
   }
 
   &__seat-chips {
@@ -409,7 +409,7 @@ $green-bg: #f0fdf4;
     background: $night;
     color: $amber;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
 
     i {
       font-size: 13px;
@@ -457,8 +457,8 @@ $green-bg: #f0fdf4;
   }
 
   &__title {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 13.5px;
+    font-weight: 600;
     color: $night;
     flex: 1;
   }
@@ -467,7 +467,7 @@ $green-bg: #f0fdf4;
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 11px;
+    font-size: 11.5px;
     color: $muted;
     cursor: pointer;
     border: none;
@@ -507,17 +507,17 @@ $green-bg: #f0fdf4;
   }
 
   &__label {
-    font-size: 10px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 700;
     color: $muted;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 1px;
     margin-bottom: 3px;
   }
 
   &__val {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 13.5px;
+    font-weight: 600;
     color: $night;
   }
 }
@@ -555,14 +555,14 @@ $green-bg: #f0fdf4;
 
   &__name {
     flex: 1;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
     color: $night;
   }
 
   &__price {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
     color: $night;
 
     &--free {
@@ -589,18 +589,18 @@ $green-bg: #f0fdf4;
   }
 
   &__title {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
     color: $night;
     margin-bottom: 4px;
   }
 
   &__desc {
-    font-size: 11px;
+    font-size: 11.5px;
     color: $muted;
     line-height: 1.6;
     strong {
-      font-weight: 600;
+      font-weight: 700;
       color: $night;
     }
   }
@@ -614,8 +614,8 @@ $green-bg: #f0fdf4;
   padding: 18px;
 
   &__title {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 13.5px;
+    font-weight: 600;
     color: $night;
     margin-bottom: 14px;
     padding-bottom: 10px;
@@ -636,11 +636,11 @@ $green-bg: #f0fdf4;
   }
 
   &__section-label {
-    font-size: 10px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 700;
     color: $muted;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 1px;
     margin-bottom: 8px;
   }
 }
@@ -779,12 +779,12 @@ $green-bg: #f0fdf4;
 }
 
 .confirm-pay-name {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
   color: $night;
 }
 .confirm-pay-desc {
-  font-size: 10px;
+  font-size: 11px;
   color: $muted;
 }
 
@@ -796,8 +796,8 @@ $green-bg: #f0fdf4;
     background: $night !important;
     border-color: $night !important;
     font-family: "Be Vietnam Pro", sans-serif !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
     margin-bottom: 8px !important;
     display: flex !important;
     align-items: center !important;
@@ -811,7 +811,7 @@ $green-bg: #f0fdf4;
 }
 
 .confirm-cta-note {
-  font-size: 10px;
+  font-size: 11px;
   color: #9ca3af;
   text-align: center;
 }

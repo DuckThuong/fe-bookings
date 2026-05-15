@@ -27,7 +27,7 @@ $green-text: #16a34a;
   min-height: 100vh;
   background: #f4f5f7;
   font-family: "Be Vietnam Pro", sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
 }
 
 // ─── Progress stepper (unchanged — shared component) ─────
@@ -112,14 +112,13 @@ $green-text: #16a34a;
 }
 
 // ─── Breadcrumb ──────────────────────────────────────────
-// Matches .seat-breadcrumb exactly
 .info-bc {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 12.5px;
   color: $muted;
-  padding: 14px 32px; // ← was 10px 24px
+  padding: 14px 32px;
 
   a {
     color: $muted;
@@ -140,9 +139,9 @@ $green-text: #16a34a;
 // Matches .seat-layout: 1fr 300px, 32px horizontal padding
 .info-layout {
   display: grid;
-  grid-template-columns: 1fr 300px; // ← was 1fr 350px
+  grid-template-columns: 1fr 300px;
   gap: 20px;
-  padding: 0 32px 40px; // ← was 20px 24px 40px
+  padding: 0 32px 40px;
   align-items: start;
 }
 
@@ -155,13 +154,12 @@ $green-text: #16a34a;
 // Mirrors .seat-summary sticky behaviour
 .info-right {
   position: sticky;
-  top: 20px; // ← was 140px
+  top: 20px;
   align-self: start;
 }
 
-// ─── Trip summary card ───────────────────────────────────
-// Styled like .seat-map-card
-.info-trip-card {
+// ─── Summary card (compact) ───────────────────────────────
+.info-summary-card {
   background: #fff;
   border: 0.5px solid $border;
   border-radius: 12px;
@@ -172,11 +170,11 @@ $green-text: #16a34a;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 14px 24px; // ← matches seat-map-card padding
+    padding: 14px 20px;
     border-bottom: 0.5px solid $border;
     background: #fafbfc;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 14.5px;
+    font-weight: 600;
     color: $night;
 
     i {
@@ -185,82 +183,101 @@ $green-text: #16a34a;
     }
   }
 
-  &__route {
-    display: flex;
-    align-items: center;
-    padding: 18px 24px;
-    gap: 14px;
-  }
+  &__section {
+    padding: 16px 20px;
+    border-bottom: 0.5px solid $border;
 
-  &__endpoint {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    &--right {
-      text-align: right;
-      flex: 1;
+    &:last-child {
+      border-bottom: none;
     }
   }
 
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+
+    i {
+      font-size: 14px;
+      color: $amber;
+    }
+  }
+
+  &__trip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__trip-point {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
   &__time {
-    font-size: 26px; // ← bumped to match confirm-ticket__time
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     color: $night;
     line-height: 1;
   }
 
-  &__arrive-note {
-    font-size: 12px;
+  &__note {
+    font-size: 11px;
     color: $muted;
-    font-weight: 400;
+    font-weight: 500;
+    margin-left: 4px;
   }
 
   &__city {
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 500;
     color: $night;
   }
 
-  &__journey {
-    flex: 1;
+  &__trip-arrow {
+    color: $amber;
+    font-size: 16px;
+  }
+
+  &__seats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__seat {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: $night;
+    color: $amber;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid $amber;
+  }
+
+  &__addons {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding: 0 14px;
+    gap: 8px;
   }
 
-  &__duration {
-    font-size: 11px;
-    font-weight: 500;
-    color: $muted;
-  }
-
-  &__line {
-    width: 100%;
-    height: 1px;
-    background: $border;
-  }
-}
-
-// ─── Seats card ──────────────────────────────────────────
-.info-seats-card {
-  background: #fff;
-  border: 0.5px solid $border;
-  border-radius: 12px;
-  overflow: hidden;
-  animation: fadeUp 0.35s ease;
-
-  &__header {
+  &__addon {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 14px 24px;
-    border-bottom: 0.5px solid $border;
-    background: #fafbfc;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13.5px;
     color: $night;
 
     i {
@@ -268,125 +285,105 @@ $green-text: #16a34a;
       color: $amber;
     }
   }
-
-  &__content {
-    padding: 16px 24px;
-  }
 }
 
-.info-seats-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-// Mirrors .seat-selected-list__badge + seat chip
-.info-seat-chip {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: $night;
-  color: $amber;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1.5px solid $amber;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-// ─── Right panel — summary + form card ───────────────────
-// Mirrors .seat-summary exactly
+// ─── Right panel — form card ───────────────────────────────
 .info-form-card {
   background: #fff;
   border: 0.5px solid $border;
   border-radius: 12px;
-  padding: 20px;
-  animation: fadeUp 0.35s ease;
+  padding: 24px;
+  animation: fadeUp 0.35s ease 0.1s backwards;
 
   &__title {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
     color: $night;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
     border-bottom: 0.5px solid $border;
 
     i {
       color: $amber;
-      font-size: 16px;
+      font-size: 18px;
     }
   }
 }
 
-// ─── Form — mirrors .seat-form exactly ───────────────────
+// ─── Form ───────────────────────────────────────────────
 .info-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
   margin-bottom: 16px;
 
-  &__field {
-    label {
-      display: block;
-      font-size: 11px;
-      font-weight: 500;
-      color: $muted;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin-bottom: 4px;
-    }
+  :global(.ant-form-item) {
+    margin-bottom: 0;
+  }
 
-    :global(.ant-input),
-    :global(.ant-select-selector) {
-      border-radius: 8px !important;
-      border-color: $border !important;
-      font-size: 13px !important;
-      font-family: "Be Vietnam Pro", sans-serif !important;
+  :global(.ant-form-item-label > label) {
+    font-size: 11px;
+    font-weight: 700;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    height: auto;
+  }
 
-      &:focus,
-      &:hover {
-        border-color: $amber !important;
-      }
-    }
+  :global(.ant-form-item-explain) {
+    font-size: 12px;
+    margin-top: 4px;
+  }
 
-    :global(.ant-input::placeholder) {
-      color: #d1d5db;
-    }
+  :global(.ant-input),
+  :global(.ant-select-selector) {
+    border-radius: 8px !important;
+    border-color: $border !important;
+    font-size: 13.5px !important;
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    height: 44px !important;
 
-    :global(.ant-input-focused),
-    :global(.ant-select-focused .ant-select-selector) {
+    &:focus,
+    &:hover {
       border-color: $amber !important;
-      box-shadow: 0 0 0 2px rgba($amber, 0.1) !important;
     }
+  }
+
+  :global(.ant-input::placeholder) {
+    color: #d1d5db;
+  }
+
+  :global(.ant-input-focused),
+  :global(.ant-select-focused .ant-select-selector) {
+    border-color: $amber !important;
+    box-shadow: 0 0 0 2px rgba($amber, 0.1) !important;
   }
 
   &__row2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 12px;
   }
 
-  // Action buttons sit below the form
   &__actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     border-top: 0.5px solid $border;
-    padding-top: 14px;
-    margin-top: 4px;
+    padding-top: 16px;
+    margin-top: 8px;
   }
 }
 
-// ─── Buttons — mirror .seat-cta-btn ──────────────────────
+// ─── Buttons ──────────────────────────────────────────────
 .info-btn-secondary {
-  height: 46px !important;
+  height: 48px !important;
   border-radius: 10px !important;
   font-family: "Be Vietnam Pro", sans-serif !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
 
   &:global(.ant-btn-default) {
     border-color: $border !important;
@@ -402,19 +399,19 @@ $green-text: #16a34a;
 }
 
 .info-btn-primary {
-  height: 46px !important;
+  height: 48px !important;
   border-radius: 10px !important;
   font-family: "Be Vietnam Pro", sans-serif !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  background: $night !important;
+  border-color: $night !important;
+  color: $amber !important;
 
-  &:global(.ant-btn-primary) {
+  &:hover {
+    opacity: 0.85 !important;
     background: $night !important;
     border-color: $night !important;
-
-    &:hover {
-      opacity: 0.85 !important;
-    }
   }
 }
 
@@ -437,11 +434,21 @@ $green-text: #16a34a;
     grid-template-columns: 1fr;
   }
 
-  .info-trip-card__time {
-    font-size: 20px;
+  .info-summary-card__time {
+    font-size: 16px;
   }
 
   .info-form__actions {
     flex-direction: column-reverse;
+  }
+
+  .info-summary-card__trip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .info-summary-card__trip-arrow {
+    transform: rotate(90deg);
   }
 }
