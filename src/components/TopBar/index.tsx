@@ -8,7 +8,7 @@ import logoutIcn from "@/assets/icons/logout.svg";
 import bellIcn from "@/assets/icons/bell.svg";
 import chevronDownIcn from "@/assets/icons/chevron-down.svg";
 import { ROUTER_PATH } from "@/routers/Route";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "@/common/contexts/UserContext";
 
 const NAV_ITEMS = [
@@ -47,6 +47,7 @@ export const HomeHeader = () => {
   const { pathname } = useLocation();
   const { user } = useUser();
   const { userName, notifCount } = user;
+  const navigate = useNavigate();
 
   const isNavItemActive = (href: string) => {
     const normalize = (path: string) =>
@@ -72,7 +73,22 @@ export const HomeHeader = () => {
   };
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
-    console.log("user menu:", key);
+    switch (key) {
+      case "profile":
+        navigate(ROUTER_PATH.PROFILE);
+        break;
+      case "trips":
+        navigate(ROUTER_PATH.TRIP);
+        break;
+      case "settings":
+        navigate(ROUTER_PATH.SUPPORT);
+        break;
+      case "logout":
+        console.log("Đăng xuất");
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -120,7 +136,9 @@ export const HomeHeader = () => {
               <Avatar size={34} className="home-header__avatar">
                 {userName?.charAt(0).toUpperCase() || "K"}
               </Avatar>
-              <span className="home-header__username">{userName || "Khách"}</span>
+              <span className="home-header__username">
+                {userName || "Khách"}
+              </span>
               <img
                 src={chevronDownIcn}
                 alt="Chevron Down"

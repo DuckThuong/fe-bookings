@@ -1,0 +1,114 @@
+@import "../../../../color.scss";
+
+.profile-payment {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-payment__header {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28px 32px;
+  box-shadow: 0 20px 50px rgba(0, 41, 58, 0.08);
+  border: 1px solid rgba(0, 41, 58, 0.05);
+}
+
+.profile-payment__title {
+  margin: 0;
+  font-family: $font_family_1;
+  font-size: 28px;
+  font-weight: 700;
+  color: $color-text-primary;
+}
+
+.profile-payment__description {
+  margin: 10px 0 0;
+  color: $color-gray-6;
+  line-height: 1.75;
+}
+
+.profile-payment__body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-payment__panel {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 41, 58, 0.08);
+  border: 1px solid rgba(0, 41, 58, 0.05);
+}
+
+.profile-payment__current-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.profile-payment__card-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: $color-text-primary;
+  font-size: 15px;
+}
+
+.profile-payment__form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-payment__method-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: $color-text-primary;
+}
+
+.profile-payment__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.profile-payment__form .ant-form-item-label > label {
+  font-weight: 700;
+  color: $color-text-primary;
+}
+
+.profile-payment__form .ant-input,
+.profile-payment__form .ant-radio-group {
+  border-radius: 14px;
+  min-height: 46px;
+}
+
+.profile-payment__cash-note {
+  padding: 20px;
+  border: 1px dashed rgba(0, 41, 58, 0.12);
+  border-radius: 18px;
+  background: #fbfcff;
+  color: $color-text-primary;
+  line-height: 1.75;
+}
+
+.profile-payment__form .ant-btn {
+  height: 48px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .profile-payment__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-payment__header,
+  .profile-payment__panel {
+    padding: 24px;
+  }
+}
