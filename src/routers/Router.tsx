@@ -16,6 +16,7 @@ import { BookingConfirmRoute } from "@/pages/booking/pages/Page3";
 import BookingSuccessRoute, {
   BookingSuccessPage,
 } from "@/pages/booking/pages/Page4";
+import { NotificationsPage } from "@/pages/notification";
 
 export const WebRouter = () => (
   <Routes>
@@ -41,5 +42,6 @@ export const WebRouter = () => (
     <Route path={ROUTER_PATH.PROMOS} element={<PromosPage />} />
     <Route path={ROUTER_PATH.SUPPORT} element={<SupportPage />} />
     <Route path={ROUTER_PATH.PROFILE} element={<ProfilePage />} />
+    <Route path={ROUTER_PATH.NOTIFICATION} element={<NotificationsPage />} />
   </Routes>
 );

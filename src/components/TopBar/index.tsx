@@ -78,7 +78,7 @@ const NotificationPanel = () => {
   const [open, setOpen] = useState(false);
   const [notifs, setNotifs] = useState<Notification[]>(INITIAL_NOTIFS);
   const panelRef = useRef<HTMLDivElement>(null);
-
+  const navigate = useNavigate();
   const unreadCount = notifs.filter((n) => !n.read).length;
 
   // Close on outside click
@@ -101,6 +101,10 @@ const NotificationPanel = () => {
     setNotifs((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
     );
+
+  const handleViewAll = () => {
+    navigate(ROUTER_PATH.NOTIFICATION);
+  };
 
   return (
     <div className="notif-wrap" ref={panelRef}>
@@ -161,7 +165,7 @@ const NotificationPanel = () => {
           </div>
 
           <div className="notif-panel__footer">
-            <button className="notif-panel__view-all">
+            <button className="notif-panel__view-all" onClick={handleViewAll}>
               Xem tất cả thông báo →
             </button>
           </div>

@@ -17,6 +17,7 @@ export const ROUTER_NAME = {
   PROMOS: "promos",
   SUPPORT: "support",
   PROFILE: "profile",
+  NOTIFICATION: "notification",
 };
 
 export const ROUTER_PATH = {
@@ -36,4 +37,5 @@ export const ROUTER_PATH = {
   PROMOS: `${ROUTER}/${ROUTER_NAME.PROMOS}`,
   SUPPORT: `${ROUTER}/${ROUTER_NAME.SUPPORT}`,
   PROFILE: `${ROUTER}/${ROUTER_NAME.PROFILE}`,
+  NOTIFICATION: `${ROUTER}/${ROUTER_NAME.NOTIFICATION}`,
 };
