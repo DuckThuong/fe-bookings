@@ -7,13 +7,14 @@ import { ProfileTicket } from "./Page3";
 import { ProfilePayment } from "./Page4";
 import { ProfileSettings } from "./Page5";
 import { HomeHeader } from "@/components/TopBar";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { ROUTER_PATH } from "@/routers/Route";
 
 export const ProfilePage = () => {
   const location = useLocation();
   const initialTab = location.state?.tab || "overview";
   const [activeKey, setActiveKey] = useState<string>(initialTab);
-
+  const navigate = useNavigate();
   const renderContent = () => {
     switch (activeKey) {
       case "account":
@@ -33,12 +34,21 @@ export const ProfilePage = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate(ROUTER_PATH.WELCOME);
+  };
+
   return (
     <>
       <HomeHeader />
       <div className="profile-page">
         <div className="profile-page__wrapper">
-          <ProfileSideBar selectedKey={activeKey} onChange={setActiveKey} />
+          <ProfileSideBar
+            selectedKey={activeKey}
+            onChange={setActiveKey}
+            onLogout={handleLogout}
+          />
 
           <main className="profile-page__content">{renderContent()}</main>
         </div>
