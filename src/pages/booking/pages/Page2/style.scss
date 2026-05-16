@@ -1,0 +1,454 @@
+@use "../../../../common" as *;
+
+// ─── Shared tokens (mirror SeatSelectionPage) ────────────
+$night: #0a0e1a;
+$amber: #f5a623;
+$amber-pale: #fff8ec;
+$muted: #6b7280;
+$border: #e5e7eb;
+$green-bg: #f0fdf4;
+$green-bd: #86efac;
+$green-text: #16a34a;
+
+// ─── Keyframes ───────────────────────────────────────────
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ─── Page ────────────────────────────────────────────────
+.booking-info-page {
+  min-height: 100vh;
+  background: #f4f5f7;
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 13.5px;
+}
+
+// ─── Progress stepper (unchanged — shared component) ─────
+.confirm-progress {
+  background: #fff;
+  border-bottom: 0.5px solid $border;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.confirm-steps {
+  display: flex;
+  align-items: center;
+}
+
+.confirm-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  min-width: 90px;
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 13px;
+    left: calc(50% + 13px);
+    right: calc(-50% + 13px);
+    height: 1.5px;
+    background: $border;
+    z-index: 0;
+    transition: background 0.3s;
+  }
+
+  &--done:not(:last-child)::after,
+  &--active:not(:last-child)::after {
+    background: $amber;
+  }
+
+  &__dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid $border;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: #9ca3af;
+    z-index: 1;
+    position: relative;
+    transition: all 0.3s;
+
+    .confirm-step--done & {
+      background: $amber;
+      border-color: $amber;
+      color: $night;
+    }
+    .confirm-step--active & {
+      background: $night;
+      border-color: $night;
+      color: $amber;
+      box-shadow: 0 0 0 3px rgba($amber, 0.15);
+    }
+  }
+
+  &__label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #9ca3af;
+    white-space: nowrap;
+
+    .confirm-step--done &,
+    .confirm-step--active & {
+      color: $night;
+    }
+  }
+}
+
+// ─── Breadcrumb ──────────────────────────────────────────
+.info-bc {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: $muted;
+  padding: 14px 32px;
+
+  a {
+    color: $muted;
+    text-decoration: none;
+    &:hover {
+      color: $night;
+    }
+  }
+  span {
+    color: $night;
+  }
+  i {
+    font-size: 12px;
+  }
+}
+
+// ─── Main layout ─────────────────────────────────────────
+// Matches .seat-layout: 1fr 300px, 32px horizontal padding
+.info-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  padding: 0 32px 40px;
+  align-items: start;
+}
+
+.info-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Mirrors .seat-summary sticky behaviour
+.info-right {
+  position: sticky;
+  top: 20px;
+  align-self: start;
+}
+
+// ─── Summary card (compact) ───────────────────────────────
+.info-summary-card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: fadeUp 0.35s ease;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    border-bottom: 0.5px solid $border;
+    background: #fafbfc;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: $night;
+
+    i {
+      font-size: 16px;
+      color: $amber;
+    }
+  }
+
+  &__section {
+    padding: 16px 20px;
+    border-bottom: 0.5px solid $border;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+
+    i {
+      font-size: 14px;
+      color: $amber;
+    }
+  }
+
+  &__trip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__trip-point {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__time {
+    font-size: 18px;
+    font-weight: 600;
+    color: $night;
+    line-height: 1;
+  }
+
+  &__note {
+    font-size: 11px;
+    color: $muted;
+    font-weight: 500;
+    margin-left: 4px;
+  }
+
+  &__city {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: $night;
+  }
+
+  &__trip-arrow {
+    color: $amber;
+    font-size: 16px;
+  }
+
+  &__seats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__seat {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: $night;
+    color: $amber;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid $amber;
+  }
+
+  &__addons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__addon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: $night;
+
+    i {
+      font-size: 16px;
+      color: $amber;
+    }
+  }
+}
+
+// ─── Right panel — form card ───────────────────────────────
+.info-form-card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  padding: 24px;
+  animation: fadeUp 0.35s ease 0.1s backwards;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    color: $night;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 0.5px solid $border;
+
+    i {
+      color: $amber;
+      font-size: 18px;
+    }
+  }
+}
+
+// ─── Form ───────────────────────────────────────────────
+.info-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  :global(.ant-form-item) {
+    margin-bottom: 0;
+  }
+
+  :global(.ant-form-item-label > label) {
+    font-size: 11px;
+    font-weight: 700;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    height: auto;
+  }
+
+  :global(.ant-form-item-explain) {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  :global(.ant-input),
+  :global(.ant-select-selector) {
+    border-radius: 8px !important;
+    border-color: $border !important;
+    font-size: 13.5px !important;
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    height: 44px !important;
+
+    &:focus,
+    &:hover {
+      border-color: $amber !important;
+    }
+  }
+
+  :global(.ant-input::placeholder) {
+    color: #d1d5db;
+  }
+
+  :global(.ant-input-focused),
+  :global(.ant-select-focused .ant-select-selector) {
+    border-color: $amber !important;
+    box-shadow: 0 0 0 2px rgba($amber, 0.1) !important;
+  }
+
+  &__row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    border-top: 0.5px solid $border;
+    padding-top: 16px;
+    margin-top: 8px;
+  }
+}
+
+// ─── Buttons ──────────────────────────────────────────────
+.info-btn-secondary {
+  height: 48px !important;
+  border-radius: 10px !important;
+  font-family: "Be Vietnam Pro", sans-serif !important;
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+
+  &:global(.ant-btn-default) {
+    border-color: $border !important;
+    color: $muted !important;
+    transition: all 0.2s !important;
+
+    &:hover {
+      border-color: $amber !important;
+      color: $amber !important;
+      background: $amber-pale !important;
+    }
+  }
+}
+
+.info-btn-primary {
+  height: 48px !important;
+  border-radius: 10px !important;
+  font-family: "Be Vietnam Pro", sans-serif !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  background: $night !important;
+  border-color: $night !important;
+  color: $amber !important;
+
+  &:hover {
+    opacity: 0.85 !important;
+    background: $night !important;
+    border-color: $night !important;
+  }
+}
+
+// ─── Responsive ──────────────────────────────────────────
+@media (max-width: 768px) {
+  .info-bc {
+    padding: 12px 16px;
+  }
+
+  .info-layout {
+    grid-template-columns: 1fr;
+    padding: 0 16px 40px;
+  }
+
+  .info-right {
+    position: static;
+  }
+
+  .info-form__row2 {
+    grid-template-columns: 1fr;
+  }
+
+  .info-summary-card__time {
+    font-size: 16px;
+  }
+
+  .info-form__actions {
+    flex-direction: column-reverse;
+  }
+
+  .info-summary-card__trip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .info-summary-card__trip-arrow {
+    transform: rotate(90deg);
+  }
+}

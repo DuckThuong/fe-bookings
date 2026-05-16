@@ -3,6 +3,7 @@ import { App as AntdApp, ConfigProvider } from "antd";
 import RouterWeb from "./routers/Routers";
 import { LoadingProvider } from "./providers/loadingProvider";
 import { NotificationProvider } from "./providers/notificationProvider";
+import { UserProvider } from "./common/contexts/UserContext";
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -12,6 +13,13 @@ const App = () => {
       },
     },
   });
+
+  const initialUser = {
+    userName: "Nguyễn An",
+    notifCount: 3,
+    phone: "098 765 4321",
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigProvider
@@ -21,13 +29,15 @@ const App = () => {
           },
         }}
       >
-        <LoadingProvider>
-          <NotificationProvider>
-            <AntdApp>
-              <RouterWeb />
-            </AntdApp>
-          </NotificationProvider>
-        </LoadingProvider>
+        <UserProvider initialUser={initialUser}>
+          <LoadingProvider>
+            <NotificationProvider>
+              <AntdApp>
+                <RouterWeb />
+              </AntdApp>
+            </NotificationProvider>
+          </LoadingProvider>
+        </UserProvider>
       </ConfigProvider>
     </QueryClientProvider>
   );

@@ -60,7 +60,6 @@
       }
     }
 
-    // Input field styling
     .ant-input-number-input {
       border: none;
       background: transparent;
@@ -79,7 +78,6 @@
       }
     }
 
-    // Handlers (up/down arrows)
     .ant-input-number-handler-wrap {
       border-left: 1px solid $color-border;
 
@@ -112,7 +110,6 @@
       }
     }
 
-    // Disabled handlers
     &.ant-input-number-disabled {
       .ant-input-number-handler-wrap {
         .ant-input-number-handler {
@@ -132,7 +129,6 @@
     }
   }
 
-  // Vertical layout
   &.form-input--vertical {
     .ant-form-item-label {
       text-align: left;
@@ -140,7 +136,6 @@
     }
   }
 
-  // Size variations
   .ant-input-number-lg {
     height: 40px;
     font-size: 16px;
@@ -161,14 +156,12 @@
     }
   }
 
-  // Prefix and suffix styling
   .ant-input-number-prefix,
   .ant-input-number-suffix {
     color: $color-gray-6;
     margin: 0 8px;
   }
 
-  // Error message styling
   .ant-form-item-explain-error {
     color: $color-red-5;
     font-size: 12px;
@@ -176,7 +169,6 @@
     line-height: 1.4;
   }
 
-  // Warning message styling
   .ant-form-item-explain-warning {
     color: $color-orange-5;
     font-size: 12px;
@@ -185,7 +177,6 @@
   }
 }
 
-// Responsive design
 @media (max-width: 768px) {
   .form-input {
     margin-bottom: 12px;

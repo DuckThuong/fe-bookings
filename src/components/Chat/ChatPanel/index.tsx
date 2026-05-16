@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Dropdown, type MenuProps } from "antd";
+import { Button, Dropdown, Input, type MenuProps } from "antd";
 import {
   type CSSProperties,
   useCallback,
@@ -582,13 +582,12 @@ export const ChatPanel = (props: ChatPanelProps) => {
                 {!isNicknameEditing ? (
                   <p className="line-1 name-label show">{displayName}</p>
                 ) : (
-                  <input
+                  <Input
                     autoFocus
                     className="name-input show"
                     id="name-input"
                     name="name"
                     value={nicknameInput}
-                    type="text"
                     onChange={(e) => setNicknameInput(e.target.value)}
                     onKeyDown={async (e) => {
                       if (e.key === "Enter") {
@@ -676,37 +675,37 @@ export const ChatPanel = (props: ChatPanelProps) => {
               open
               aria-label="Xem ảnh đính kèm"
             >
-              <button
-                type="button"
+              <Button
                 className="chat__lightbox-backdrop"
                 onClick={closeLightbox}
                 aria-label="Đóng ảnh xem trước"
+                type="text"
               />
               <div className="chat__lightbox-content">
                 <div className="chat__lightbox-topbar">
                   <p className="chat__lightbox-tip" aria-hidden="true">
                     Nhấn ESC để đóng
                   </p>
-                  <button
-                    type="button"
+                  <Button
                     className="chat__lightbox-close"
                     onClick={closeLightbox}
                     aria-label="Đóng ảnh xem trước"
+                    type="text"
                   >
                     ×
-                  </button>
+                  </Button>
                 </div>
 
                 <div className="chat__lightbox-stage">
                   {lightboxState.images.length > 1 && (
-                    <button
-                      type="button"
+                    <Button
                       className="chat__lightbox-nav chat__lightbox-nav--prev"
                       onClick={showPrevImage}
                       aria-label="Ảnh trước"
+                      type="text"
                     >
                       ‹
-                    </button>
+                    </Button>
                   )}
 
                   <img
@@ -719,14 +718,14 @@ export const ChatPanel = (props: ChatPanelProps) => {
                   />
 
                   {lightboxState.images.length > 1 && (
-                    <button
-                      type="button"
+                    <Button
                       className="chat__lightbox-nav chat__lightbox-nav--next"
                       onClick={showNextImage}
                       aria-label="Ảnh tiếp theo"
+                      type="text"
                     >
                       ›
-                    </button>
+                    </Button>
                   )}
                 </div>
                 <div className="chat__lightbox-bottombar">

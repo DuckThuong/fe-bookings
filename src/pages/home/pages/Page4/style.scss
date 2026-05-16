@@ -1,0 +1,128 @@
+@use "../../../../common" as *;
+
+.support-page {
+  min-height: 100vh;
+  background: $bg;
+  font-family: "Be Vietnam Pro", sans-serif;
+  @include fadeUpSecond(0s);
+}
+
+.support-main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 24px 20px 56px;
+}
+
+.support-hero {
+  background: linear-gradient(120deg, $night 0%, #17243d 100%);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 20px;
+  color: $white;
+  @include fadeUpSecond(0.2s);
+
+  &__eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: $amber;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 34px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  &__sub {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba($white, 0.78);
+    max-width: 640px;
+  }
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 14px;
+  @include fadeUpSecond(0.3s);
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.support-panel {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 16px;
+  padding: 18px;
+
+  &__title {
+    font-size: 17px;
+    font-weight: 700;
+    color: $night;
+    margin-bottom: 12px;
+  }
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faq-item {
+  border: 1px solid $border;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fcfcfd;
+
+  &__q {
+    font-size: 14px;
+    font-weight: 700;
+    color: $night;
+    margin-bottom: 6px;
+  }
+
+  &__a {
+    font-size: 13px;
+    color: $muted;
+    line-height: 1.55;
+  }
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-item {
+  border-radius: 12px;
+  border: 1px solid $border;
+  background: #fff;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  &__label {
+    font-size: 12px;
+    color: $muted;
+  }
+
+  &__value {
+    font-size: 16px;
+    color: $night;
+    font-weight: 700;
+  }
+
+  &__note {
+    font-size: 12px;
+    color: #8b93a5;
+  }
+}

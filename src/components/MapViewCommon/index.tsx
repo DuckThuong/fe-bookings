@@ -1,5 +1,5 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Input } from "antd";
+import { Button, Input } from "antd";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import React, { useEffect, useRef, useState } from "react";
@@ -157,9 +157,9 @@ export const MapViewCommon: React.FC<MapViewCommonProps> = ({
 
               {!searchState.isSearching &&
                 searchState.results.map((result, index) => (
-                  <button
+                  <Button
                     key={`${result.lat}-${result.lon}-${index}`}
-                    type="button"
+                    type="text"
                     className="map-autocomplete-dropdown__item"
                     onClick={() => searchState.onSelectResult(result)}
                   >
@@ -169,7 +169,7 @@ export const MapViewCommon: React.FC<MapViewCommonProps> = ({
                     <span className="map-autocomplete-dropdown__item__address">
                       {result.display_name}
                     </span>
-                  </button>
+                  </Button>
                 ))}
 
               {!searchState.isSearching &&

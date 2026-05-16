@@ -1,6 +1,7 @@
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isAxiosError } from "axios";
+import { Button, Input, Upload } from "antd";
 import { uploadImage } from "../../../api/configs/common.config";
 import { sendChatMessage } from "../../../api/configs/chat.config";
 import type {
@@ -27,6 +28,40 @@ export interface ChatInputProps {
   } | null;
 }
 
+type ChatInputData = {
+  upload: {
+    accept: string;
+    uploadAriaLabel: string;
+  };
+  composer: {
+    regionAriaLabel: string;
+    textareaPlaceholder: string;
+  };
+  actions: {
+    emojiAriaLabel: string;
+    sendAriaLabel: string;
+    emojiPickerWidth: number;
+    emojiPickerHeight: number;
+  };
+};
+
+const CHAT_INPUT_DATA: ChatInputData = {
+  upload: {
+    accept: "image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt",
+    uploadAriaLabel: "Upload file",
+  },
+  composer: {
+    regionAriaLabel: "Vùng nhập tin nhắn",
+    textareaPlaceholder: "Nhập tin nhắn",
+  },
+  actions: {
+    emojiAriaLabel: "Open emoji picker",
+    sendAriaLabel: "Send message",
+    emojiPickerWidth: 320,
+    emojiPickerHeight: 400,
+  },
+};
+
 export const ChatInput = (props: ChatInputProps) => {
   const { showNotification } = useNotification();
   const [files, setFiles] = useState<File[]>([]);
@@ -39,14 +74,8 @@ export const ChatInput = (props: ChatInputProps) => {
   const composerRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const cursorPositionRef = useRef<number>(0);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const isBusy = props.disabled || isSending || isUploading;
-
-  const openFilePicker = () => {
-    if (isBusy) return;
-    fileInputRef.current?.click();
-  };
 
   const addSelectedFiles = useCallback((selectedFiles: File[]) => {
     if (!selectedFiles.length) return;
@@ -138,16 +167,6 @@ export const ChatInput = (props: ChatInputProps) => {
         }
       }),
     );
-  };
-
-  const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("click");
-    const selectedFiles = e.target.files;
-    if (!selectedFiles || selectedFiles.length === 0) return;
-
-    addSelectedFiles(Array.from(selectedFiles));
-
-    e.target.value = "";
   };
 
   useEffect(() => {
@@ -260,24 +279,27 @@ export const ChatInput = (props: ChatInputProps) => {
       ref={composerRef}
       className={`chat__input ${previews.length > 0 ? "has-files" : ""}`}
     >
-      <button
-        type="button"
-        className="chat__input-col-1"
-        onClick={openFilePicker}
-        disabled={isBusy}
-        aria-label="Upload file"
-      />
-      <input
-        id="upload"
-        type="file"
-        accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+      <Upload
+        showUploadList={false}
+        accept={CHAT_INPUT_DATA.upload.accept}
         multiple
-        ref={fileInputRef}
-        onChange={handleUploadImage}
         disabled={isBusy}
-        style={{ display: "none" }}
-      />
-      <section className="chat__input-col-2" aria-label="Vùng nhập tin nhắn">
+        beforeUpload={(file) => {
+          addSelectedFiles([file as File]);
+          return Upload.LIST_IGNORE;
+        }}
+      >
+        <Button
+          className="chat__input-col-1"
+          disabled={isBusy}
+          aria-label={CHAT_INPUT_DATA.upload.uploadAriaLabel}
+          type="text"
+        />
+      </Upload>
+      <section
+        className="chat__input-col-2"
+        aria-label={CHAT_INPUT_DATA.composer.regionAriaLabel}
+      >
         {previews.length > 0 && (
           <figure className="image_container">
             {previews.map((preview, index) => (
@@ -287,22 +309,22 @@ export const ChatInput = (props: ChatInputProps) => {
                   alt={`preview-${index}`}
                   className="image_container-item"
                 />
-                <button
-                  type="button"
+                <Button
                   className="image_container-action"
                   onClick={() => removeImage(index)}
                   disabled={isBusy}
+                  type="text"
                 >
                   <img src={remove} alt="" />
-                </button>
+                </Button>
               </div>
             ))}
           </figure>
         )}
 
-        <textarea
+        <Input.TextArea
           ref={textareaRef}
-          placeholder={"Nhập tin nhắn"}
+          placeholder={CHAT_INPUT_DATA.composer.textareaPlaceholder}
           className="chat__input-col-2-textarea"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -323,38 +345,38 @@ export const ChatInput = (props: ChatInputProps) => {
         />
       </section>
       <div className="chat__input-col-3">
-        <button
-          type="button"
+        <Button
           className="chat__input-icon-button"
           onClick={() => {
             if (isBusy) return;
             setShowEmojiPicker(!showEmojiPicker);
           }}
           disabled={isBusy}
-          aria-label="Open emoji picker"
+          aria-label={CHAT_INPUT_DATA.actions.emojiAriaLabel}
+          type="text"
         >
           <img src={emoji} alt="" className="chat__input-emoji" />
-        </button>
+        </Button>
 
-        <button
-          type="button"
+        <Button
           className="chat__input-icon-button"
           onClick={() => {
             void sendMessage();
           }}
           disabled={isBusy}
-          aria-label="Send message"
+          aria-label={CHAT_INPUT_DATA.actions.sendAriaLabel}
+          type="text"
         >
           <img src={send} alt="" className="chat__input-send" />
-        </button>
+        </Button>
 
         {showEmojiPicker && (
           <div ref={emojiPickerRef} className="chat__input-emoji-picker">
             <EmojiPicker
               onEmojiClick={handleEmojiClick}
               autoFocusSearch={false}
-              width={320}
-              height={400}
+              width={CHAT_INPUT_DATA.actions.emojiPickerWidth}
+              height={CHAT_INPUT_DATA.actions.emojiPickerHeight}
             />
           </div>
         )}
