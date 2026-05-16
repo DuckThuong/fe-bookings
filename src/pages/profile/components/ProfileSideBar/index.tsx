@@ -13,7 +13,7 @@ import { useUser } from "@/common/contexts/UserContext";
 import "../style.scss";
 
 // ─── Constants ────────────────────────────────────────────
-const MENU_ITEMS: MenuProps["items"] = [
+export const MENU_ITEMS: MenuProps["items"] = [
   {
     key: "overview",
     icon: <ProfileOutlined />,

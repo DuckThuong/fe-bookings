@@ -10,37 +10,18 @@ import chevronDownIcn from "@/assets/icons/chevron-down.svg";
 import { ROUTER_PATH } from "@/routers/Route";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "@/common/contexts/UserContext";
+import { MENU_ITEMS } from "@/pages/profile/components/ProfileSideBar";
+import { ProfileInformation } from "@/pages/profile/pages/Page2";
+import { ProfileSummary } from "@/pages/profile/pages/Page1";
+import { ProfileTicket } from "@/pages/profile/pages/Page3";
+import { ProfilePayment } from "@/pages/profile/pages/Page4";
+import { ProfileSettings } from "@/pages/profile/pages/Page5";
 
 const NAV_ITEMS = [
   { label: "Trang chủ", href: ROUTER_PATH.HOME },
   { label: "Đặt vé", href: ROUTER_PATH.TRIP },
   { label: "Khuyến mãi", href: ROUTER_PATH.PROMOS },
   { label: "Hỗ trợ", href: ROUTER_PATH.SUPPORT },
-];
-
-const USER_MENU_ITEMS: MenuProps["items"] = [
-  {
-    key: "profile",
-    label: "Tài khoản của tôi",
-    icon: <img src={profileIcn} alt="Profile" width={14} height={14} />,
-  },
-  {
-    key: "trips",
-    label: "Chuyến đi của tôi",
-    icon: <img src={tripsIcn} alt="Trips" width={14} height={14} />,
-  },
-  {
-    key: "settings",
-    label: "Cài đặt",
-    icon: <img src={settingsIcn} alt="Settings" width={14} height={14} />,
-  },
-  { type: "divider" },
-  {
-    key: "logout",
-    label: "Đăng xuất",
-    danger: true,
-    icon: <img src={logoutIcn} alt="Logout" width={14} height={14} />,
-  },
 ];
 
 export const HomeHeader = () => {
@@ -74,20 +55,24 @@ export const HomeHeader = () => {
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     switch (key) {
-      case "profile":
-        navigate(ROUTER_PATH.PROFILE);
+      case "account":
+        navigate(ROUTER_PATH.PROFILE, { state: { tab: "account" } });
+        break;
+
+      case "overview":
+        navigate(ROUTER_PATH.PROFILE, { state: { tab: "overview" } });
         break;
       case "trips":
-        navigate(ROUTER_PATH.TRIP);
+        navigate(ROUTER_PATH.PROFILE, { state: { tab: "trips" } });
+        break;
+      case "payment":
+        navigate(ROUTER_PATH.PROFILE, { state: { tab: "payment" } });
         break;
       case "settings":
-        navigate(ROUTER_PATH.SUPPORT);
-        break;
-      case "logout":
-        console.log("Đăng xuất");
+        navigate(ROUTER_PATH.PROFILE, { state: { tab: "settings" } });
         break;
       default:
-        break;
+        navigate(ROUTER_PATH.PROFILE, { state: { tab: "overview" } });
     }
   };
 
@@ -127,7 +112,7 @@ export const HomeHeader = () => {
             dropdownRender={() => (
               <Menu
                 className="home-header__user-menu"
-                items={USER_MENU_ITEMS}
+                items={MENU_ITEMS}
                 onClick={handleMenuClick}
               />
             )}

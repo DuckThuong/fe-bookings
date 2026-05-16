@@ -7,9 +7,12 @@ import { ProfileTicket } from "./Page3";
 import { ProfilePayment } from "./Page4";
 import { ProfileSettings } from "./Page5";
 import { HomeHeader } from "@/components/TopBar";
+import { useLocation } from "react-router";
 
 export const ProfilePage = () => {
-  const [activeKey, setActiveKey] = useState<string>("overview");
+  const location = useLocation();
+  const initialTab = location.state?.tab || "overview";
+  const [activeKey, setActiveKey] = useState<string>(initialTab);
 
   const renderContent = () => {
     switch (activeKey) {
