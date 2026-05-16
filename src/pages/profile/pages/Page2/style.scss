@@ -1,0 +1,482 @@
+@import "../../../../color.scss";
+
+// ─── Local tokens ─────────────────────────────────────────
+$night: #0a0e1a;
+$night-2: #151b2e;
+$amber: #f5a623;
+$amber-pale: #fff8ec;
+$amber-dark: #854f0b;
+$muted: #6b7280;
+$border: rgba(0, 41, 58, 0.08);
+$card-shadow: 0 4px 32px rgba(0, 41, 58, 0.07);
+$radius-lg: 20px;
+$radius-md: 12px;
+$radius-sm: 8px;
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ─── Page wrapper ─────────────────────────────────────────
+.profile-information {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeUp 0.35s ease;
+}
+
+// ─── Header ───────────────────────────────────────────────
+.profile-information__header {
+  background: $night;
+  border-radius: $radius-lg;
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+
+  // Decorative blob
+  &::after {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba($amber, 0.06);
+    pointer-events: none;
+  }
+}
+
+.pi-header__text {
+  position: relative;
+  z-index: 1;
+}
+
+.pi-header__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.pi-header__desc {
+  font-size: 13px;
+  color: rgba(#fff, 0.45);
+  margin: 0;
+}
+
+.pi-header__tag {
+  &.ant-tag {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    background: rgba($amber, 0.15) !important;
+    border: 0.5px solid rgba($amber, 0.3) !important;
+    color: $amber !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    border-radius: 6px !important;
+    padding: 4px 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+
+    .anticon {
+      font-size: 12px !important;
+      color: $amber !important;
+    }
+  }
+}
+
+// ─── Grid ─────────────────────────────────────────────────
+.profile-information__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.profile-information__form-section,
+.profile-information__payment-section {
+  display: flex;
+  flex-direction: column;
+}
+
+// ─── Form card (avatar + form merged) ────────────────────
+.profile-information__form-card {
+  background: #fff;
+  border-radius: $radius-lg;
+  border: 0.5px solid $border;
+  box-shadow: $card-shadow;
+  overflow: hidden;
+}
+
+// ─── Avatar uploader ──────────────────────────────────────
+.pi-avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 28px;
+  border-bottom: 0.5px solid rgba(0, 41, 58, 0.06);
+  background: #fafbfc;
+}
+
+.pi-avatar {
+  position: relative;
+  flex-shrink: 0;
+
+  &__img {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__initials {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, $amber, #fdc96a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: $night;
+  }
+
+  &__upload-btn {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: $night;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: $amber;
+    font-size: 12px;
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  // wrap the Upload ant component invisibly
+  .ant-upload {
+    display: contents !important;
+  }
+}
+
+.pi-avatar__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pi-avatar__hint {
+  font-size: 12px;
+  color: $muted;
+  margin: 0;
+}
+
+// ─── Form ─────────────────────────────────────────────────
+.profile-information__form {
+  padding: 24px 28px;
+
+  // Label
+  .ant-form-item-label > label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: $night !important;
+  }
+
+  .ant-input {
+    padding-bottom: 8px !important;
+  }
+
+  // Input / Picker
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-picker {
+    border-radius: $radius-md !important;
+    height: 44px !important;
+    font-size: 13.5px !important;
+    border-color: rgba(0, 41, 58, 0.12) !important;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s !important;
+
+    &:hover {
+      border-color: rgba(0, 41, 58, 0.25) !important;
+    }
+
+    &:focus,
+    &.ant-input-affix-wrapper-focused,
+    &.ant-picker-focused {
+      border-color: $amber !important;
+      box-shadow: 0 0 0 2px rgba($amber, 0.12) !important;
+    }
+  }
+
+  .ant-input-prefix {
+    color: $muted !important;
+    margin-right: 8px !important;
+  }
+
+  .ant-form-item {
+    margin-bottom: 18px !important;
+  }
+}
+
+// 2-column grid inside the form
+.pi-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Save button
+.pi-save-btn {
+  &.ant-btn-primary {
+    height: 46px !important;
+    border-radius: $radius-md !important;
+    background: $night !important;
+    border-color: $night !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    transition: opacity 0.15s !important;
+
+    &:hover {
+      opacity: 0.82 !important;
+    }
+  }
+}
+
+// ─── Payment card ─────────────────────────────────────────
+.pi-payment-card {
+  background: #fff;
+  border-radius: $radius-lg;
+  border: 0.5px solid $border;
+  box-shadow: $card-shadow;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Bank card visual
+.pi-bank-card {
+  background: linear-gradient(135deg, $night 0%, $night-2 100%);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+
+  // Shine overlay
+  &::before {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -20px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba($amber, 0.06);
+    pointer-events: none;
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  // SIM chip
+  &__chip {
+    width: 30px;
+    height: 22px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #d4a946, #f0cc70);
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__network {
+    font-size: 18px;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 1px;
+    color: $amber;
+  }
+
+  &__number {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: rgba(#fff, 0.9);
+    font-family: "Courier New", monospace;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(#fff, 0.4);
+    margin: 0 0 3px;
+  }
+
+  &__value {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(#fff, 0.85);
+    margin: 0;
+  }
+}
+
+// Payment details
+.pi-payment-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: $night;
+    margin: 0;
+  }
+
+  &__sub {
+    font-size: 12.5px;
+    color: $muted;
+    line-height: 1.55;
+    margin: 0;
+  }
+}
+
+.pi-payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 0.5px solid rgba(0, 41, 58, 0.06);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &__label {
+    font-size: 12.5px;
+    color: $muted;
+  }
+
+  &__value {
+    font-size: 13px;
+    font-weight: 600;
+    color: $night;
+  }
+}
+
+// Security note
+.pi-payment-secure {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  background: #f0fdf4;
+  border-radius: $radius-sm;
+  font-size: 11.5px;
+  color: #15803d;
+
+  &__icon {
+    font-size: 14px;
+    color: #16a34a;
+    flex-shrink: 0;
+  }
+}
+
+// Update button
+.pi-payment-update-btn {
+  &.ant-btn {
+    height: 42px !important;
+    border-radius: $radius-md !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    border-color: rgba(0, 41, 58, 0.12) !important;
+    color: $night !important;
+    transition:
+      border-color 0.15s,
+      background 0.15s !important;
+
+    .anticon {
+      font-size: 14px !important;
+    }
+
+    &:hover {
+      border-color: $amber !important;
+      color: $night !important;
+      background: $amber-pale !important;
+    }
+  }
+}
+
+// ─── Responsive ──────────────────────────────────────────
+@media (max-width: 992px) {
+  .profile-information__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-information__header {
+    padding: 18px 20px;
+  }
+  .pi-avatar-wrap {
+    padding: 20px;
+  }
+  .profile-information__form {
+    padding: 20px;
+  }
+  .pi-payment-card {
+    padding: 20px;
+  }
+  .pi-header__title {
+    font-size: 17px;
+  }
+}

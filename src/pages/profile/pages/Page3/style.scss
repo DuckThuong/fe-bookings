@@ -1,0 +1,423 @@
+@import "../../../../color.scss";
+
+// ─── Local tokens ─────────────────────────────────────────
+$night:      #0a0e1a;
+$amber:      #f5a623;
+$amber-pale: #fff8ec;
+$muted:      #6b7280;
+$border:     rgba(0, 41, 58, 0.08);
+$card-shadow: 0 4px 24px rgba(0, 41, 58, 0.07);
+$radius-lg:  20px;
+$radius-md:  12px;
+$radius-sm:  8px;
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Page wrapper ─────────────────────────────────────────
+.profile-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeUp 0.35s ease;
+}
+
+// ─── Header ───────────────────────────────────────────────
+.profile-ticket__header {
+  background: $night;
+  border-radius: $radius-lg;
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba($amber, 0.06);
+    pointer-events: none;
+  }
+}
+
+.pt-header__text { position: relative; z-index: 1; }
+
+.pt-header__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.pt-header__desc {
+  font-size: 13px;
+  color: rgba(#fff, 0.45);
+  margin: 0;
+}
+
+.pt-header__count {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  background: rgba($amber, 0.15);
+  border: 0.5px solid rgba($amber, 0.3);
+  color: $amber;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 999px;
+}
+
+// ─── Master-detail layout ─────────────────────────────────
+.profile-ticket__layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ─── List panel ───────────────────────────────────────────
+.profile-ticket__list {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $card-shadow;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  // sticky on desktop
+  @media (min-width: 900px) {
+    position: sticky;
+    top: 80px;
+  }
+}
+
+// ─── List item ────────────────────────────────────────────
+.pt-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: none;
+  border-bottom: 0.5px solid $border;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.12s;
+  font-family: "Be Vietnam Pro", sans-serif;
+
+  &:last-child { border-bottom: none; }
+
+  &:hover { background: #fafbfc; }
+
+  &--active {
+    background: $amber-pale !important;
+    border-left: 3px solid $amber;
+  }
+
+  &__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  &__route {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: $night;
+    line-height: 1.3;
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10.5px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    color: $muted;
+
+    .anticon { font-size: 11px; }
+  }
+
+  &__sep {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: $border;
+    flex-shrink: 0;
+  }
+
+  &__code {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: $muted;
+    font-family: "Courier New", monospace;
+  }
+
+  &__arrow {
+    font-size: 16px;
+    color: $muted;
+    transition: color 0.12s;
+  }
+
+  &:hover &__arrow,
+  &--active &__arrow { color: $amber; }
+}
+
+// ─── Detail pane ──────────────────────────────────────────
+.profile-ticket__detail-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.pt-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeUp 0.25s ease;
+}
+
+// ─── Ticket hero ──────────────────────────────────────────
+.pt-ticket-hero {
+  background: $night;
+  border-radius: $radius-lg;
+  padding: 22px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "🚌";
+    position: absolute;
+    right: 20px;
+    bottom: -8px;
+    font-size: 72px;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  &__left { position: relative; z-index: 1; }
+
+  &__code {
+    font-size: 11px;
+    font-family: "Courier New", monospace;
+    color: rgba(#fff, 0.35);
+    letter-spacing: 1px;
+    margin: 0 0 6px;
+  }
+
+  &__route {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+
+  &__time {
+    font-size: 12.5px;
+    color: rgba(#fff, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .anticon { font-size: 12px; }
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// ─── Info card ────────────────────────────────────────────
+.pt-info-card,
+.pt-form-card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $card-shadow;
+  padding: 22px 24px;
+}
+
+.pt-card-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: $night;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  .anticon { color: $amber; font-size: 15px; }
+}
+
+.pt-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+.pt-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 0;
+  border-bottom: 0.5px solid rgba(0, 41, 58, 0.06);
+
+  // Alternate columns: right column gets left padding
+  &:nth-child(even) { padding-left: 20px; border-left: 0.5px solid rgba(0, 41, 58, 0.06); }
+
+  &:nth-last-child(-n+2) { border-bottom: none; }
+
+  &__label {
+    font-size: 11px;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 500;
+  }
+
+  &__value {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: $night;
+  }
+}
+
+.pt-info-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: $amber-pale;
+  border-radius: $radius-sm;
+  font-size: 12.5px;
+  color: #854d0e;
+  line-height: 1.5;
+
+  &__icon { flex-shrink: 0; }
+}
+
+// ─── Form card ────────────────────────────────────────────
+.pt-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+.pt-form-card {
+  .ant-form-item-label > label {
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    color: $night !important;
+  }
+
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-input-textarea {
+    border-radius: $radius-md !important;
+    font-size: 13.5px !important;
+    border-color: rgba(0, 41, 58, 0.12) !important;
+
+    &:hover { border-color: rgba(0, 41, 58, 0.25) !important; }
+
+    &:focus, &.ant-input-affix-wrapper-focused {
+      border-color: $amber !important;
+      box-shadow: 0 0 0 2px rgba($amber, 0.12) !important;
+    }
+  }
+
+  .ant-input-affix-wrapper { height: 42px !important; }
+
+  .ant-input-prefix {
+    color: $muted !important;
+    margin-right: 8px !important;
+  }
+
+  .ant-form-item { margin-bottom: 16px !important; }
+}
+
+.pt-save-btn {
+  &.ant-btn-primary {
+    height: 44px !important;
+    border-radius: $radius-md !important;
+    background: $night !important;
+    border-color: $night !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    transition: opacity 0.15s !important;
+
+    &:hover { opacity: 0.82 !important; }
+  }
+}
+
+// ─── Locked notice ────────────────────────────────────────
+.pt-locked-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border-radius: $radius-md;
+  font-size: 13px;
+  color: #15803d;
+
+  &__icon {
+    font-size: 16px;
+    color: #16a34a;
+    flex-shrink: 0;
+  }
+}

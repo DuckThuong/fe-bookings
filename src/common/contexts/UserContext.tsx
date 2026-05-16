@@ -4,6 +4,10 @@ export type UserInfo = {
   userName: string;
   notifCount: number;
   phone?: string;
+  email?: string;
+  address?: string;
+  birthday?: string;
+  avatarUrl?: string;
 };
 
 interface UserContextType {
@@ -24,7 +28,7 @@ export const UserProvider = ({
     initialUser || {
       userName: "Khách",
       notifCount: 0,
-    }
+    },
   );
 
   return (

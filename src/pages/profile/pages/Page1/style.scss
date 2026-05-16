@@ -1,0 +1,572 @@
+@import "../../../../color.scss";
+
+$night: #0a0e1a;
+$amber: #f5a623;
+$amber-light: #fdc96a;
+$amber-pale: #fff8ec;
+$muted: #6b7280;
+$border: #e5e7eb;
+$green: #16a34a;
+$green-bg: #dcfce7;
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes progressFill {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--target, 68%);
+  }
+}
+
+// ─── Page wrapper ─────────────────────────────────────────
+.profile-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
+// ─── Hero banner ─────────────────────────────────────────
+.ps-hero {
+  background: $night;
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  overflow: hidden;
+  position: relative;
+  animation: fadeUp 0.4s ease;
+
+  // Decorative blobs
+  &::before {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba($amber, 0.07);
+    pointer-events: none;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    right: 120px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: rgba($amber, 0.04);
+    pointer-events: none;
+  }
+
+  &__avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $amber, $amber-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: $night;
+    flex-shrink: 0;
+    border: 3px solid rgba($amber, 0.3);
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__greeting {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(#fff, 0.4);
+    margin-bottom: 4px;
+  }
+
+  &__name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__badge {
+    // antd Tag override
+    &.ant-tag {
+      background: rgba($amber, 0.15) !important;
+      border: 0.5px solid rgba($amber, 0.3) !important;
+      color: $amber !important;
+      font-size: 11px !important;
+      font-weight: 500 !important;
+      border-radius: 5px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      padding: 2px 9px !important;
+      i {
+        font-size: 12px;
+      }
+    }
+  }
+
+  &__since {
+    font-size: 11px;
+    color: rgba(#fff, 0.35);
+  }
+
+  &__btn {
+    // antd Button override
+    &.ant-btn {
+      background: $amber !important;
+      border-color: $amber !important;
+      color: $night !important;
+      font-weight: 600 !important;
+      font-size: 13px !important;
+      border-radius: 9px !important;
+      height: 40px !important;
+      padding: 0 18px !important;
+      flex-shrink: 0;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      transition: opacity 0.15s !important;
+
+      &:hover {
+        opacity: 0.85 !important;
+      }
+
+      i {
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+// ─── Stat cards ───────────────────────────────────────────
+.ps-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  animation: fadeUp 0.4s 0.05s ease both;
+}
+
+.ps-stat {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: darken($border, 10%);
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: $amber-pale;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+
+    i {
+      font-size: 18px;
+      color: $amber;
+    }
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+  }
+
+  &__value {
+    font-size: 26px;
+    font-weight: 700;
+    color: $night;
+    line-height: 1;
+  }
+
+  &__sub {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 4px;
+  }
+}
+
+// ─── Activity section ─────────────────────────────────────
+.ps-activity {
+  animation: fadeUp 0.4s 0.1s ease both;
+
+  &__hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: $night;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    i {
+      font-size: 16px;
+      color: $amber;
+    }
+  }
+
+  &__view-all {
+    &.ant-btn-link {
+      font-size: 12px !important;
+      color: $muted !important;
+      padding: 0 !important;
+      height: auto !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+
+      &:hover {
+        color: $night !important;
+      }
+      i {
+        font-size: 13px;
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 14px;
+  }
+}
+
+// ─── Trip list ────────────────────────────────────────────
+.ps-trip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ps-trip {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: darken($border, 10%);
+  }
+
+  &__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: $night;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    i {
+      font-size: 17px;
+      color: $amber;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: $night;
+    margin-bottom: 4px;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  &__date {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    color: $muted;
+    i {
+      font-size: 12px;
+    }
+  }
+
+  &__sep {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: $border;
+    flex-shrink: 0;
+  }
+
+  &__note {
+    font-size: 11px;
+    color: $muted;
+  }
+
+  &__tag {
+    // antd Tag override
+    flex-shrink: 0;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    border-radius: 4px !important;
+    padding: 2px 8px !important;
+
+    &--done.ant-tag {
+      background: $green-bg !important;
+      color: $green !important;
+    }
+    &--upcoming.ant-tag {
+      background: $amber-pale !important;
+      color: #854f0b !important;
+    }
+  }
+
+  &__chevron {
+    font-size: 14px;
+    color: #9ca3af;
+    flex-shrink: 0;
+  }
+}
+
+// ─── Sidebar ─────────────────────────────────────────────
+.ps-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// Member progress card
+.ps-member {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &__top {
+    background: $night;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: rgba($amber, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    i {
+      font-size: 15px;
+      color: $amber;
+    }
+  }
+
+  &__info {
+    flex: 1;
+  }
+  &__tier {
+    font-size: 12px;
+    font-weight: 600;
+    color: $amber;
+  }
+  &__next {
+    font-size: 10px;
+    color: rgba(#fff, 0.4);
+    margin-top: 1px;
+  }
+  &__pct {
+    font-size: 16px;
+    font-weight: 700;
+    color: $amber;
+  }
+
+  &__body {
+    padding: 13px 16px;
+  }
+
+  &__progress {
+    // antd Progress override
+    margin-bottom: 7px !important;
+    .ant-progress-inner {
+      background: $border !important;
+    }
+  }
+
+  &__labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #9ca3af;
+
+    span:last-child {
+      color: $amber;
+      font-weight: 500;
+    }
+  }
+}
+
+// Reminders card
+.ps-reminders {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &__hd {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 16px;
+    border-bottom: 0.5px solid $border;
+    font-size: 12px;
+    font-weight: 500;
+    color: $night;
+
+    i {
+      font-size: 15px;
+      color: $amber;
+    }
+    span:first-of-type {
+      flex: 1;
+    }
+  }
+
+  &__count {
+    font-size: 10px;
+    background: $amber-pale;
+    color: #854f0b;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 0.5px solid $border;
+    cursor: pointer;
+    transition: background 0.12s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+    &:hover {
+      background: #fafbfc;
+    }
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $amber;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    flex: 1;
+    font-size: 12px;
+    color: $night;
+    line-height: 1.4;
+  }
+
+  &__arrow {
+    font-size: 13px;
+    color: #9ca3af;
+  }
+}
+
+// ─── Responsive ──────────────────────────────────────────
+@media (max-width: 900px) {
+  .ps-activity__grid {
+    grid-template-columns: 1fr;
+  }
+  .ps-sidebar {
+    flex-direction: row;
+    .ps-member,
+    .ps-reminders {
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .ps-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ps-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .ps-hero__btn.ant-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ps-stats {
+    grid-template-columns: 1fr;
+  }
+  .ps-sidebar {
+    flex-direction: column;
+  }
+}

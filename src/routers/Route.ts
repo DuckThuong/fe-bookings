@@ -16,6 +16,7 @@ export const ROUTER_NAME = {
   BOOKING_SUCCESS: "booking-success",
   PROMOS: "promos",
   SUPPORT: "support",
+  PROFILE: "profile",
 };
 
 export const ROUTER_PATH = {
@@ -34,4 +35,5 @@ export const ROUTER_PATH = {
   BOOKING_SUCCESS: `${ROUTER}/${ROUTER_NAME.BOOKING_SUCCESS}`,
   PROMOS: `${ROUTER}/${ROUTER_NAME.PROMOS}`,
   SUPPORT: `${ROUTER}/${ROUTER_NAME.SUPPORT}`,
+  PROFILE: `${ROUTER}/${ROUTER_NAME.PROFILE}`,
 };

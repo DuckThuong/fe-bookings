@@ -1,0 +1,321 @@
+@import "../../../../color.scss";
+
+// ─── Local tokens ─────────────────────────────────────────
+$night: #0a0e1a;
+$amber: #f5a623;
+$amber-pale: #fff8ec;
+$muted: #6b7280;
+$border: rgba(0, 41, 58, 0.08);
+$card-shadow: 0 4px 24px rgba(0, 41, 58, 0.07);
+$radius-lg: 20px;
+$radius-md: 12px;
+$radius-sm: 8px;
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ─── Page wrapper ─────────────────────────────────────────
+.profile-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeUp 0.35s ease;
+}
+
+// ─── Header ───────────────────────────────────────────────
+.profile-settings__header {
+  background: $night;
+  border-radius: $radius-lg;
+  padding: 22px 28px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba($amber, 0.06);
+    pointer-events: none;
+  }
+}
+
+.ps-header__text {
+  position: relative;
+  z-index: 1;
+}
+
+.ps-header__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.ps-header__desc {
+  font-size: 13px;
+  color: rgba(#fff, 0.45);
+  margin: 0;
+}
+
+// ─── Main card ────────────────────────────────────────────
+.profile-settings__card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $card-shadow;
+  overflow: hidden;
+}
+
+// ─── Divider ──────────────────────────────────────────────
+.ps-divider {
+  height: 0.5px;
+  background: $border;
+  margin: 0 24px;
+}
+
+// ─── Settings group ───────────────────────────────────────
+.ps-group {
+  padding: 22px 24px 16px;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: $night;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: $amber-pale;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: $amber;
+    flex-shrink: 0;
+
+    .anticon {
+      font-size: 13px;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+// ─── Switch row ───────────────────────────────────────────
+.ps-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: $radius-md;
+  border: 0.5px solid transparent;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+  cursor: default;
+
+  &:hover {
+    background: #fafbfc;
+  }
+
+  &--on {
+    background: $amber-pale;
+    border-color: rgba($amber, 0.2);
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-sm;
+    background: #f4f5f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 15px;
+    color: $muted;
+    transition:
+      background 0.12s,
+      color 0.12s;
+
+    .anticon {
+      font-size: 15px;
+    }
+  }
+
+  &--on &__icon {
+    background: rgba($amber, 0.15);
+    color: $amber;
+  }
+
+  &__text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: $night;
+    line-height: 1;
+  }
+
+  &__desc {
+    font-size: 11.5px;
+    color: $muted;
+  }
+}
+
+// Switch antd override
+.ps-switch {
+  &.ant-switch-checked {
+    background: $amber !important;
+  }
+}
+
+// ─── Preferred contact ────────────────────────────────────
+.ps-contact-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ps-contact-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: $radius-md;
+  border: 1.5px solid $border;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  color: $muted;
+  cursor: pointer;
+  font-family: "Be Vietnam Pro", sans-serif;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: darken($border, 10%);
+    color: $night;
+  }
+
+  &--active {
+    border-color: $amber;
+    background: $amber-pale;
+    color: $night;
+    font-weight: 600;
+    box-shadow: 0 0 0 3px rgba($amber, 0.1);
+  }
+
+  &__icon {
+    font-size: 14px;
+    color: inherit;
+
+    .anticon {
+      font-size: 14px;
+    }
+  }
+}
+
+// ─── Actions ──────────────────────────────────────────────
+.ps-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px 24px;
+  border-top: 0.5px solid $border;
+  background: #fafbfc;
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+}
+
+.ps-actions__reset {
+  &.ant-btn {
+    height: 42px !important;
+    border-radius: $radius-md !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: $muted !important;
+    border-color: $border !important;
+    background: #fff !important;
+    transition: all 0.15s !important;
+
+    &:hover {
+      color: $night !important;
+      border-color: darken($border, 12%) !important;
+    }
+
+    .anticon {
+      font-size: 13px !important;
+    }
+  }
+}
+
+.ps-actions__save {
+  &.ant-btn-primary {
+    height: 42px !important;
+    padding: 0 24px !important;
+    border-radius: $radius-md !important;
+    background: $night !important;
+    border-color: $night !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    transition: opacity 0.15s !important;
+
+    &:hover {
+      opacity: 0.82 !important;
+    }
+
+    .anticon {
+      font-size: 13px !important;
+    }
+  }
+}
+
+// ─── Responsive ───────────────────────────────────────────
+@media (max-width: 768px) {
+  .profile-settings__header {
+    padding: 18px 20px;
+  }
+  .ps-group {
+    padding: 18px 18px 14px;
+  }
+  .ps-actions {
+    padding: 16px 18px;
+  }
+  .ps-header__title {
+    font-size: 17px;
+  }
+}

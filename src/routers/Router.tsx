@@ -9,6 +9,7 @@ import { HomePage } from "@/pages/home/pages/Page1";
 import { TripPage } from "@/pages/home/pages/Page2";
 import { PromosPage } from "@/pages/home/pages/Page3";
 import { SupportPage } from "@/pages/home/pages/Page4";
+import { ProfilePage } from "@/pages/profile/pages";
 import { SeatSelectionPage } from "@/pages/booking/pages/Page1";
 import { BookingInfoRoute } from "@/pages/booking/pages/Page2";
 import { BookingConfirmRoute } from "@/pages/booking/pages/Page3";
@@ -39,5 +40,6 @@ export const WebRouter = () => (
     />
     <Route path={ROUTER_PATH.PROMOS} element={<PromosPage />} />
     <Route path={ROUTER_PATH.SUPPORT} element={<SupportPage />} />
+    <Route path={ROUTER_PATH.PROFILE} element={<ProfilePage />} />
   </Routes>
 );
