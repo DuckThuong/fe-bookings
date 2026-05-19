@@ -47,15 +47,18 @@ export const Step1 = (props: SignInProps) => {
   return (
     <>
       <div className="signin-header">
-        <p className="signin-header__eyebrow">
-          {SIGNIN_STEP1_DATA.eyebrow}
-        </p>
+        <p className="signin-header__eyebrow">{SIGNIN_STEP1_DATA.eyebrow}</p>
       </div>
       <div className="signin-form">
         <Form.Item
           label={SIGNIN_STEP1_DATA.fullName.label}
           name={SIGNIN_STEP1_DATA.fullName.name}
-          rules={[{ required: true, message: SIGNIN_STEP1_DATA.fullName.requiredMessage }]}
+          rules={[
+            {
+              required: true,
+              message: SIGNIN_STEP1_DATA.fullName.requiredMessage,
+            },
+          ]}
         >
           <Input
             type="text"
@@ -76,6 +79,32 @@ export const Step1 = (props: SignInProps) => {
           onChange={(value) => props.form.setFieldValue("phone", value)}
           onBlur={(value) => props.form.setFieldValue("phone", value)}
         />
+
+        <Form.Item
+          label={"Mật khẩu"}
+          name={"password"}
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập mật khẩu .",
+            },
+          ]}
+        >
+          <Input type="password" size="large" placeholder={"Mật Khẩu."} />
+        </Form.Item>
+
+        <Form.Item
+          label={"Xác nhận mật khẩu"}
+          name={"confirm_password"}
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập mật khẩu .",
+            },
+          ]}
+        >
+          <Input type="password" size="large" placeholder={"Mật Khẩu."} />
+        </Form.Item>
       </div>
       <Form.Item
         name="acceptRole"
@@ -85,7 +114,9 @@ export const Step1 = (props: SignInProps) => {
             validator: (_, value) =>
               value
                 ? Promise.resolve()
-                : Promise.reject(new Error(SIGNIN_STEP1_DATA.terms.requiredMessage)),
+                : Promise.reject(
+                    new Error(SIGNIN_STEP1_DATA.terms.requiredMessage),
+                  ),
           },
         ]}
         className="signin-terms-form"
@@ -93,10 +124,14 @@ export const Step1 = (props: SignInProps) => {
         <Checkbox className="signin-terms-checkbox">
           <span className="signin-terms__text">
             Tôi đồng ý với{" "}
-            <Link to={ROUTER_PATH.SUPPORT}>{SIGNIN_STEP1_DATA.terms.tosLabel}</Link> và{" "}
-            <Link to={ROUTER_PATH.SUPPORT}>{SIGNIN_STEP1_DATA.terms.privacyLabel}</Link>{" "}
-            của GoRide.
-            Thông tin của bạn được bảo vệ theo tiêu chuẩn cao nhất.
+            <Link to={ROUTER_PATH.SUPPORT}>
+              {SIGNIN_STEP1_DATA.terms.tosLabel}
+            </Link>{" "}
+            và{" "}
+            <Link to={ROUTER_PATH.SUPPORT}>
+              {SIGNIN_STEP1_DATA.terms.privacyLabel}
+            </Link>{" "}
+            của GoRide. Thông tin của bạn được bảo vệ theo tiêu chuẩn cao nhất.
           </span>
         </Checkbox>
       </Form.Item>

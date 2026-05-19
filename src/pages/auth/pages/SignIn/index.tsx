@@ -1,21 +1,25 @@
+import { signUp } from "@/api/configs/auth.config";
+import type { SignUpPayloadDto } from "@/api/dtos/auth.dto";
 import profileIcn from "@/assets/icons/profile.svg";
 import {
   BENEFITS,
   DEFAULT_MESSAGE,
   NOTI_ERROR,
   NOTI_SUCCESS,
+  SUCCESS_MESSAGE,
 } from "@/common/constants/constants";
 import { Logo } from "@/components/Logo";
+import { useLoading } from "@/providers/loadingProvider";
 import { useNotification } from "@/providers/notificationProvider";
 import { ROUTER_PATH } from "@/routers/Route";
-import type { SignInDto } from "@api/dtos/SignIn.dto";
+import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Steps } from "antd";
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import back from "../../../../assets/icons/back.svg";
 import { Step1 } from "./steps/Step1";
 import { Step2 } from "./steps/Step2";
-import { Step3 } from "./steps/Step3";
 import "./style.scss";
 
 const subTitleMap: Record<number, string> = {
@@ -28,52 +32,68 @@ export const SignIn = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { showNotification } = useNotification();
+  const { setLoading } = useLoading();
   const [step, setStep] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<SignInDto>(null);
+  const [data, setData] = useState<SignUpPayloadDto>(null);
   const contentRender = () => {
     switch (step) {
       case 0:
         return <Step1 form={form} />;
       case 1:
         return <Step2 form={form} />;
-      case 2:
-        return <Step3 form={form} />;
       default:
         return <Step1 form={form} />;
     }
   };
 
-  const handleSubmit = async () => {
-    try {
+  const signUpMutation = useMutation({
+    mutationFn: (payload: SignUpPayloadDto) => signUp(payload),
+    onSuccess: (data) => {
+      console.log(data);
+      showNotification(SUCCESS_MESSAGE, NOTI_SUCCESS);
+      localStorage.setItem('token', data.accessToken);
+      navigate(ROUTER_PATH.FINISH);
+    },
+    onError: (error) => {
+      let message = DEFAULT_MESSAGE;
+      if (isAxiosError(error)) {
+        const apiMessage = error.response?.data?.message;
+        if (typeof apiMessage === "string") {
+          message = apiMessage;
+        } else if (Array.isArray(apiMessage) && apiMessage[0]) {
+          message = apiMessage[0];
+        }
+      }
+      showNotification(message, NOTI_ERROR);
+    },
+    onSettled: () => {
+      setLoading(false);
+    },
+    onMutate: () => {
       setLoading(true);
-      await form.validateFields();
+    },
+  });
 
-      if (step < 2) {
-        const currentValues = form.getFieldsValue();
-        setData((prev) => ({ ...prev, ...currentValues }));
-        setStep((v) => v + 1);
-        showNotification(DEFAULT_MESSAGE, NOTI_SUCCESS);
-      } else {
-        const finalData: SignInDto = {
-          ...data,
-          ...form.getFieldsValue(),
-        };
-        showNotification(DEFAULT_MESSAGE, NOTI_SUCCESS);
-        setData(finalData);
-      }
+  const handleSubmit = async () => {
+    await form.validateFields();
 
-      if (step === 2) {
-        navigate(ROUTER_PATH.FINISH);
-      }
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      showNotification(DEFAULT_MESSAGE, NOTI_ERROR);
+    if (step < 2) {
+      const currentValues = form.getFieldsValue();
+      setData((prev) => ({ ...prev, ...currentValues }));
+      setStep((v) => v + 1);
+    } else {
+      const finalData: SignUpPayloadDto = {
+        ...data,
+        ...form.getFieldsValue(),
+      };
+      setData(finalData);
     }
+
+    if (step === 1) {
+      signUpMutation.mutate(data);
+    } 
   };
 
-  console.log(data);
   return (
     <div className="auth-signin">
       {/* Logo */}
@@ -123,7 +143,12 @@ export const SignIn = () => {
             {contentRender()}
           </Form>
         </div>
-        <Button loading={loading} className="signin-btn" onClick={handleSubmit}>
+        <Button
+          loading={signUpMutation.isPending}
+          type="primary"
+          className="signin-btn"
+          onClick={handleSubmit}
+        >
           Tạo tài khoản
         </Button>
 

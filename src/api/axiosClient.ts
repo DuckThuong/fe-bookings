@@ -1,5 +1,5 @@
+import { ROUTER_PATH } from "@/routers/Route";
 import axios from "axios";
-import { ROUTER_PATH } from "../router/Route";
 
 const BASE_URL = process.env.REACT_APP_API_URL ?? "http://localhost:8000/";
 
@@ -32,7 +32,7 @@ axiosClient.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       console.error("Unauthorized access. Redirecting to login.");
-      window.location.href = ROUTER_PATH.SIGN_IN;
+      window.location.href = ROUTER_PATH.LOGIN;
     }
     return Promise.reject(error);
   },
