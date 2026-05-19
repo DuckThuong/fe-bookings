@@ -98,6 +98,19 @@ export interface Shop {
   address: string;
 }
 
+export interface Faq {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface SupportContact {
+  id: string;
+  label: string;
+  value: string;
+  note: string;
+}
+
 export const mapTopTripsFromMaster = (items: MasterResponseDto[]): Trip[] =>
   [...items]
     .sort((a, b) => a.sort - b.sort)

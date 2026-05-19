@@ -9,11 +9,6 @@ import { mapPromosFromMaster, type Promo } from "@/common/types/home";
 import type { MasterResponseDto } from "@/api/dtos/master.dto";
 import { useLoading } from "@/providers/loadingProvider";
 
-const FAKE_USER = {
-  userName: "Nguyễn Văn A",
-  notifCount: 3,
-};
-
 export const PromosPage = () => {
   const [promosData, setPromosData] = useState<Promo[]>([]);
   const { setLoading } = useLoading();
@@ -27,12 +22,11 @@ export const PromosPage = () => {
   }, [isLoadingPromos, setLoading]);
 
   useEffect(() => {
-    if (promos) return;
+    if (!promos) return;
     const items = Array.isArray(promos) ? promos : [promos];
     setPromosData(mapPromosFromMaster(items as MasterResponseDto[]));
   }, [promos, setPromosData]);
 
-  console.log(promosData);
   return (
     <div className="promos-page">
       <HomeHeader />

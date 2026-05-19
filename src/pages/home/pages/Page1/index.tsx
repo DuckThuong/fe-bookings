@@ -1,6 +1,6 @@
 import { findByType } from "@/api/configs/master.config";
 import type { MasterResponseDto } from "@/api/dtos/master.dto";
-import { TYPE_OPERATOR, TYPE_PROMO, TYPE_SERVICE, TYPE_TOP_TRIP, TYPE_TRIP } from "@/common/types/common";
+import { TYPE_OPERATOR, TYPE_PROMO, TYPE_SERVICE, TYPE_TOP_TRIP } from "@/common/types/common";
 import { mapOperatorsFromMaster, mapPromosFromMaster, mapServicesFromMaster, mapTopTripsFromMaster, type Operator, type Promo, type Service, type Trip } from "@/common/types/home";
 import { useLoading } from "@/providers/loadingProvider";
 import { useQuery } from "@tanstack/react-query";
