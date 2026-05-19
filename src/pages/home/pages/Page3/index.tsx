@@ -1,7 +1,13 @@
-import { PROMOS } from "@/common/types/home";
 import { HomeHeader } from "@/components/TopBar";
 import { Button } from "antd";
 import "./style.scss";
+import { findByType } from "@/api/configs/master.config";
+import { TYPE_PROMO } from "@/common/types/common";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
+import { mapPromosFromMaster, type Promo } from "@/common/types/home";
+import type { MasterResponseDto } from "@/api/dtos/master.dto";
+import { useLoading } from "@/providers/loadingProvider";
 
 const FAKE_USER = {
   userName: "Nguyễn Văn A",
@@ -9,6 +15,24 @@ const FAKE_USER = {
 };
 
 export const PromosPage = () => {
+  const [promosData, setPromosData] = useState<Promo[]>([]);
+  const { setLoading } = useLoading();
+  const { data: promos, isLoading: isLoadingPromos } = useQuery({
+    queryKey: ["promos", TYPE_PROMO],
+    queryFn: () => findByType({ type: TYPE_PROMO, code: "" }),
+  });
+
+  useEffect(() => {
+    setLoading(isLoadingPromos);
+  }, [isLoadingPromos, setLoading]);
+
+  useEffect(() => {
+    if (promos) return;
+    const items = Array.isArray(promos) ? promos : [promos];
+    setPromosData(mapPromosFromMaster(items as MasterResponseDto[]));
+  }, [promos, setPromosData]);
+
+  console.log(promosData);
   return (
     <div className="promos-page">
       <HomeHeader />
@@ -23,7 +47,7 @@ export const PromosPage = () => {
         </section>
 
         <section className="promos-list">
-          {PROMOS.map((promo) => (
+          {promosData.map((promo) => (
             <article
               key={promo.id}
               className={`promo-item promo-item--${promo.id}`}
