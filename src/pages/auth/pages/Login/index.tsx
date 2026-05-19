@@ -5,7 +5,7 @@ import { InputPhoneNumber } from "../../component/InputPhoneNumber";
 import "./style.scss";
 import { InputState } from "./../../../../common/constants/constants";
 import { ROUTER_PATH } from "@/routers/Route";
-import { Button, Form } from "antd";
+import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import googleIcn from "@/assets/icons/google.svg";
 import facebookIcn from "@/assets/icons/facebook.svg";
@@ -88,6 +88,23 @@ export const Login = () => {
             onChange={(value) => setPhone(value)}
             onBlur={(value) => setPhone(value)}
           />
+
+          <Form.Item
+            label={"Mật khẩu"}
+            name={"password"}
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập mật khẩu đăng nhập",
+              },
+            ]}
+          >
+            <Input
+              type="password"
+              size="large"
+              placeholder={"Mật Khẩu Đăng Nhập"}
+            />
+          </Form.Item>
         </Form>
 
         <Button className={`signin-btn`} onClick={handleSubmit}>
