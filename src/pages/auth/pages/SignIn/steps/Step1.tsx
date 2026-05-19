@@ -95,7 +95,7 @@ export const Step1 = (props: SignInProps) => {
 
         <Form.Item
           label={"Xác nhận mật khẩu"}
-          name={"password"}
+          name={"confirm_password"}
           rules={[
             {
               required: true,

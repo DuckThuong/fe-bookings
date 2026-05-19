@@ -3,31 +3,66 @@ import { Logo } from "@/components/Logo";
 import { useState } from "react";
 import { InputPhoneNumber } from "../../component/InputPhoneNumber";
 import "./style.scss";
-import { InputState } from "./../../../../common/constants/constants";
+import {
+  DEFAULT_MESSAGE,
+  InputState,
+  NOTI_ERROR,
+  NOTI_SUCCESS,
+  SUCCESS_MESSAGE,
+} from "./../../../../common/constants/constants";
 import { ROUTER_PATH } from "@/routers/Route";
 import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import googleIcn from "@/assets/icons/google.svg";
 import facebookIcn from "@/assets/icons/facebook.svg";
 import appleIcn from "@/assets/icons/apple.svg";
+import { signIn } from "@/api/configs/auth.config";
+import type { LoginPayloadDto } from "@/api/dtos/auth.dto";
+import { useMutation } from "@tanstack/react-query";
+import { useNotification } from "@/providers/notificationProvider";
+import { useLoading } from "@/providers/loadingProvider";
+import { isAxiosError, type AxiosError } from "axios";
 
 export const Login = () => {
   const [form] = Form.useForm();
-  const [phone, setPhone] = useState("");
-  const [status, setStatus] = useState<string>(InputState.idle);
-  const [loading, setLoading] = useState(false);
-  const rawDigits = phone.replace(/\s/g, "");
-  const isValid = rawDigits.length === 10;
   const navigate = useNavigate();
+  const { setLoading } = useLoading();
+  const { showNotification } = useNotification();
+  const [phone, setPhone] = useState("");
 
-  const handleSubmit = () => {
-    if (!isValid) {
-      setStatus(InputState.error);
-      return;
-    }
-    setStatus(InputState.loading);
-    setTimeout(() => setStatus(InputState.success), 1800);
-    navigate(ROUTER_PATH.OTP_CONFIRM);
+  const loginMutation = useMutation({
+    mutationFn: (payload: LoginPayloadDto) => signIn(payload),
+    onSuccess: (data) => {
+      showNotification(SUCCESS_MESSAGE, NOTI_SUCCESS);
+      localStorage.setItem('token', data.accessToken);
+      navigate(ROUTER_PATH.HOME);
+    },
+    onError: (error) => {
+      let message = DEFAULT_MESSAGE;
+      if (isAxiosError(error)) {
+        const apiMessage = error.response?.data?.message;
+        if (typeof apiMessage === "string") {
+          message = apiMessage;
+        } else if (Array.isArray(apiMessage) && apiMessage[0]) {
+          message = apiMessage[0];
+        }
+      }
+      showNotification(message, NOTI_ERROR);
+    },
+    onSettled: () => {
+      setLoading(false);
+    },
+    onMutate: () => {
+      setLoading(true);
+    },
+  });
+
+  const handleSubmit = (values: { phone: string; password: string }) => {
+    const payload: LoginPayloadDto = {
+      phoneNumber: values.phone,
+      password: values.password,
+    };
+    loginMutation.mutate(payload);
   };
 
   return (
@@ -82,7 +117,7 @@ export const Login = () => {
           </p>
         </div>
 
-        <Form form={form} layout="vertical" className="login-form">
+        <Form form={form} layout="vertical" className="login-form" onFinish={handleSubmit}>
           <InputPhoneNumber
             value={phone}
             onChange={(value) => setPhone(value)}
@@ -105,14 +140,16 @@ export const Login = () => {
               placeholder={"Mật Khẩu Đăng Nhập"}
             />
           </Form.Item>
-        </Form>
 
-        <Button className={`signin-btn`} onClick={handleSubmit}>
-          Đăng nhập
-          <span className="arrow">
-            {loading ? <span className="signin-btn__spinner" /> : " →"}
-          </span>
-        </Button>
+          <Button
+            loading={loginMutation.isPending}
+            htmlType="submit"
+            className={`signin-btn`}
+          >
+            Đăng nhập
+            <span className="arrow"> →</span>
+          </Button>
+        </Form>
 
         <div className="login-divider">
           <span className="login-divider__line" />

@@ -49,9 +49,9 @@ const SIGNIN_STEP2_DATA: SignInStep2Data = {
     name: "gender",
     requiredMessage: "Vui lòng chọn giới tính",
     options: [
-      { value: "male", emoji: "👨", label: "Nam" },
-      { value: "female", emoji: "👩", label: "Nữ" },
-      { value: "other", emoji: "🧑", label: "Khác" },
+      { value: "1", emoji: "👨", label: "Nam" },
+      { value: "2", emoji: "👩", label: "Nữ" },
+      { value: "3", emoji: "🧑", label: "Khác" },
     ],
   },
 };
