@@ -58,13 +58,13 @@ export const Login = () => {
   });
 
   const handleSubmit = (values: { phone: string; password: string }) => {
-    // const payload: LoginPayloadDto = {
-    //   phoneNumber: values.phone,
-    //   password: values.password,
-    // };
-    // loginMutation.mutate(payload);
+    const payload: LoginPayloadDto = {
+      phoneNumber: values.phone,
+      password: values.password,
+    };
+    loginMutation.mutate(payload);
 
-    navigate(ROUTER_PATH.HOME);
+    // navigate(ROUTER_PATH.HOME);
 
   };
 

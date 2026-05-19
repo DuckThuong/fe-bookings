@@ -421,11 +421,54 @@
   }
 }
 
+.signin-step-panel {
+  &--hidden {
+    display: none;
+  }
+}
+
 .signIn {
   &__step {
     &-2 {
       padding: 12px 0px;
     }
+
+    &-3 {
+      padding: 12px 0;
+    }
+  }
+}
+
+.signin-confirm {
+  margin-bottom: 20px;
+
+  .ant-descriptions-header {
+    margin-bottom: 8px;
+  }
+
+  .ant-descriptions-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: $night;
+  }
+
+  .ant-descriptions-item-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $muted;
+    width: 40%;
+  }
+
+  .ant-descriptions-item-content {
+    font-size: 14px;
+    font-weight: 500;
+    color: $night;
+  }
+
+  &__note {
+    margin: 0 !important;
+    font-size: 12px;
+    text-align: center;
   }
 }
 
