@@ -90,7 +90,9 @@ export const SignIn = () => {
     }
 
     if (step === 1) {
-      signUpMutation.mutate(data);
+      navigate(ROUTER_PATH.FINISH);
+
+      // signUpMutation.mutate(data);
     } 
   };
 
