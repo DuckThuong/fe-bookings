@@ -9,19 +9,20 @@ import {
   NOTI_ERROR,
   NOTI_SUCCESS,
   SUCCESS_MESSAGE,
-} from "./../../../../common/constants/constants";
+} from "@common/constants/constants";
 import { ROUTER_PATH } from "@/routers/Route";
 import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import googleIcn from "@/assets/icons/google.svg";
-import facebookIcn from "@/assets/icons/facebook.svg";
-import appleIcn from "@/assets/icons/apple.svg";
-import { signIn } from "@/api/configs/auth.config";
-import type { LoginPayloadDto } from "@/api/dtos/auth.dto";
+import googleIcn from "@assets/icons/google.svg";
+import facebookIcn from "@assets/icons/facebook.svg";
+import appleIcn from "@assets/icons/apple.svg";
+import { signIn } from "@api/configs/auth.config";
+import type { LoginPayloadDto } from "@api/dtos/auth.dto";
 import { useMutation } from "@tanstack/react-query";
-import { useNotification } from "@/providers/notificationProvider";
-import { useLoading } from "@/providers/loadingProvider";
+import { useNotification } from "@providers/notificationProvider";
+import { useLoading } from "@providers/loadingProvider";
 import { isAxiosError, type AxiosError } from "axios";
+import { setStoredAuth } from "@/common/utils/authStorage";
 
 export const Login = () => {
   const [form] = Form.useForm();
@@ -34,7 +35,7 @@ export const Login = () => {
     mutationFn: (payload: LoginPayloadDto) => signIn(payload),
     onSuccess: (data) => {
       showNotification(SUCCESS_MESSAGE, NOTI_SUCCESS);
-      localStorage.setItem('token', data.accessToken);
+      setStoredAuth(data.accessToken);
       navigate(ROUTER_PATH.HOME);
     },
     onError: (error) => {
@@ -63,9 +64,6 @@ export const Login = () => {
       password: values.password,
     };
     loginMutation.mutate(payload);
-
-    // navigate(ROUTER_PATH.HOME);
-
   };
 
   return (
@@ -120,7 +118,12 @@ export const Login = () => {
           </p>
         </div>
 
-        <Form form={form} layout="vertical" className="login-form" onFinish={handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          className="login-form"
+          onFinish={handleSubmit}
+        >
           <InputPhoneNumber
             value={phone}
             onChange={(value) => setPhone(value)}

@@ -18,11 +18,23 @@ import { isAxiosError } from "axios";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { setStoredAuth } from "@/common/utils/authStorage";
 import back from "../../../../assets/icons/back.svg";
 import { Step1 } from "./steps/Step1";
 import { Step2 } from "./steps/Step2";
 import { Step3 } from "./steps/Step3";
 import "./style.scss";
+
+type SignUpFormValues = {
+  name?: string;
+  phone?: string;
+  password?: string;
+  confirm_password?: string;
+  acceptRole?: boolean;
+  email?: string;
+  dateOfBirth?: string;
+  gender?: string;
+};
 
 const subTitleMap: Record<number, string> = {
   0: "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để tạo tài khoản GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính xác và cập nhật để trải nghiệm dịch vụ tốt nhất.",
@@ -61,13 +73,14 @@ export const SignIn = () => {
   const { showNotification } = useNotification();
   const { setLoading } = useLoading();
   const [step, setStep] = useState<number>(0);
+  const [data, setData] = useState<SignUpFormValues>({});
 
   const signUpMutation = useMutation({
     mutationFn: (payload: SignUpPayloadDto) => signUp(payload),
     onSuccess: (data) => {
       console.log(data);
       showNotification(SUCCESS_MESSAGE, NOTI_SUCCESS);
-      localStorage.setItem('token', data.accessToken);
+      setStoredAuth(data.accessToken);
       navigate(ROUTER_PATH.FINISH);
     },
     onError: (error) => {
@@ -90,20 +103,34 @@ export const SignIn = () => {
     },
   });
 
+  const buildSignUpPayload = (values: SignUpFormValues): SignUpPayloadDto => ({
+    name: values.name ?? "",
+    phone: values.phone ?? "",
+    password: values.password ?? "",
+    confirm_password: values.confirm_password ?? "",
+    acceptRole: values.acceptRole ? 1 : 0,
+    email: values.email ?? "",
+    dateOfBirth: values.dateOfBirth ?? "",
+    gender: Number(values.gender ?? 0),
+  });
+
   const handleSubmit = async () => {
+    try {
+      await form.validateFields();
+    } catch {
+      return;
+    }
+
+    const currentValues = form.getFieldsValue() as SignUpFormValues;
+    const nextData = { ...data, ...currentValues };
+    setData(nextData);
+
     if (step === 0) {
-      await form.validateFields([...STEP1_FIELDS]);
       setStep(1);
       return;
     }
 
-    if (step === 1) {
-      await form.validateFields([...STEP2_FIELDS]);
-      setStep(2);
-      return;
-    }
-
-    signUpMutation.mutate(buildSignUpPayload(form.getFieldsValue()));
+    signUpMutation.mutate(buildSignUpPayload(nextData));
   };
 
   return (
@@ -175,7 +202,7 @@ export const SignIn = () => {
           className="signin-btn"
           onClick={handleSubmit}
         >
-          {step < 2 ? "Tiếp tục" : "Tạo tài khoản"}
+          {step === 0 ? "Tiếp tục" : "Tạo tài khoản"}
         </Button>
 
         <p className="signin-login-link">

@@ -58,13 +58,6 @@ export const InputPhoneNumber: React.FC<InputPhoneNumberProps> = (
         maxLength={13}
         onChange={onInputChange}
         onBlur={onInputBlur}
-        addonBefore={
-          <Select
-            defaultValue={INPUT_PHONE_DATA.defaultRegion}
-            options={INPUT_PHONE_DATA.regions}
-            className="input-phone__region"
-          />
-        }
       />
     </Form.Item>
   );

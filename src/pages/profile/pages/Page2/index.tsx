@@ -14,6 +14,11 @@ import {
 import dayjs from "dayjs";
 import { useUser } from "@/common/contexts/UserContext";
 import "./style.scss";
+import { useMutation } from "@tanstack/react-query";
+import type { UpdateUserProfilePayloadDto } from "@/api/dtos/user.payload";
+import { updateProfile } from "@/api/configs/user.config";
+import { useNotification } from "@/providers/notificationProvider";
+import { NOTI_SUCCESS } from "@/common/constants/constants";
 
 // ─── Helpers ──────────────────────────────────────────────
 const getBase64 = (file: Blob): Promise<string> =>
@@ -136,7 +141,8 @@ export const ProfileInformation = ({
 }) => {
   const { user, setUser } = useUser();
   const [form] = Form.useForm();
-  const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
+  const [avatarUrl, setAvatarUrl] = useState(user.userAvatar || "");
+  const { showNotification } = useNotification();
 
   const initials = user.userName
     ? user.userName.trim().charAt(0).toUpperCase()
@@ -145,31 +151,34 @@ export const ProfileInformation = ({
   useEffect(() => {
     form.setFieldsValue({
       userName: user.userName,
-      email: user.email,
-      phone: user.phone,
-      address: user.address,
-      birthday: user.birthday ? dayjs(user.birthday, "DD/MM/YYYY") : undefined,
+      email: user.userEmail,
+      phone: user.userPhone,
+      birthday: user.userDob ? dayjs(user.userDob, "YYYY-MM-DD") : undefined,
     });
-    setAvatarUrl(user.avatarUrl || "");
+    setAvatarUrl(user.userAvatar || "");
   }, [form, user]);
 
-  const handleFinish = (values: {
-    userName: string;
-    email?: string;
-    phone?: string;
-    address?: string;
-    birthday?: dayjs.Dayjs;
-  }) => {
-    setUser({
-      ...user,
-      userName: values.userName,
-      email: values.email,
-      phone: values.phone,
-      address: values.address,
-      birthday: values.birthday?.format("DD/MM/YYYY") ?? "",
-      avatarUrl,
-    });
+  const handleFinishMutation = useMutation({
+    mutationFn: (payload: UpdateUserProfilePayloadDto) =>
+      updateProfile(payload),
+    onSuccess: (data) => {
+      showNotification("Cập nhật thông tin thành công", NOTI_SUCCESS);
+      setUser(data);
+    },
+  });
+
+  const handleFinish = () => {
+    const payload: UpdateUserProfilePayloadDto = {
+      userName: form.getFieldValue("userName"),
+      userEmail: form.getFieldValue("email"),
+      userPhone: form.getFieldValue("phone"),
+      userDob: form.getFieldValue("birthday")
+        ? form.getFieldValue("birthday").format("YYYY-MM-DD")
+        : undefined,
+    };
+    handleFinishMutation.mutate(payload);
   };
+  // Call API to update profile
 
   return (
     <div className="profile-information">
@@ -248,19 +257,12 @@ export const ProfileInformation = ({
                 <Form.Item label="Ngày sinh" name="birthday">
                   <DatePicker
                     prefix={<CalendarOutlined />}
-                    placeholder="DD/MM/YYYY"
-                    format="DD/MM/YYYY"
+                    format="YYYY-MM-DD"
+                    placeholder="YYYY-MM-DD"
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
               </div>
-
-              <Form.Item label="Địa chỉ" name="address">
-                <Input
-                  prefix={<EnvironmentOutlined />}
-                  placeholder="Số nhà, đường, quận, tỉnh/thành phố"
-                />
-              </Form.Item>
 
               <Form.Item style={{ marginBottom: 0 }}>
                 <Button

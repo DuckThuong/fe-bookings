@@ -2,6 +2,11 @@ const TOKEN_STORAGE_KEY = "token";
 const ROLE_STORAGE_KEY = "userRole";
 const REMEMBER_LOGIN_STORAGE_KEY = "rememberLogin";
 const REMEMBERED_EMAIL_STORAGE_KEY = "rememberedEmail";
+export const AUTH_STORAGE_CHANGED_EVENT = "auth-storage-changed";
+
+const notifyAuthStorageChanged = () => {
+  window.dispatchEvent(new Event(AUTH_STORAGE_CHANGED_EVENT));
+};
 
 const getStorageItem = (key: string) =>
   localStorage.getItem(key) ?? sessionStorage.getItem(key);
@@ -46,21 +51,26 @@ export const setStoredAuth = (
   if (role) {
     targetStorage.setItem(ROLE_STORAGE_KEY, role);
   }
+
+  notifyAuthStorageChanged();
 };
 
 export const setStoredRole = (role: string | null) => {
   clearStorageItem(ROLE_STORAGE_KEY);
 
   if (!role) {
+    notifyAuthStorageChanged();
     return;
   }
 
   getActiveAuthStorage().setItem(ROLE_STORAGE_KEY, role);
+  notifyAuthStorageChanged();
 };
 
 export const clearStoredAuth = () => {
   clearStorageItem(TOKEN_STORAGE_KEY);
   clearStorageItem(ROLE_STORAGE_KEY);
+  notifyAuthStorageChanged();
 };
 
 export const getRememberedSignIn = () => ({

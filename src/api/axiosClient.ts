@@ -1,7 +1,8 @@
 import { ROUTER_PATH } from "@/routers/Route";
+import { clearStoredAuth, getStoredToken } from "@/common/utils/authStorage";
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_API_URL ?? "http://localhost:8000/";
+const BASE_URL = process.env.REACT_APP_API_URL ?? "http://localhost:8000";
 
 const axiosClient = axios.create({
   baseURL: BASE_URL,
@@ -13,7 +14,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = getStoredToken();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -31,8 +32,21 @@ axiosClient.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.status === 401) {
-      console.error("Unauthorized access. Redirecting to login.");
-      window.location.href = ROUTER_PATH.LOGIN;
+      clearStoredAuth();
+
+      const publicPaths = [
+        ROUTER_PATH.WELCOME,
+        ROUTER_PATH.LOGIN,
+        ROUTER_PATH.SIGNIN,
+        ROUTER_PATH.OTP_CONFIRM,
+        ROUTER_PATH.FINISH,
+      ];
+      const isPublicPath = publicPaths.includes(window.location.pathname);
+
+      if (!isPublicPath) {
+        window.history.replaceState(null, "", ROUTER_PATH.LOGIN);
+        window.dispatchEvent(new PopStateEvent("popstate"));
+      }
     }
     return Promise.reject(error);
   },
