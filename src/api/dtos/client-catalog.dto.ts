@@ -76,6 +76,9 @@ export interface ClientTripDto {
   bookedSeats: number;
   road?: ClientRoadDto | null;
   company?: ClientCompanyDto | null;
+  vehicle?: ClientVehicleDto | null;
+  driver?: ClientDriverDto | null;
+  availableSeats?: number;
 }
 
 export interface ClientVehicleDto {
@@ -88,6 +91,7 @@ export interface ClientVehicleDto {
   status: string;
   name: string;
   description?: string | null;
+  seatCount: number;
 }
 
 export interface ClientDriverDto {

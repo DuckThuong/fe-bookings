@@ -1,10 +1,10 @@
 import axiosClient from "../axiosClient";
 import type {
-  ClientCompanyTripDto,
   ClientCompanyTripQueryDto,
   ClientPaginatedResponseDto,
   ClientRoadDto,
   ClientRoadQueryDto,
+  ClientTripDto,
 } from "../dtos/client-catalog.dto";
 import { ClientCatalogEndPoints } from "../endpoints/client-catalog.endpoint";
 
@@ -19,7 +19,7 @@ export const listClientRoads = async (
 
 export const listClientCompanyTrips = async (
   payload: ClientCompanyTripQueryDto,
-): Promise<ClientPaginatedResponseDto<ClientCompanyTripDto>> => {
+): Promise<ClientPaginatedResponseDto<ClientTripDto>> => {
   const response = await axiosClient.get(ClientCatalogEndPoints.COMPANY_TRIPS, {
     params: payload,
   });
@@ -28,7 +28,7 @@ export const listClientCompanyTrips = async (
 
 export const getClientCompanyTrip = async (
   id: number | string,
-): Promise<ClientCompanyTripDto> => {
+): Promise<ClientTripDto> => {
   const response = await axiosClient.get(
     ClientCatalogEndPoints.COMPANY_TRIP_DETAIL(id),
   );

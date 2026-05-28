@@ -27,8 +27,8 @@ interface SearchCardProps {
 
 const DEFAULT_FROM: RouteField = { city: "Hà Nội", station: "Bến xe Mỹ Đình" };
 const DEFAULT_TO: RouteField = {
-  city: "TP. Hồ Chí Minh",
-  station: "Bến xe Miền Đông",
+  city: "Đà Nẵng",
+  station: "Bến xe Trung tâm Đà Nẵng",
 };
 
 const STATIONS_BY_CITY: Record<string, string[]> = {

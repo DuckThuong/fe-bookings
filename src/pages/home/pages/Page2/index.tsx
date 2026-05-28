@@ -1,8 +1,4 @@
-import {
-  type FilterKey,
-  type SortKey,
-  type Trip,
-} from "@/common/types/ticket";
+import { type FilterKey, type SortKey, type Trip } from "@/common/types/ticket";
 import { ROUTER_PATH } from "@/routers/Route";
 import { ScrollTopButton } from "@/components/ScrollTopButton";
 import { HomeHeader } from "@/components/TopBar";
@@ -13,16 +9,20 @@ import { BookingHero } from "../../components/Page2/BookingHero";
 import { FilterBar } from "../../components/Page2/FilterBar";
 import { SearchCard } from "../../components/Page2/SearchCard";
 import { TripList } from "../../components/Page2/TripList";
-import { useClientCompanyTripsQuery, useClientRoadsQuery } from "@/features/catalog/hooks/useCatalogApi";
+import {
+  useClientCompanyTripsQuery,
+  useClientRoadsQuery,
+} from "@/features/catalog/hooks/useCatalogApi";
 import { mapCompanyTripToTripCard } from "@/features/booking/utils/bookingMappers";
 import { getApiErrorMessage } from "@/common/utils/apiError";
 import type { SeatType } from "@/common/types/ticket";
+import dayjs from "dayjs";
 import "./style.scss";
 
 const INITIAL_SEARCH = {
   from: "Hà Nội",
-  to: "TP. Hồ Chí Minh",
-  date: "11/05/2026",
+  to: "Đà Nẵng",
+  date: dayjs().add(1, "day").format("YYYY-MM-DD"),
   passengers: 1,
 };
 
@@ -35,32 +35,19 @@ export const TripPage = () => {
   const [sortKey, setSort] = useState<SortKey>("price");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  const roadFilters = useMemo(
+  const companyTripFilters = useMemo(
     () => ({
       startPoint: searchMeta.from,
       endPoint: searchMeta.to,
       page: 1,
-      limit: 1,
+      limit: 100,
     }),
     [searchMeta.from, searchMeta.to],
   );
 
-  const roadsQuery = useClientCompanyTripsQuery(roadFilters);
-  const roadId = roadsQuery.data?.items[0]?.id;
-
-  const companyTripFilters = useMemo(
-    () => ({
-      roadId,
-      minAvailableSeats: searchMeta.passengers,
-      page: 1,
-      limit: 100,
-    }),
-    [roadId, searchMeta.passengers],
-  );
-
   const companyTripsQuery = useClientCompanyTripsQuery(
     companyTripFilters,
-    Boolean(roadId),
+    Boolean(searchMeta.from && searchMeta.to),
   );
 
   const trips: Trip[] = useMemo(
@@ -126,13 +113,14 @@ export const TripPage = () => {
   const visibleTrips = displayedTrips.slice(0, visibleCount);
   const hasMoreTrips = visibleCount < displayedTrips.length;
   const isLoading =
-    roadsQuery.isLoading ||
-    roadsQuery.isFetching ||
-    (Boolean(roadId) && (companyTripsQuery.isLoading || companyTripsQuery.isFetching));
-  const apiError = roadsQuery.error ?? companyTripsQuery.error;
+    Boolean(searchMeta.from && searchMeta.to) &&
+    (companyTripsQuery.isLoading || companyTripsQuery.isFetching);
+  const apiError = companyTripsQuery.error;
 
   const handleLoadMore = () => {
-    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, displayedTrips.length));
+    setVisibleCount((prev) =>
+      Math.min(prev + PAGE_SIZE, displayedTrips.length),
+    );
   };
 
   const handleSortChange = (nextSort: SortKey) => {
@@ -171,7 +159,9 @@ export const TripPage = () => {
         )}
 
         {isLoading ? (
-          <div style={{ display: "flex", justifyContent: "center", padding: 48 }}>
+          <div
+            style={{ display: "flex", justifyContent: "center", padding: 48 }}
+          >
             <Spin />
           </div>
         ) : (
@@ -185,7 +175,8 @@ export const TripPage = () => {
               type="primary"
               onClick={handleLoadMore}
             >
-              Xem thÃªm {Math.min(PAGE_SIZE, displayedTrips.length - visibleCount)}{" "}
+              Xem thÃªm{" "}
+              {Math.min(PAGE_SIZE, displayedTrips.length - visibleCount)}{" "}
               chuyáº¿n
             </Button>
           )}

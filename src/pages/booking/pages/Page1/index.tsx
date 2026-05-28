@@ -71,7 +71,7 @@ export const SeatSelectionPage = () => {
 
     const inferred = inferClientVehicleType(
       companyTripQuery.data.vehicle?.type,
-      companyTripQuery.data.totalSeat,
+      companyTripQuery.data.vehicle?.seatCount,
     );
     setVehicleType(inferred);
     setFloor(1);

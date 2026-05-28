@@ -65,6 +65,7 @@ const RouteTimeline = ({ trip }: { trip: Trip }) => (
 
 const PricePanel = ({ trip, onBook }: { trip: Trip; onBook: () => void }) => {
   const urgent = trip.seatsLeft <= 4;
+  const badges = trip.badges ?? [];
 
   return (
     <div className="tc-price">
@@ -74,7 +75,7 @@ const PricePanel = ({ trip, onBook }: { trip: Trip; onBook: () => void }) => {
       </div>
 
       <div className="tc-price__badges">
-        {trip.badges.map((b, i) => (
+        {badges.map((b, i) => (
           <Tag key={i} color={BADGE_COLOR[b.type]} className="tc-badge">
             {b.label}
           </Tag>
@@ -100,7 +101,7 @@ const PricePanel = ({ trip, onBook }: { trip: Trip; onBook: () => void }) => {
 
 const AmenitiesRow = ({ amenities }: { amenities: Trip["amenities"] }) => (
   <div className="tc-amenities">
-    {amenities.map((a, i) => (
+    {(amenities ?? []).map((a, i) => (
       <span key={i} className="tc-amenity">
         {a.icon} {a.label}
       </span>

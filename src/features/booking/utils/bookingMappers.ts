@@ -16,7 +16,7 @@ import type {
   TripContextResponseDto,
 } from "@/api/dtos/client-booking.dto";
 import type { ClientAccountBookingDto } from "@/api/dtos/client-account.dto";
-import type { ClientCompanyTripDto } from "@/api/dtos/client-catalog.dto";
+import type { ClientTripDto } from "@/api/dtos/client-catalog.dto";
 import type {
   BookingPageData,
   RowDef,
@@ -111,6 +111,12 @@ const defaultNextActions: NextAction[] = [
     prompt: "view_history",
   },
 ];
+
+const API_VEHICLE_TYPE_LABEL: Record<string, string> = {
+  SLEEPER: "Xe giuong nam",
+  LIMOUSINE: "Xe Limousine",
+  COACH: "Xe khach",
+};
 
 export const toNumber = (value: number | string | null | undefined) => {
   const parsed = Number(value ?? 0);
@@ -458,46 +464,52 @@ const colorByCode = (code: string) => {
   return `hsl(${Math.abs(hash) % 360}, 45%, 28%)`;
 };
 
-export const mapCompanyTripToTripCard = (
-  companyTrip: ClientCompanyTripDto,
-): Trip => {
-  const company = companyTrip.company;
-  const trip = companyTrip.trip;
-  const road = companyTrip.road ?? trip?.road ?? null;
-  const vehicle = companyTrip.vehicle;
+export const mapCompanyTripToTripCard = (trip: ClientTripDto): Trip => {
+  const company = trip.company;
+  const road = trip.road;
+  const vehicle = trip.vehicle;
+  const totalSeats = toNumber(vehicle?.seatCount);
+  const bookedSeats = toNumber(trip.bookedSeats);
   const availableSeats =
-    companyTrip.availableSeats ??
-    Math.max(0, companyTrip.totalSeat - companyTrip.totalSeatBooked);
+    trip.availableSeats ?? Math.max(0, totalSeats - bookedSeats);
   const operatorCode = company?.code ?? "BUS";
+  const vehicleType = vehicle?.type
+    ? API_VEHICLE_TYPE_LABEL[vehicle.type] ?? vehicle.type
+    : "Xe khach";
+  const vehicleLabel = vehicle?.name || vehicleType;
+  const price = toNumber(trip.seatPrice);
 
   return {
-    id: String(companyTrip.id),
+    id: String(trip.id),
     featured: availableSeats <= 4,
     operator: {
       code: operatorCode.slice(0, 3).toUpperCase(),
       logoColor: colorByCode(operatorCode),
       name: company?.companyName ?? "Nha xe",
-      vehicleType: vehicle?.name || vehicle?.type || "Xe khach",
+      vehicleType: vehicleLabel,
       rating: 4.8,
       reviewCount: "0",
     },
     departure: {
-      time: trip?.departure ?? "",
+      time: trip.departure,
       city: road?.startPoint ?? "",
       station: road?.startPoint ?? "",
     },
     arrival: {
-      time: trip?.arrival ?? "",
+      time: trip.arrival,
       city: road?.endPoint ?? "",
       station: road?.endPoint ?? "",
     },
     duration: road?.standardDuration ? `~${road.standardDuration}` : "",
     stopLabel: "Thang, khong dung",
-    price: toNumber(companyTrip.pricePerSeat),
+    price,
     seatsLeft: availableSeats,
     badges: [
-      { type: availableSeats > 0 ? "green" : "red", label: availableSeats > 0 ? "Con ve" : "Het ve" },
-      { type: "blue", label: vehicle?.type || "Xe khach" },
+      {
+        type: availableSeats > 0 ? "green" : "red",
+        label: availableSeats > 0 ? "Con ve" : "Het ve",
+      },
+      { type: "blue", label: vehicleType },
     ],
     amenities: [
       { icon: "wifi", label: "Wifi" },

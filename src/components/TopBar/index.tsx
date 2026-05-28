@@ -242,7 +242,7 @@ export const HomeHeader = () => {
           <Dropdown
             placement="bottomRight"
             trigger={["click"]}
-            dropdownRender={() => (
+            popupRender={() => (
               <Menu
                 className="home-header__user-menu"
                 items={MENU_ITEMS}
