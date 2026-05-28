@@ -21,24 +21,23 @@ import {
 } from "../utils/authStorage";
 import type {
   SignInPayloadDto,
-  SignInResponseDto,
   SignUpPayloadDto,
-  SignUpResponseDto,
+  AuthResponseDto
 } from "../../api/dtos/auth.dto";
-import type { UserProfileResponseDto } from "../../api/dtos/user.dto";
+import type { UserProfileResponseDto } from "../../api/dtos/user.payload";
 
 interface AuthContextType {
   token: string | null;
   user: UserProfileResponseDto | null;
-  userRole: string | null;
+  userRole: string | number | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   isAuthResolved: boolean;
   signIn: (
     payload: SignInPayloadDto,
     options?: { remember?: boolean },
-  ) => Promise<SignInResponseDto>;
-  signUp: (payload: SignUpPayloadDto) => Promise<SignUpResponseDto>;
+  ) => Promise<AuthResponseDto>;
+  signUp: (payload: SignUpPayloadDto) => Promise<AuthResponseDto>;
   signOut: () => void;
   setUser: (user: UserProfileResponseDto | null) => void;
   checkAuthStatus: () => Promise<void>;
@@ -63,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       remember = false,
     ) => {
       setToken(nextToken);
-      setStoredAuth(nextToken, nextUser?.role, remember);
+      setStoredAuth(nextToken, nextUser?.userRole, remember);
 
       setCurrentUser(nextUser);
     },
@@ -72,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setUser = useCallback((nextUser: UserProfileResponseDto | null) => {
     setCurrentUser(nextUser);
-    setStoredRole(nextUser?.role ?? null);
+    setStoredRole(nextUser?.userRole ?? null);
   }, []);
 
   const signOut = useCallback(() => {
@@ -83,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const fetchAndApplyUserProfile = useCallback(
     async (nextToken: string, remember = false) => {
-      const profile = await getUserPRofile();
+      const profile = await getProfile();
       applyAuthenticatedState(nextToken, profile, remember);
     },
     [applyAuthenticatedState],
@@ -116,8 +115,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
       try {
         const response = await signInApi(payload);
-        applyAuthenticatedState(response.access_token, null, remember);
-        await fetchAndApplyUserProfile(response.access_token, remember);
+        applyAuthenticatedState(response.accessToken, null, remember);
+        await fetchAndApplyUserProfile(response.accessToken, remember);
         return response;
       } catch (error) {
         signOut();
@@ -144,8 +143,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [checkAuthStatus]);
 
   const userRole = useMemo(
-    () => currentUser?.role ?? getStoredRole(),
-    [currentUser?.role],
+    () => currentUser?.userRole ?? getStoredRole(),
+    [currentUser?.userRole],
   );
 
   const isAuthenticated = Boolean(token);

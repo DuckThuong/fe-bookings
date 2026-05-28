@@ -36,7 +36,7 @@ export interface UserProfileResponseDto {
 
   userAvatar: string;
 
-  userRole: UserRole;
+  userRole: number;
 
   userStatus: UserStatus;
 

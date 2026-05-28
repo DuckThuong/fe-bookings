@@ -39,7 +39,7 @@ export const isStoredAuthRemembered = () =>
 
 export const setStoredAuth = (
   token: string,
-  role?: string | null,
+  role?: number | null,
   remember = false,
 ) => {
   clearStorageItem(TOKEN_STORAGE_KEY);
@@ -48,14 +48,14 @@ export const setStoredAuth = (
   const targetStorage = remember ? localStorage : sessionStorage;
   targetStorage.setItem(TOKEN_STORAGE_KEY, token);
 
-  if (role) {
-    targetStorage.setItem(ROLE_STORAGE_KEY, role);
+  if (role !== undefined && role !== null) {
+    targetStorage.setItem(ROLE_STORAGE_KEY, role.toString());
   }
 
   notifyAuthStorageChanged();
 };
 
-export const setStoredRole = (role: string | null) => {
+export const setStoredRole = (role: number | null) => {
   clearStorageItem(ROLE_STORAGE_KEY);
 
   if (!role) {
@@ -63,7 +63,7 @@ export const setStoredRole = (role: string | null) => {
     return;
   }
 
-  getActiveAuthStorage().setItem(ROLE_STORAGE_KEY, role);
+  getActiveAuthStorage().setItem(ROLE_STORAGE_KEY, role.toString());
   notifyAuthStorageChanged();
 };
 

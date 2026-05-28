@@ -20,8 +20,8 @@ import type { SeatType } from "@/common/types/ticket";
 import "./style.scss";
 
 const INITIAL_SEARCH = {
-  from: "HÃ  Ná»™i",
-  to: "TP. Há»“ ChÃ­ Minh",
+  from: "Hà Nội",
+  to: "TP. Hồ Chí Minh",
   date: "11/05/2026",
   passengers: 1,
 };
@@ -45,7 +45,7 @@ export const TripPage = () => {
     [searchMeta.from, searchMeta.to],
   );
 
-  const roadsQuery = useClientRoadsQuery(roadFilters);
+  const roadsQuery = useClientCompanyTripsQuery(roadFilters);
   const roadId = roadsQuery.data?.items[0]?.id;
 
   const companyTripFilters = useMemo(

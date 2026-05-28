@@ -1,4 +1,4 @@
-export interface LoginPayloadDto {
+export interface SignInPayloadDto {
   phoneNumber: string;
 
   password: string;
