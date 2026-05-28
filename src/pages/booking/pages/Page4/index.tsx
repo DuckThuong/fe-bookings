@@ -7,25 +7,33 @@ import SuccessHero from "../../component/SuccessHero";
 import NotificationsCard from "../../component/NotificationsCard";
 import PaymentSummary from "../../component/PaymentSummary";
 import NextActionsCard from "../../component/NextActionsCard";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { ROUTER_PATH } from "@/routers/Route";
+import {
+  useBookingConfigQuery,
+  useBookingResultQuery,
+} from "@/features/booking/hooks/useBookingApi";
+import { buildSuccessDataFromResult } from "@/features/booking/utils/bookingMappers";
+import { Alert, Spin } from "antd";
+import { getApiErrorMessage } from "@/common/utils/apiError";
 
 export const BookingSuccessPage = ({ data }: { data: BookingSuccessData }) => {
   const navigate = useNavigate();
   const handleNextAction = (prompt: string) => {
-    const updatedData = {
-      ...data,
-      pageData: {
-        ...data.pageData,
-        passenger: {
-          ...data.pageData.passenger,
-        },
-      },
-    };
+    if (prompt === "go_home") {
+      navigate(ROUTER_PATH.HOME);
+      return;
+    }
 
-    navigate(ROUTER_PATH.BOOKING_CONFIRM, {
-      state: { data: updatedData },
-    });
+    if (prompt === "view_history") {
+      navigate(ROUTER_PATH.PROFILE, { state: { tab: "trips" } });
+      return;
+    }
   };
 
   return (
@@ -44,13 +52,13 @@ export const BookingSuccessPage = ({ data }: { data: BookingSuccessData }) => {
           </span>
         ))}
         <i className="ti ti-chevron-right" aria-hidden="true" />
-        <span>Đặt vé thành công</span>
+        <span>Dat ve thanh cong</span>
       </nav>
 
       <div className="success-page-body">
         <SuccessHero
-          bookingId={"8812A8192777"}
-          phone={data.pageData.user.phone ?? "098 765 4321"}
+          bookingId={data.trip.bookingId}
+          phone={data.pageData.user.phone ?? ""}
         />
 
         <div className="success-main-grid">
@@ -73,13 +81,54 @@ export const BookingSuccessPage = ({ data }: { data: BookingSuccessData }) => {
 
 export const BookingSuccessRoute = () => {
   const location = useLocation();
-  const data = location.state?.data as BookingSuccessData;
+  const [searchParams] = useSearchParams();
+  const state = location.state as { data?: BookingSuccessData } | null;
+  const stateData = state?.data;
+  const bookingId = searchParams.get("bookingId") ?? stateData?.trip.bookingId ?? "";
+  const configQuery = useBookingConfigQuery();
+  const resultQuery = useBookingResultQuery(
+    bookingId,
+    Boolean(bookingId && !stateData),
+  );
 
-  if (!data) {
+  if (!bookingId && !stateData) {
     return <Navigate to={ROUTER_PATH.BOOKING} replace />;
   }
 
-  return <BookingSuccessPage data={data} />;
+  if (stateData) {
+    return <BookingSuccessPage data={stateData} />;
+  }
+
+  if (configQuery.isLoading || resultQuery.isLoading) {
+    return (
+      <div className="booking-success-page">
+        <HomeHeader />
+        <ProgressSteps activeIdx={3} />
+        <div style={{ display: "flex", justifyContent: "center", padding: 64 }}>
+          <Spin />
+        </div>
+      </div>
+    );
+  }
+
+  const error = configQuery.error ?? resultQuery.error;
+  if (error || !resultQuery.data) {
+    return (
+      <div className="booking-success-page">
+        <HomeHeader />
+        <ProgressSteps activeIdx={3} />
+        <div style={{ padding: 24 }}>
+          <Alert type="error" showIcon message={getApiErrorMessage(error)} />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <BookingSuccessPage
+      data={buildSuccessDataFromResult(resultQuery.data, configQuery.data)}
+    />
+  );
 };
 
 export default BookingSuccessRoute;

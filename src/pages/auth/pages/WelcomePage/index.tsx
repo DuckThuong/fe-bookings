@@ -48,9 +48,7 @@ export const WelcomePage = () => {
         </div>
 
         <h1 className="welcome-form__title">
-          Chào mừng
-          <br />
-          trở lại! 👋
+          GORIDE chào bạn 👋
         </h1>
         <p className="welcome-form__description">
           Đặt xe nhanh chóng đến bất kỳ địa điểm nào bạn muốn. Hành trình của

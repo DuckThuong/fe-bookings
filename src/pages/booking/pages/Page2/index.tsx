@@ -1,14 +1,29 @@
 import { HomeHeader } from "@/components/TopBar";
-import { Button, Form, Input, Select } from "antd";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Alert, Button, Form, Input, Select, Spin, message } from "antd";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { ROUTER_PATH } from "@/routers/Route";
 import ProgressSteps from "../../component/ProgressSteps";
 import type { BookingConfirmData } from "../../types/confirm.types";
+import {
+  useBookingConfigQuery,
+  useBookingResultQuery,
+  useUpdateHoldPassengerMutation,
+} from "@/features/booking/hooks/useBookingApi";
+import { buildConfirmDataFromResult } from "@/features/booking/utils/bookingMappers";
+import { getApiErrorMessage } from "@/common/utils/apiError";
+import type { PassengerDto } from "@/api/dtos/client-booking.dto";
 import "./style.scss";
 
 export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const updatePassengerMutation = useUpdateHoldPassengerMutation();
+  const holdId = data.holdId ?? "";
 
   const initialValues = {
     fullName: data.pageData.passenger.fullName,
@@ -18,26 +33,61 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
   };
 
   const handleContinue = (values: typeof initialValues) => {
-    const updatedData = {
-      ...data,
-      pageData: {
-        ...data.pageData,
-        passenger: {
-          ...data.pageData.passenger,
-          fullName: values.fullName,
-          phone: values.phone,
-          pickupPointDefault: values.pickupPoint,
-          dropoffPointDefault: values.dropoffPoint,
-        },
-      },
+    if (!holdId) {
+      message.error("Khong tim thay ma giu cho.");
+      return;
+    }
+
+    const passenger: PassengerDto = {
+      fullName: values.fullName,
+      phone: values.phone,
+      pickupPoint: values.pickupPoint,
+      dropoffPoint: values.dropoffPoint,
     };
 
-    navigate(ROUTER_PATH.BOOKING_CONFIRM, {
-      state: { data: updatedData },
-    });
+    updatePassengerMutation.mutate(
+      {
+        holdId,
+        payload: passenger,
+      },
+      {
+        onSuccess: (response) => {
+          const updatedData: BookingConfirmData = {
+            ...data,
+            holdSeconds: response.holdSeconds,
+            pageData: {
+              ...data.pageData,
+              passenger: {
+                ...data.pageData.passenger,
+                fullName: values.fullName,
+                phone: values.phone,
+                pickupPointDefault: values.pickupPoint,
+                dropoffPointDefault: values.dropoffPoint,
+              },
+            },
+          };
+
+          navigate(
+            `${ROUTER_PATH.BOOKING_CONFIRM}?holdId=${encodeURIComponent(
+              holdId,
+            )}`,
+            {
+              state: { data: updatedData },
+            },
+          );
+        },
+        onError: (error) => {
+          message.error(getApiErrorMessage(error));
+        },
+      },
+    );
   };
 
   const handleBack = () => {
+    if (data.tripId) {
+      navigate(`${ROUTER_PATH.BOOKING}?tripId=${encodeURIComponent(data.tripId)}`);
+      return;
+    }
     navigate(ROUTER_PATH.BOOKING);
   };
 
@@ -47,7 +97,6 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
 
       <ProgressSteps activeIdx={1} />
 
-      {/* Breadcrumb */}
       <nav className="info-bc" aria-label="Breadcrumb">
         {data.pageData.breadcrumb.map((item, idx) => (
           <span key={item.label + idx}>
@@ -55,32 +104,28 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
               <i className="ti ti-chevron-right" aria-hidden="true" />
             )}
             {idx < data.pageData.breadcrumb.length - 1 ? (
-              <a href="#">{item.label}</a>
+              <a href={item.href}>{item.label}</a>
             ) : (
               item.label
             )}
           </span>
         ))}
-        {/* append current step */}
         <i className="ti ti-chevron-right" aria-hidden="true" />
-        <span>Thông tin hành khách</span>
+        <span>Thong tin hanh khach</span>
       </nav>
 
-      {/* Main grid */}
       <div className="info-layout">
-        {/* LEFT - Compact summary */}
         <div className="info-left">
           <div className="info-summary-card">
             <div className="info-summary-card__header">
               <i className="ti ti-ticket" aria-hidden="true" />
-              <span>Tóm tắt đặt vé</span>
+              <span>Tom tat dat ve</span>
             </div>
 
-            {/* Trip info */}
             <div className="info-summary-card__section">
               <div className="info-summary-card__section-title">
                 <i className="ti ti-route" aria-hidden="true" />
-                Hành trình
+                Hanh trinh
               </div>
               <div className="info-summary-card__trip">
                 <div className="info-summary-card__trip-point">
@@ -99,8 +144,8 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                     {data.pageData.trip.arriveTime}
                     {data.pageData.trip.arriveNote && (
                       <span className="info-summary-card__note">
-                    {data.pageData.trip.arriveNote}
-                  </span>
+                        {data.pageData.trip.arriveNote}
+                      </span>
                     )}
                   </div>
                   <div className="info-summary-card__city">
@@ -110,32 +155,30 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
               </div>
             </div>
 
-            {/* Seats */}
             <div className="info-summary-card__section">
               <div className="info-summary-card__section-title">
                 <i className="ti ti-chair" aria-hidden="true" />
-                Ghế đã chọn
+                Ghe da chon
               </div>
               <div className="info-summary-card__seats">
                 {data.seats.map((seat) => (
                   <span key={seat.id} className="info-summary-card__seat">
-                    {seat.id}
+                    {seat.label || seat.id}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Addons */}
             {data.addons.length > 0 && (
               <div className="info-summary-card__section">
                 <div className="info-summary-card__section-title">
                   <i className="ti ti-package" aria-hidden="true" />
-                  Dịch vụ thêm
+                  Dich vu them
                 </div>
                 <div className="info-summary-card__addons">
                   {data.addons.map((addon) => (
                     <div key={addon.id} className="info-summary-card__addon">
-                      <i className={`ti ${addon.icon}`} aria-hidden="true" />
+                      <i className={`ti ti-${addon.icon}`} aria-hidden="true" />
                       <span>{addon.name}</span>
                     </div>
                   ))}
@@ -145,15 +188,13 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
           </div>
         </div>
 
-        {/* RIGHT - Passenger form */}
         <div className="info-right">
           <div className="info-form-card">
             <div className="info-form-card__title">
               <i className="ti ti-user" aria-hidden="true" />
-              Thông tin hành khách
+              Thong tin hanh khach
             </div>
 
-            {/* Form fields */}
             <Form
               form={form}
               initialValues={initialValues}
@@ -162,53 +203,54 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
               className="info-form"
             >
               <Form.Item
-                label="Họ và tên"
+                label="Ho va ten"
                 name="fullName"
-                rules={[{ required: true, message: "Vui lòng nhập họ và tên" }]}
+                rules={[{ required: true, message: "Vui long nhap ho va ten" }]}
               >
-                <Input
-                  placeholder="Nhập họ và tên"
-                  size="large"
-                />
+                <Input placeholder="Nhap ho va ten" size="large" />
               </Form.Item>
 
               <Form.Item
-                label="Số điện thoại"
+                label="So dien thoai"
                 name="phone"
                 rules={[
-                  { required: true, message: "Vui lòng nhập số điện thoại" },
-                  { pattern: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ" },
+                  { required: true, message: "Vui long nhap so dien thoai" },
+                  {
+                    pattern: /^[0-9]{10}$/,
+                    message: "So dien thoai khong hop le",
+                  },
                 ]}
               >
-                <Input
-                  placeholder="Nhập số điện thoại"
-                  size="large"
-                />
+                <Input placeholder="Nhap so dien thoai" size="large" />
               </Form.Item>
 
               <div className="info-form__row2">
                 <Form.Item
-                  label="Điểm lên xe"
+                  label="Diem len xe"
                   name="pickupPoint"
-                  rules={[{ required: true, message: "Vui lòng chọn điểm lên xe" }]}
+                  rules={[
+                    { required: true, message: "Vui long chon diem len xe" },
+                  ]}
                 >
                   <Select
                     options={data.pageData.passenger.pickupPointOptions}
                     size="large"
                     style={{ width: "100%" }}
-                    placeholder="Chọn điểm lên xe"
+                    placeholder="Chon diem len xe"
                   />
                 </Form.Item>
                 <Form.Item
-                  label="Điểm xuống xe"
+                  label="Diem xuong xe"
                   name="dropoffPoint"
-                  rules={[{ required: true, message: "Vui lòng chọn điểm xuống xe" }]}
+                  rules={[
+                    { required: true, message: "Vui long chon diem xuong xe" },
+                  ]}
                 >
                   <Select
                     options={data.pageData.passenger.dropoffPointOptions}
                     size="large"
                     style={{ width: "100%" }}
-                    placeholder="Chọn điểm xuống xe"
+                    placeholder="Chon diem xuong xe"
                   />
                 </Form.Item>
               </div>
@@ -221,7 +263,7 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                   className="info-btn-secondary"
                   size="large"
                 >
-                  ← Quay lại
+                  Quay lai
                 </Button>
                 <Button
                   type="primary"
@@ -229,8 +271,9 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                   block
                   className="info-btn-primary"
                   size="large"
+                  loading={updatePassengerMutation.isPending}
                 >
-                  Tiếp tục →
+                  Tiep tuc
                 </Button>
               </div>
             </Form>
@@ -243,12 +286,49 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
 
 export const BookingInfoRoute = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const state = location.state as { data?: BookingConfirmData } | null;
-  const data = state?.data;
+  const stateData = state?.data;
+  const holdId = searchParams.get("holdId") ?? stateData?.holdId ?? "";
+  const configQuery = useBookingConfigQuery();
+  const resultQuery = useBookingResultQuery(holdId, Boolean(holdId && !stateData));
 
-  if (!data) {
+  if (!holdId && !stateData) {
     return <Navigate to={ROUTER_PATH.BOOKING} replace />;
   }
 
-  return <BookingInfoPage data={data} />;
+  if (stateData) {
+    return <BookingInfoPage data={stateData} />;
+  }
+
+  if (configQuery.isLoading || resultQuery.isLoading) {
+    return (
+      <div className="booking-info-page">
+        <HomeHeader />
+        <ProgressSteps activeIdx={1} />
+        <div style={{ display: "flex", justifyContent: "center", padding: 64 }}>
+          <Spin />
+        </div>
+      </div>
+    );
+  }
+
+  const error = configQuery.error ?? resultQuery.error;
+  if (error || !resultQuery.data) {
+    return (
+      <div className="booking-info-page">
+        <HomeHeader />
+        <ProgressSteps activeIdx={1} />
+        <div style={{ padding: 24 }}>
+          <Alert type="error" showIcon message={getApiErrorMessage(error)} />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <BookingInfoPage
+      data={buildConfirmDataFromResult(resultQuery.data, configQuery.data)}
+    />
+  );
 };

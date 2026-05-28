@@ -3,6 +3,7 @@ export type VehicleType = "16" | "36" | "45";
 
 export interface SeatDef {
   id: string;
+  label?: string;
   status: SeatStatus;
 }
 
@@ -28,6 +29,7 @@ export type BookingPageData = {
   user: { userName: string; notifCount: number; phone: string | null };
   breadcrumb: { label: string; href: string }[];
   trip: {
+    tripId?: string;
     from: string;
     to: string;
     operatorCode: string;
@@ -38,6 +40,9 @@ export type BookingPageData = {
     date: string;
     durationLabel: string;
     unitPrice: number;
+    companyTripId?: number;
+    companyId?: number;
+    tripDbId?: number;
   };
   passenger: {
     fullName: string;

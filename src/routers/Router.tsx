@@ -13,35 +13,39 @@ import { ProfilePage } from "@/pages/profile/pages";
 import { SeatSelectionPage } from "@/pages/booking/pages/Page1";
 import { BookingInfoRoute } from "@/pages/booking/pages/Page2";
 import { BookingConfirmRoute } from "@/pages/booking/pages/Page3";
-import BookingSuccessRoute, {
-  BookingSuccessPage,
-} from "@/pages/booking/pages/Page4";
+import BookingSuccessRoute from "@/pages/booking/pages/Page4";
 import { NotificationsPage } from "@/pages/notification";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const WebRouter = () => (
   <Routes>
     {/* auth */}
     <Route path={ROUTER_PATH.WELCOME} element={<WelcomePage />} />
-    <Route path={ROUTER_PATH.LOGIN} element={<Login />} />
-    <Route path={ROUTER_PATH.SIGNIN} element={<SignIn />} />
-    <Route path={ROUTER_PATH.OTP_CONFIRM} element={<OtpConfirm />} />
-    <Route path={ROUTER_PATH.FINISH} element={<Finish />} />
-    {/* home */}
-    <Route path={ROUTER_PATH.HOME} element={<HomePage />} />
-    <Route path={ROUTER_PATH.TRIP} element={<TripPage />} />
-    <Route path={ROUTER_PATH.BOOKING} element={<SeatSelectionPage />} />
-    <Route path={ROUTER_PATH.BOOKING_INFO} element={<BookingInfoRoute />} />
-    <Route
-      path={ROUTER_PATH.BOOKING_CONFIRM}
-      element={<BookingConfirmRoute />}
-    />
-    <Route
-      path={ROUTER_PATH.BOOKING_SUCCESS}
-      element={<BookingSuccessRoute />}
-    />
-    <Route path={ROUTER_PATH.PROMOS} element={<PromosPage />} />
-    <Route path={ROUTER_PATH.SUPPORT} element={<SupportPage />} />
-    <Route path={ROUTER_PATH.PROFILE} element={<ProfilePage />} />
-    <Route path={ROUTER_PATH.NOTIFICATION} element={<NotificationsPage />} />
+    <Route>
+      <Route path={ROUTER_PATH.LOGIN} element={<Login />} />
+      <Route path={ROUTER_PATH.SIGNIN} element={<SignIn />} />
+      <Route path={ROUTER_PATH.OTP_CONFIRM} element={<OtpConfirm />} />
+      <Route path={ROUTER_PATH.FINISH} element={<Finish />} />
+    </Route>
+
+    <Route element={<ProtectedRoute />}>
+      {/* home */}
+      <Route path={ROUTER_PATH.HOME} element={<HomePage />} />
+      <Route path={ROUTER_PATH.TRIP} element={<TripPage />} />
+      <Route path={ROUTER_PATH.BOOKING} element={<SeatSelectionPage />} />
+      <Route path={ROUTER_PATH.PROMOS} element={<PromosPage />} />
+      <Route path={ROUTER_PATH.SUPPORT} element={<SupportPage />} />
+      <Route path={ROUTER_PATH.BOOKING_INFO} element={<BookingInfoRoute />} />
+      <Route
+        path={ROUTER_PATH.BOOKING_CONFIRM}
+        element={<BookingConfirmRoute />}
+      />
+      <Route
+        path={ROUTER_PATH.BOOKING_SUCCESS}
+        element={<BookingSuccessRoute />}
+      />
+      <Route path={ROUTER_PATH.PROFILE} element={<ProfilePage />} />
+      <Route path={ROUTER_PATH.NOTIFICATION} element={<NotificationsPage />} />
+    </Route>
   </Routes>
 );

@@ -1,24 +1,16 @@
 import "./style.scss";
 
-import {
-  ADDON_SERVICES,
-  FEE_RATE,
-  MAX_SEATS,
-  PICKUP_PRICE,
-  PROMO_CODES,
-  UNIT_PRICE,
-  VEHICLES,
-} from "@/common/constants/booking";
-import { formatVnd, getVehicleLayout } from "@/common/contexts/booking";
-import type {
-  BookingPageData,
-  VehicleConfig,
-  VehicleType,
-} from "@/common/types/booking";
+import { formatVnd } from "@/common/contexts/booking";
+import type { VehicleConfig, VehicleType } from "@/common/types/booking";
 import { HomeHeader } from "@/components/TopBar";
-import { Button, Input, Select } from "antd";
-import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Alert, Button, Input, Select, Spin, message } from "antd";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { ROUTER_PATH } from "@/routers/Route";
 import { BusMap } from "../../component/BusMap";
 import { OperatorCard } from "../../component/OperatorCard";
@@ -26,32 +18,170 @@ import { AddonItem } from "../../component/AddonItem";
 import { PromoSection } from "../../component/PromoSection";
 import { PolicyCard } from "../../component/PolicyCard";
 import ProgressSteps from "../../component/ProgressSteps";
-import { mockBookingPageData } from "../../mocks/booking.mock.data";
-
-export const BOOKING_PAGE_DATA = mockBookingPageData;
+import { useClientCompanyTripQuery } from "@/features/catalog/hooks/useCatalogApi";
+import {
+  useBookingConfigQuery,
+  useCreateHoldMutation,
+  useSeatMapQuery,
+  useTripContextQuery,
+  useValidatePromoMutation,
+} from "@/features/booking/hooks/useBookingApi";
+import type {
+  ClientVehicleTypeDto,
+  PassengerDto,
+} from "@/api/dtos/client-booking.dto";
+import {
+  buildConfirmDataFromHold,
+  inferClientVehicleType,
+  mapBookingPageData,
+  mapCatalogAddons,
+  mapCatalogPromos,
+  mapSeatMapRows,
+  mapVehicleConfigs,
+  toNumber,
+} from "@/features/booking/utils/bookingMappers";
+import { getApiErrorMessage } from "@/common/utils/apiError";
 
 export const SeatSelectionPage = () => {
-  const [vehicleType, setVehicleType] = useState<VehicleType>("16");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const locationState = location.state as { tripId?: string } | null;
+  const tripId = searchParams.get("tripId") ?? locationState?.tripId ?? "";
+
+  const [vehicleType, setVehicleType] =
+    useState<ClientVehicleTypeDto>("16");
+  const [initializedTripId, setInitializedTripId] = useState("");
   const [floor, setFloor] = useState<1 | 2>(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [addons, setAddons] = useState<Set<string>>(new Set());
-  const [pickupQty, setPickupQty] = useState(0);
+  const [addonQty, setAddonQty] = useState<Record<string, number>>({});
   const [promoCode, setPromoCode] = useState<string | null>(null);
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [passengerDraft, setPassengerDraft] = useState<PassengerDto | null>(
+    null,
+  );
 
-  const navigate = useNavigate();
-  const cfg = VEHICLES[vehicleType];
+  const configQuery = useBookingConfigQuery();
+  const tripContextQuery = useTripContextQuery({ tripId }, Boolean(tripId));
+  const companyTripQuery = useClientCompanyTripQuery(tripId, Boolean(tripId));
 
-  const toggleSeat = useCallback((id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else if (next.size < MAX_SEATS) next.add(id);
-      return next;
-    });
-  }, []);
+  useEffect(() => {
+    if (!companyTripQuery.data || initializedTripId === tripId) return;
+
+    const inferred = inferClientVehicleType(
+      companyTripQuery.data.vehicle?.type,
+      companyTripQuery.data.totalSeat,
+    );
+    setVehicleType(inferred);
+    setFloor(1);
+    setSelected(new Set());
+    setInitializedTripId(tripId);
+  }, [companyTripQuery.data, initializedTripId, tripId]);
+
+  const seatMapQuery = useSeatMapQuery(
+    { tripId, vehicleType, floor },
+    Boolean(tripId && vehicleType),
+  );
+
+  const validatePromoMutation = useValidatePromoMutation();
+  const createHoldMutation = useCreateHoldMutation();
+
+  const pageData = useMemo(
+    () =>
+      tripContextQuery.data ? mapBookingPageData(tripContextQuery.data) : null,
+    [tripContextQuery.data],
+  );
+
+  useEffect(() => {
+    if (!tripContextQuery.data || passengerDraft) return;
+    setPassengerDraft(tripContextQuery.data.passengerDefaults);
+  }, [passengerDraft, tripContextQuery.data]);
+
+  const catalog =
+    tripContextQuery.data?.catalog ?? configQuery.data?.catalog ?? null;
+  const vehicleConfigs = useMemo(
+    () => mapVehicleConfigs(catalog?.vehicles),
+    [catalog?.vehicles],
+  );
+  const addonOptions = useMemo(
+    () => mapCatalogAddons(catalog?.addonServices),
+    [catalog?.addonServices],
+  );
+  const promoOptions = useMemo(
+    () => mapCatalogPromos(catalog?.promoCodes),
+    [catalog?.promoCodes],
+  );
+  const seatRows = useMemo(
+    () => mapSeatMapRows(seatMapQuery.data),
+    [seatMapQuery.data],
+  );
+
+  const cfg = vehicleConfigs[vehicleType as VehicleType];
+  const maxSeats = configQuery.data?.meta.maxSeatsPerBooking ?? 4;
+  const unitPrice = toNumber(pageData?.trip.unitPrice);
+  const seats = useMemo(() => [...selected], [selected]);
+
+  const selectedAddonLines = useMemo(
+    () =>
+      addonOptions.flatMap((addon) => {
+        if (addon.hasQty) {
+          const qty = addonQty[addon.id] ?? 0;
+          if (qty <= 0) return [];
+          return [
+            {
+              id: addon.id,
+              name: addon.name,
+              price: addon.price,
+              qty,
+            },
+          ];
+        }
+
+        if (!addons.has(addon.id)) return [];
+        return [
+          {
+            id: addon.id,
+            name: addon.name,
+            price: addon.price,
+          },
+        ];
+      }),
+    [addonOptions, addonQty, addons],
+  );
+
+  const subTotal = seats.length * unitPrice;
+  const addonsTotal = selectedAddonLines.reduce(
+    (sum, addon) => sum + addon.price * (addon.qty ?? 1),
+    0,
+  );
+  const fee = Math.round(subTotal * (configQuery.data?.meta.feeRate ?? 0.05));
+  const total = Math.max(0, subTotal + fee + addonsTotal - promoDiscount);
+  const priceKey = `${seats.join(",")}|${addonsTotal}`;
+
+  useEffect(() => {
+    if (!promoCode) return;
+    setPromoCode(null);
+    setPromoDiscount(0);
+  }, [priceKey]);
+
+  const toggleSeat = useCallback(
+    (id: string) => {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) {
+          next.delete(id);
+        } else if (next.size < maxSeats) {
+          next.add(id);
+        }
+        return next;
+      });
+    },
+    [maxSeats],
+  );
 
   const handleVehicleChange = (v: VehicleType) => {
-    setVehicleType(v);
+    setVehicleType(v as ClientVehicleTypeDto);
     setFloor(1);
     setSelected(new Set());
   };
@@ -63,60 +193,145 @@ export const SeatSelectionPage = () => {
       return next;
     });
 
-  const changePickupQty = (d: number) =>
-    setPickupQty((q) => Math.max(0, Math.min(4, q + d)));
-
-  const seats = [...selected];
-  const subTotal = seats.length * UNIT_PRICE;
-  const fee = Math.round(subTotal * FEE_RATE);
-
-  const addonsTotal =
-    ADDON_SERVICES.filter((a) => !a.hasQty && addons.has(a.id)).reduce(
-      (s, a) => s + a.price,
-      0,
-    ) +
-    pickupQty * PICKUP_PRICE;
-
-  const promo = PROMO_CODES.find((p) => p.code === promoCode);
-  const promoDiscount = promo
-    ? promo.type === "fixed"
-      ? promo.value
-      : Math.min(
-          Math.round((subTotal + addonsTotal) * promo.value),
-          promo.max ?? Infinity,
-        )
-    : 0;
-
-  const total = Math.max(0, subTotal + fee + addonsTotal - promoDiscount);
-
-  const handleProceedToConfirm = () => {
-    const confirmSeats = seats.map((id) => ({ id, label: id }));
-    const confirmAddons = ADDON_SERVICES.filter(
-      (addon) => addons.has(addon.id) && (!addon.hasQty || pickupQty > 0),
-    ).map((addon) => ({
-      id: addon.id,
-      icon: addon.icon,
-      name: addon.name,
-      price: addon.hasQty ? addon.price * pickupQty : addon.price,
-    }));
-
-    navigate(ROUTER_PATH.BOOKING_INFO, {
-      state: {
-        data: {
-          pageData: BOOKING_PAGE_DATA,
-          seats: confirmSeats,
-          addons: confirmAddons,
-          subTotal,
-          addonsTotal,
-          fee,
-          promoCode,
-          promoDiscount,
-          total,
-          holdSeconds: 600,
-        },
-      },
+  const changeAddonQty = (id: string, delta: number) => {
+    const addon = addonOptions.find((item) => item.id === id);
+    const min = addon?.qtyMin ?? 0;
+    const max = addon?.qtyMax ?? maxSeats;
+    setAddonQty((current) => {
+      const nextValue = Math.max(
+        min,
+        Math.min(max, (current[id] ?? 0) + delta),
+      );
+      return {
+        ...current,
+        [id]: nextValue,
+      };
     });
   };
+
+  const updatePassengerDraft = (next: Partial<PassengerDto>) => {
+    setPassengerDraft((current) => ({
+      fullName: "",
+      phone: "",
+      pickupPoint: "",
+      dropoffPoint: "",
+      ...(current ?? {}),
+      ...next,
+    }));
+  };
+
+  const handleApplyPromo = (code: string | null) => {
+    if (!code) {
+      setPromoCode(null);
+      setPromoDiscount(0);
+      return;
+    }
+
+    if (subTotal <= 0) {
+      message.warning("Chon ghe truoc khi ap dung ma giam gia.");
+      return;
+    }
+
+    validatePromoMutation.mutate(
+      {
+        tripId,
+        promoCode: code,
+        subTotal,
+        addonsTotal,
+      },
+      {
+        onSuccess: (response) => {
+          if (!response.valid) {
+            setPromoCode(null);
+            setPromoDiscount(0);
+            message.error(response.message ?? "Ma khuyen mai khong hop le.");
+            return;
+          }
+
+          setPromoCode(code);
+          setPromoDiscount(response.promoDiscount);
+          message.success("Da ap dung ma khuyen mai.");
+        },
+        onError: (error) => {
+          setPromoCode(null);
+          setPromoDiscount(0);
+          message.error(getApiErrorMessage(error));
+        },
+      },
+    );
+  };
+
+  const handleProceedToConfirm = () => {
+    if (!tripContextQuery.data || !pageData) return;
+
+    createHoldMutation.mutate(
+      {
+        tripId,
+        vehicleType,
+        floor,
+        seatIds: seats,
+        addons: selectedAddonLines,
+        promoCode: promoCode ?? undefined,
+        passenger: passengerDraft ?? undefined,
+      },
+      {
+        onSuccess: (response) => {
+          const data = buildConfirmDataFromHold(
+            tripContextQuery.data,
+            response,
+          );
+          navigate(
+            `${ROUTER_PATH.BOOKING_INFO}?holdId=${encodeURIComponent(
+              response.holdId,
+            )}`,
+            {
+              state: { data },
+            },
+          );
+        },
+        onError: (error) => {
+          message.error(getApiErrorMessage(error));
+        },
+      },
+    );
+  };
+
+  if (!tripId) {
+    return <Navigate to={ROUTER_PATH.TRIP} replace />;
+  }
+
+  const initialLoading =
+    configQuery.isLoading ||
+    tripContextQuery.isLoading ||
+    companyTripQuery.isLoading ||
+    !pageData ||
+    !passengerDraft;
+  const initialError =
+    configQuery.error ?? tripContextQuery.error ?? companyTripQuery.error;
+
+  if (initialLoading) {
+    return (
+      <div className="seat-page">
+        <HomeHeader />
+        <ProgressSteps activeIdx={0} />
+        <div style={{ display: "flex", justifyContent: "center", padding: 64 }}>
+          <Spin />
+        </div>
+      </div>
+    );
+  }
+
+  if (initialError) {
+    return (
+      <div className="seat-page">
+        <HomeHeader />
+        <ProgressSteps activeIdx={0} />
+        <div style={{ padding: 24 }}>
+          <Alert type="error" showIcon message={getApiErrorMessage(initialError)} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="seat-page">
@@ -124,16 +339,15 @@ export const SeatSelectionPage = () => {
 
       <ProgressSteps activeIdx={0} />
 
-      {/* Breadcrumb */}
       <nav className="seat-breadcrumb" aria-label="Breadcrumb">
-        {BOOKING_PAGE_DATA.breadcrumb.map((item, idx) => (
+        {pageData.breadcrumb.map((item, idx) => (
           <span key={`${item.label}-${idx}`}>
             {idx > 0 && (
               <span className="seat-breadcrumb__sep" aria-hidden="true">
                 /
               </span>
             )}
-            {idx < BOOKING_PAGE_DATA.breadcrumb.length - 1 ? (
+            {idx < pageData.breadcrumb.length - 1 ? (
               <a href={item.href}>{item.label}</a>
             ) : (
               item.label
@@ -142,49 +356,40 @@ export const SeatSelectionPage = () => {
         ))}
       </nav>
 
-      {/* Trip summary bar */}
       <div className="seat-trip-bar">
         <div className="seat-trip-bar__route">
-          <span className="seat-trip-bar__city">
-            {BOOKING_PAGE_DATA.trip.from}
-          </span>
-          →
-          <span className="seat-trip-bar__city">
-            {BOOKING_PAGE_DATA.trip.to}
-          </span>
+          <span className="seat-trip-bar__city">{pageData.trip.from}</span>
+          -
+          <span className="seat-trip-bar__city">{pageData.trip.to}</span>
         </div>
         <div className="seat-trip-bar__meta">
           <span>
             <i className="ti ti-building" aria-hidden="true" />{" "}
-            {BOOKING_PAGE_DATA.trip.operatorName}
+            {pageData.trip.operatorName}
           </span>
           <span>
             <i className="ti ti-clock" aria-hidden="true" />{" "}
-            {BOOKING_PAGE_DATA.trip.departTime} →{" "}
-            {BOOKING_PAGE_DATA.trip.arriveTime}{" "}
-            {BOOKING_PAGE_DATA.trip.arriveNote ?? ""}
+            {pageData.trip.departTime} - {pageData.trip.arriveTime}{" "}
+            {pageData.trip.arriveNote ?? ""}
           </span>
           <span>
             <i className="ti ti-calendar" aria-hidden="true" />{" "}
-            {BOOKING_PAGE_DATA.trip.date}
+            {pageData.trip.date}
           </span>
           <span>
             <i className="ti ti-clock-hour-4" aria-hidden="true" />{" "}
-            {BOOKING_PAGE_DATA.trip.durationLabel}
+            {pageData.trip.durationLabel}
           </span>
         </div>
         <div className="seat-trip-bar__price">
-          {formatVnd(BOOKING_PAGE_DATA.trip.unitPrice)} <span>/ ghế</span>
+          {formatVnd(unitPrice)} <span>/ ghe</span>
         </div>
       </div>
 
-      {/* ── Main grid — layout giữ nguyên ───────────────── */}
       <div className="seat-layout">
-        {/* LEFT — map + extras mới thêm */}
         <div>
-          {/* Vehicle tabs */}
           <div className="seat-vtabs">
-            {(Object.entries(VEHICLES) as [VehicleType, VehicleConfig][]).map(
+            {(Object.entries(vehicleConfigs) as [VehicleType, VehicleConfig][]).map(
               ([key, v]) => (
                 <Button
                   key={key}
@@ -201,7 +406,6 @@ export const SeatSelectionPage = () => {
             )}
           </div>
 
-          {/* Map card */}
           <div className="seat-map-card">
             <div className="seat-map-card__title">{cfg.mapTitle}</div>
             <div className="seat-map-card__sub">{cfg.mapSub}</div>
@@ -209,9 +413,9 @@ export const SeatSelectionPage = () => {
             <div className="seat-legend">
               {(
                 [
-                  { cls: "avail", label: "Còn trống" },
-                  { cls: "selected", label: "Đã chọn" },
-                  { cls: "booked", label: "Đã đặt" },
+                  { cls: "avail", label: "Con trong" },
+                  { cls: "selected", label: "Da chon" },
+                  { cls: "booked", label: "Da dat" },
                   { cls: "vip", label: "VIP" },
                 ] as const
               ).map((l) => (
@@ -244,47 +448,65 @@ export const SeatSelectionPage = () => {
                       }`}
                       aria-hidden="true"
                     />
-                    {f === 1 ? "Tầng dưới" : "Tầng trên"}
+                    {f === 1 ? "Tang duoi" : "Tang tren"}
                   </Button>
                 ))}
               </div>
             )}
 
-            <BusMap
-              layout={getVehicleLayout(vehicleType, floor, cfg)}
-              selected={selected}
-              isSleeper={!!cfg.isSleeper}
-              onToggle={toggleSeat}
-            />
+            {seatMapQuery.isLoading || seatMapQuery.isFetching ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: 32 }}>
+                <Spin />
+              </div>
+            ) : seatMapQuery.error ? (
+              <Alert
+                type="error"
+                showIcon
+                message={getApiErrorMessage(seatMapQuery.error)}
+              />
+            ) : (
+              <BusMap
+                layout={seatRows}
+                selected={selected}
+                isSleeper={!!cfg.isSleeper}
+                onToggle={toggleSeat}
+              />
+            )}
           </div>
 
-          {/* ── EXTRAS — thêm mới bên dưới map ── */}
           <div className="seat-extras">
-            {/* 1. Nhà xe + tiện ích */}
-            <OperatorCard />
+            <OperatorCard trip={pageData.trip} vehicleLabel={cfg.label} />
 
-            {/* 2. Dịch vụ đi kèm */}
             <div className="extras-card">
               <div className="extras-card__hd">
                 <i className="ti ti-sparkles" aria-hidden="true" />
-                <span className="extras-card__title">Dịch vụ đi kèm</span>
-                <span className="extras-card__badge">Tuỳ chọn</span>
+                <span className="extras-card__title">Dich vu di kem</span>
+                <span className="extras-card__badge">Tuy chon</span>
               </div>
               <div className="extras-addon-list">
-                {ADDON_SERVICES.map((addon) => (
+                {addonOptions.map((addon) => (
                   <AddonItem
                     key={addon.id}
                     addon={addon}
                     selected={addons.has(addon.id)}
-                    qty={addon.hasQty ? pickupQty : undefined}
+                    qty={addon.hasQty ? addonQty[addon.id] ?? 0 : undefined}
                     onToggle={toggleAddon}
-                    onChangeQty={addon.hasQty ? changePickupQty : undefined}
+                    onChangeQty={
+                      addon.hasQty
+                        ? (delta) => changeAddonQty(addon.id, delta)
+                        : undefined
+                    }
                   />
                 ))}
               </div>
             </div>
 
-            <PromoSection applied={promoCode} onApply={setPromoCode} />
+            <PromoSection
+              applied={promoCode}
+              onApply={handleApplyPromo}
+              promos={promoOptions}
+              applying={validatePromoMutation.isPending}
+            />
 
             <PolicyCard />
           </div>
@@ -294,53 +516,61 @@ export const SeatSelectionPage = () => {
           <div className="seat-summary">
             <div className="seat-summary__title">
               <i className="ti ti-ticket" aria-hidden="true" />
-              Thông tin đặt vé
+              Thong tin dat ve
             </div>
 
             <div className="seat-form">
               <div className="seat-form__field">
-                <label>Họ và tên</label>
+                <label>Ho va ten</label>
                 <Input
-                  placeholder={BOOKING_PAGE_DATA.passenger.fullName}
-                  defaultValue={BOOKING_PAGE_DATA.passenger.fullName}
+                  placeholder={pageData.passenger.fullName}
+                  value={passengerDraft.fullName}
+                  onChange={(e) =>
+                    updatePassengerDraft({ fullName: e.target.value })
+                  }
                 />
               </div>
               <div className="seat-form__field">
-                <label>Số điện thoại</label>
+                <label>So dien thoai</label>
                 <Input
-                  placeholder={BOOKING_PAGE_DATA.passenger.phone}
-                  defaultValue={BOOKING_PAGE_DATA.passenger.phone}
+                  placeholder={pageData.passenger.phone}
+                  value={passengerDraft.phone}
+                  onChange={(e) =>
+                    updatePassengerDraft({ phone: e.target.value })
+                  }
                 />
               </div>
               <div className="seat-form__row2">
                 <div className="seat-form__field">
-                  <label>Điểm lên xe</label>
+                  <label>Diem len xe</label>
                   <Select
-                    defaultValue={
-                      BOOKING_PAGE_DATA.passenger.pickupPointDefault
-                    }
-                    options={BOOKING_PAGE_DATA.passenger.pickupPointOptions}
+                    value={passengerDraft.pickupPoint}
+                    options={pageData.passenger.pickupPointOptions}
                     style={{ width: "100%" }}
+                    onChange={(pickupPoint) =>
+                      updatePassengerDraft({ pickupPoint })
+                    }
                   />
                 </div>
                 <div className="seat-form__field">
-                  <label>Điểm xuống xe</label>
+                  <label>Diem xuong xe</label>
                   <Select
-                    defaultValue={
-                      BOOKING_PAGE_DATA.passenger.dropoffPointDefault
-                    }
-                    options={BOOKING_PAGE_DATA.passenger.dropoffPointOptions}
+                    value={passengerDraft.dropoffPoint}
+                    options={pageData.passenger.dropoffPointOptions}
                     style={{ width: "100%" }}
+                    onChange={(dropoffPoint) =>
+                      updatePassengerDraft({ dropoffPoint })
+                    }
                   />
                 </div>
               </div>
             </div>
 
-            <div className="seat-summary__section-label">Ghế đã chọn</div>
+            <div className="seat-summary__section-label">Ghe da chon</div>
             <div className="seat-selected-list">
               {seats.length === 0 ? (
                 <p className="seat-selected-list__empty">
-                  Bạn chưa chọn ghế nào
+                  Ban chua chon ghe nao
                 </p>
               ) : (
                 seats.map((id) => (
@@ -348,16 +578,16 @@ export const SeatSelectionPage = () => {
                     <div className="seat-selected-list__info">
                       <div className="seat-selected-list__badge">{id}</div>
                       <span>
-                        {cfg.isSleeper ? "Giường nằm" : "Ghế ngồi"} — {id}
+                        {cfg.isSleeper ? "Giuong nam" : "Ghe ngoi"} - {id}
                       </span>
                     </div>
                     <Button
                       className="seat-selected-list__remove"
                       onClick={() => toggleSeat(id)}
-                      aria-label={`Bỏ chọn ghế ${id}`}
+                      aria-label={`Bo chon ghe ${id}`}
                       type="text"
                     >
-                      ×
+                      x
                     </Button>
                   </div>
                 ))
@@ -366,32 +596,32 @@ export const SeatSelectionPage = () => {
 
             <div className="seat-price">
               <div className="seat-price__row">
-                <span>Giá vé ({seats.length} ghế)</span>
-                <strong>{seats.length ? formatVnd(subTotal) : "0đ"}</strong>
+                <span>Gia ve ({seats.length} ghe)</span>
+                <strong>{seats.length ? formatVnd(subTotal) : "0d"}</strong>
               </div>
 
               {addonsTotal > 0 && (
                 <div className="seat-price__row">
-                  <span>Dịch vụ bổ sung</span>
+                  <span>Dich vu bo sung</span>
                   <strong>{formatVnd(addonsTotal)}</strong>
                 </div>
               )}
 
               <div className="seat-price__row">
-                <span>Phí dịch vụ (5%)</span>
-                <strong>{seats.length ? formatVnd(fee) : "0đ"}</strong>
+                <span>Phi dich vu</span>
+                <strong>{seats.length ? formatVnd(fee) : "0d"}</strong>
               </div>
 
               {promoDiscount > 0 && (
                 <div className="seat-price__row seat-price__row--promo">
-                  <span>Giảm giá ({promoCode})</span>
-                  <strong>−{formatVnd(promoDiscount)}</strong>
+                  <span>Giam gia ({promoCode})</span>
+                  <strong>-{formatVnd(promoDiscount)}</strong>
                 </div>
               )}
 
               <div className="seat-price__row seat-price__row--total">
-                <span>Tổng cộng</span>
-                <strong>{seats.length ? formatVnd(total) : "0đ"}</strong>
+                <span>Tong cong</span>
+                <strong>{seats.length ? formatVnd(total) : "0d"}</strong>
               </div>
             </div>
 
@@ -400,12 +630,13 @@ export const SeatSelectionPage = () => {
               block
               className="seat-cta-btn"
               disabled={seats.length === 0}
+              loading={createHoldMutation.isPending}
               onClick={handleProceedToConfirm}
             >
-              Xác nhận đặt vé
+              Xac nhan dat ve
             </Button>
             <p className="seat-cta-note">
-              Bạn có 10 phút để hoàn tất thanh toán
+              Ban co {Math.round((configQuery.data?.meta.holdSecondsDefault ?? 600) / 60)} phut de hoan tat thanh toan
             </p>
           </div>
         </div>

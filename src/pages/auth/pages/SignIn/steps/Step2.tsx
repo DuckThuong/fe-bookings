@@ -1,5 +1,4 @@
 import { DatePicker, Form, Input, type FormInstance } from "antd";
-import { useState } from "react";
 import "../style.scss";
 import mailIcn from "@/assets/icons/mail.svg";
 interface SignInProps {
@@ -59,7 +58,7 @@ const SIGNIN_STEP2_DATA: SignInStep2Data = {
 };
 
 export const Step2 = (props: SignInProps) => {
-  const [gender, setGender] = useState<string>("");
+  const gender = Form.useWatch("gender", props.form);
 
   return (
     <div className="signIn__step-2">
@@ -73,6 +72,7 @@ export const Step2 = (props: SignInProps) => {
           name={SIGNIN_STEP2_DATA.email.name}
           rules={[
             { required: true, message: SIGNIN_STEP2_DATA.email.requiredMessage },
+            
           ]}
         >
           <Input
@@ -93,8 +93,7 @@ export const Step2 = (props: SignInProps) => {
           label={SIGNIN_STEP2_DATA.dob.label}
           name={SIGNIN_STEP2_DATA.dob.name}
           rules={[
-            { required: true, message: SIGNIN_STEP2_DATA.dob.requiredMessage },
-          ]}
+            { required: true, message: SIGNIN_STEP2_DATA.dob.requiredMessage },          ]}
         >
           <DatePicker
             format={SIGNIN_STEP2_DATA.dob.format}
@@ -125,7 +124,6 @@ export const Step2 = (props: SignInProps) => {
                   gender === opt.value ? "signin-gender__opt--selected" : ""
                 }`}
                 onClick={() => {
-                  setGender(opt.value);
                   props.form.setFieldValue("gender", opt.value);
                 }}
               >

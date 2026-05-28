@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Steps } from "antd";
 import { isAxiosError } from "axios";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setStoredAuth } from "@/common/utils/authStorage";
 import back from "../../../../assets/icons/back.svg";
@@ -51,6 +51,12 @@ const STEP1_FIELDS = [
 ] as const;
 
 const STEP2_FIELDS = ["email", "dateOfBirth", "gender"] as const;
+
+const getFieldsForStep = (step: number) => {
+  if (step === 0) return [...STEP1_FIELDS];
+  if (step === 1) return [...STEP2_FIELDS];
+  return [...STEP1_FIELDS, ...STEP2_FIELDS];
+};
 
 const buildSignUpPayload = (
   values: Record<string, unknown>,
@@ -110,14 +116,17 @@ export const SignIn = () => {
     confirm_password: values.confirm_password ?? "",
     acceptRole: values.acceptRole ? 1 : 0,
     email: values.email ?? "",
-    dateOfBirth: values.dateOfBirth ?? "",
+    dateOfBirth: values.dateOfBirth
+      ? dayjs(values.dateOfBirth).format("YYYY-MM-DD")
+      : "",
     gender: Number(values.gender ?? 0),
   });
 
   const handleSubmit = async () => {
     try {
-      await form.validateFields();
+      await form.validateFields(getFieldsForStep(step));
     } catch {
+      console.log("Validation failed");
       return;
     }
 
@@ -125,12 +134,9 @@ export const SignIn = () => {
     const nextData = { ...data, ...currentValues };
     setData(nextData);
 
-    if (step === 0) {
-      setStep(1);
-      return;
-    }
-
-    signUpMutation.mutate(buildSignUpPayload(nextData));
+    step < 2
+      ? setStep(step + 1)
+      : signUpMutation.mutate(buildSignUpPayload(nextData));
   };
 
   return (
@@ -179,21 +185,9 @@ export const SignIn = () => {
             {subTitleMap[step]}
           </p>
           <Form form={form} layout="vertical">
-            <div
-              className={`signin-step-panel${step !== 0 ? " signin-step-panel--hidden" : ""}`}
-            >
-              <Step1 form={form} />
-            </div>
-            <div
-              className={`signin-step-panel${step !== 1 ? " signin-step-panel--hidden" : ""}`}
-            >
-              <Step2 form={form} />
-            </div>
-            <div
-              className={`signin-step-panel${step !== 2 ? " signin-step-panel--hidden" : ""}`}
-            >
-              <Step3 form={form} onEditStep={setStep} />
-            </div>
+            {step === 0 && <Step1 form={form} />}
+            {step === 1 && <Step2 form={form} />}
+            {step === 2 && <Step3 values={data} onEditStep={setStep} />}
           </Form>
         </div>
         <Button
@@ -202,7 +196,7 @@ export const SignIn = () => {
           className="signin-btn"
           onClick={handleSubmit}
         >
-          {step === 0 ? "Tiếp tục" : "Tạo tài khoản"}
+          {step !== 2 ? "Tiếp tục" : "Tạo tài khoản"}
         </Button>
 
         <p className="signin-login-link">

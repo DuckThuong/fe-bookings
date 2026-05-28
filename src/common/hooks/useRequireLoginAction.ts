@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/authContext";
+import { useUser } from "../contexts/UserContext";
 import {
   type LoginRequiredModalOptions,
   useLoginRequiredModal,
 } from "../../providers/loginRequiredModalProvider";
-import { ROUTER_PATH } from "../../router/Route";
+import { ROUTER_PATH } from "../../routers/Route";
 
 interface RequireLoginActionOptions extends LoginRequiredModalOptions {
   shouldNavigateToSignIn?: boolean;
@@ -21,7 +21,7 @@ const getSafeRedirectPath = (redirectPath: unknown) => {
     return undefined;
   }
 
-  if (redirectPath === ROUTER_PATH.SIGN_IN) {
+  if (redirectPath === ROUTER_PATH.LOGIN) {
     return undefined;
   }
 
@@ -31,7 +31,7 @@ const getSafeRedirectPath = (redirectPath: unknown) => {
 export const useRequireLoginAction = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useUser();
   const { openLoginRequiredModal } = useLoginRequiredModal();
 
   const requireLoginAction = useCallback(
@@ -47,12 +47,12 @@ export const useRequireLoginAction = () => {
         ...options,
         onConfirm: () => {
           const providedRedirectPath = getSafeRedirectPath(
-            options?.signInState?.redirectTo,
+            options?.signInState?.from,
           );
           const fallbackRedirectPath = getSafeRedirectPath(currentPathAtOpen);
           const mergedSignInState: Record<string, unknown> = {
             ...(options?.signInState ?? {}),
-            redirectTo: providedRedirectPath ?? fallbackRedirectPath,
+            from: providedRedirectPath ?? fallbackRedirectPath,
           };
 
           options?.onConfirm?.();
@@ -60,7 +60,7 @@ export const useRequireLoginAction = () => {
             return;
           }
 
-          navigate(ROUTER_PATH.SIGN_IN, { state: mergedSignInState });
+          navigate(ROUTER_PATH.LOGIN, { state: mergedSignInState });
         },
         onCancel: () => {
           options?.onCancel?.();
@@ -69,7 +69,14 @@ export const useRequireLoginAction = () => {
 
       return false;
     },
-    [isAuthenticated, location.hash, location.pathname, location.search, navigate, openLoginRequiredModal],
+    [
+      isAuthenticated,
+      location.hash,
+      location.pathname,
+      location.search,
+      navigate,
+      openLoginRequiredModal,
+    ],
   );
 
   return { requireLoginAction, isAuthenticated };

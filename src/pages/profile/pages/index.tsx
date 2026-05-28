@@ -9,12 +9,14 @@ import { ProfileSettings } from "./Page5";
 import { HomeHeader } from "@/components/TopBar";
 import { useLocation, useNavigate } from "react-router";
 import { ROUTER_PATH } from "@/routers/Route";
+import { useUser } from "@/common/contexts/UserContext";
 
 export const ProfilePage = () => {
   const location = useLocation();
   const initialTab = location.state?.tab || "overview";
   const [activeKey, setActiveKey] = useState<string>(initialTab);
   const navigate = useNavigate();
+  const { signOut } = useUser();
   const renderContent = () => {
     switch (activeKey) {
       case "account":
@@ -35,7 +37,7 @@ export const ProfilePage = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    signOut();
     navigate(ROUTER_PATH.WELCOME);
   };
 

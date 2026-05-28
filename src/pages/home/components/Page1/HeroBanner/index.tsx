@@ -121,10 +121,10 @@ export const HeroBanner = () => {
           {/* Date */}
           <DatePicker
             className="hero__datepicker"
-            placeholder="Chọn ngày đi"
+            placeholder="YYYY-MM-DD"
             value={date}
             onChange={(d) => d && setDate(d)}
-            format="DD/MM/YYYY"
+            format="YYYY-MM-DD"
             disabledDate={(d) => d.isBefore(dayjs().startOf("day"))}
             suffixIcon={
               <img src={datePickerIcn} alt="Date" width={14} height={14} />
@@ -140,7 +140,7 @@ export const HeroBanner = () => {
                 state: {
                   from: from || "Hà Nội",
                   to: to || "TP. Hồ Chí Minh",
-                  date: date.format("DD/MM/YYYY"),
+                  date: date.format("YYYY-MM-DD"),
                 },
               })
             }

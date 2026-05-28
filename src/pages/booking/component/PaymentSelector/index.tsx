@@ -1,14 +1,16 @@
-import { mockPaymentMethods } from "../../mocks/booking.mock.data";
+import type { PaymentMethod } from "../../types/confirm.types";
 
 const PaymentSelector = ({
   selected,
   onChange,
+  methods,
 }: {
   selected: string;
   onChange: (id: string) => void;
+  methods: PaymentMethod[];
 }) => (
   <div className="confirm-pay-methods">
-    {mockPaymentMethods.map((m) => (
+    {methods.map((m) => (
       <div
         key={m.id}
         className={`confirm-pay-opt${

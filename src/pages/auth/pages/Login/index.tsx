@@ -12,7 +12,7 @@ import {
 } from "@common/constants/constants";
 import { ROUTER_PATH } from "@/routers/Route";
 import { Button, Form, Input } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import googleIcn from "@assets/icons/google.svg";
 import facebookIcn from "@assets/icons/facebook.svg";
 import appleIcn from "@assets/icons/apple.svg";
@@ -24,9 +24,26 @@ import { useLoading } from "@providers/loadingProvider";
 import { isAxiosError, type AxiosError } from "axios";
 import { setStoredAuth } from "@/common/utils/authStorage";
 
+const getSafeRedirectPath = (redirectPath: unknown) => {
+  if (typeof redirectPath !== "string" || !redirectPath) {
+    return ROUTER_PATH.HOME;
+  }
+
+  if (!redirectPath.startsWith("/") || redirectPath.startsWith("//")) {
+    return ROUTER_PATH.HOME;
+  }
+
+  if (redirectPath === ROUTER_PATH.LOGIN) {
+    return ROUTER_PATH.HOME;
+  }
+
+  return redirectPath;
+};
+
 export const Login = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const location = useLocation();
   const { setLoading } = useLoading();
   const { showNotification } = useNotification();
   const [phone, setPhone] = useState("");
@@ -36,7 +53,7 @@ export const Login = () => {
     onSuccess: (data) => {
       showNotification(SUCCESS_MESSAGE, NOTI_SUCCESS);
       setStoredAuth(data.accessToken);
-      navigate(ROUTER_PATH.HOME);
+      navigate(getSafeRedirectPath(location.state?.from), { replace: true });
     },
     onError: (error) => {
       let message = DEFAULT_MESSAGE;

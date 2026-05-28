@@ -10,6 +10,7 @@ export type ConfirmedAddon = {
   icon: string;
   name: string;
   price: number;
+  qty?: number;
 };
 
 export type PaymentMethod = {
@@ -22,9 +23,19 @@ export type PaymentMethod = {
 };
 
 export type BookingConfirmData = {
+  holdId?: string;
+  tripId?: string;
+  vehicleType?: "16" | "36" | "45";
+  floor?: number;
   pageData: BookingPageData;
   seats: SelectedSeat[];
   addons: ConfirmedAddon[];
+  addonLines?: Array<{
+    id: string;
+    name: string;
+    price: number;
+    qty?: number;
+  }>;
   subTotal: number;
   addonsTotal: number;
   fee: number;
@@ -32,6 +43,7 @@ export type BookingConfirmData = {
   promoDiscount: number;
   total: number;
   holdSeconds?: number;
+  paymentMethodId?: string;
 };
 
 export type NotifColorClass = "green" | "amber" | "blue";

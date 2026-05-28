@@ -10,7 +10,7 @@ import {
   signIn as signInApi,
   signUp as signUpApi,
 } from "../../api/configs/auth.config";
-import { getUserPRofile } from "../../api/configs/user.config";
+import { getProfile } from "../../api/configs/user.config";
 import {
   clearStoredAuth,
   getStoredRole,

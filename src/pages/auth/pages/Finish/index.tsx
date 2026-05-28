@@ -3,6 +3,7 @@ import { Button } from "antd";
 import { Logo } from "@/components/Logo";
 import "./style.scss";
 import { ROUTER_PATH } from "@/routers/Route";
+import { useUser } from "@/common/contexts/UserContext";
 
 export const Finish = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -77,6 +78,7 @@ export const Finish = () => {
     animate();
     return () => cancelAnimationFrame(frame);
   }, []);
+  const {user} = useUser();
 
   return (
     <div className="auth__finish">
@@ -107,14 +109,11 @@ export const Finish = () => {
 
         <p className="finish__eyebrow">Xác thực thành công</p>
         <h1 className="finish__title">
-          Chào mừng
-          <br />
-          trở lại!
+          Xin chào, {user?.userName}!
         </h1>
         <p className="finish__sub">
-          <strong>TRỊNH ĐỨC THƯỞNG</strong>
           <br />
-          Xác minh thành công số điện thoại <strong>098 765 4321</strong> .
+          Xác minh thành công số điện thoại <strong>{user?.userPhone }</strong> .
           <br />
           <strong>GORIDE</strong> <span>đã sẵn sàng để sử dụng</span>
         </p>

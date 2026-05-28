@@ -13,11 +13,12 @@ export const Seat = ({
   onToggle: (id: string) => void;
 }) => {
   const isBooked = seat.status === "booked";
+  const isVip = seat.status === "vip";
   const cls = [
     "seat-map__seat",
     isSleeper && "seat-map__seat--sleeper",
     isBooked && "seat-map__seat--booked",
-    seat.status === "vip" && "seat-map__seat--vip",
+    isVip && "seat-map__seat--vip",
     selected && "seat-map__seat--selected",
   ]
     .filter(Boolean)
@@ -26,17 +27,17 @@ export const Seat = ({
   return (
     <Button
       className={cls}
-      onClick={() => !isBooked && onToggle(seat.id)}
-      title={isBooked ? "Đã đặt" : seat.id}
-      aria-label={`Ghế ${seat.id}`}
+      onClick={() => !isBooked && !isVip && onToggle(seat.id)}
+      title={isBooked ? "Booked" : isVip ? "VIP" : seat.id}
+      aria-label={`Ghe ${seat.id}`}
       aria-pressed={selected}
       type="text"
-      aria-disabled={isBooked}
+      aria-disabled={isBooked || isVip}
     >
       {isBooked ? (
         <>
-          <span aria-hidden="true">×</span>
-          <span className="seat-map__seat-num">{seat.id}</span>
+          <span aria-hidden="true">x</span>
+          <span className="seat-map__seat-num">{seat.label ?? seat.id}</span>
         </>
       ) : (
         <>
@@ -44,7 +45,7 @@ export const Seat = ({
             className={isSleeper ? "ti ti-bed" : "ti ti-armchair"}
             aria-hidden="true"
           />
-          <span className="seat-map__seat-num">{seat.id}</span>
+          <span className="seat-map__seat-num">{seat.label ?? seat.id}</span>
         </>
       )}
     </Button>
