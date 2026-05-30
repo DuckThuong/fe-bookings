@@ -8,7 +8,8 @@ export type ProfileBookingStatus =
   | "Đã xác nhận"
   | "Chờ khởi hành"
   | "Chờ xác nhận"
-  | "Chưa thanh toán";
+  | "Chưa thanh toán"
+  | "Đã hủy";
 
 export interface ProfileBooking {
   id: string;
@@ -73,13 +74,29 @@ export const mapBookingStatus = (
   item: AccountBookingItem,
   ticketStatus?: string | null,
 ): ProfileBookingStatus => {
-  if (item.status === "HOLD") return "Chưa thanh toán";
-  if (item.status === "CONFIRMED") return "Đã xác nhận";
-  if (item.status === "CONVERTED") {
-    if (ticketStatus === "PAID") return "Chờ khởi hành";
-    if (ticketStatus === "PENDING") return "Chờ xác nhận";
-    return "Chưa thanh toán";
+  const status = item.status?.toUpperCase() ?? "";
+  const ticket = ticketStatus?.toUpperCase() ?? "";
+
+  if (
+    status === "CANCELLED" ||
+    ticket === "CANCELLED" ||
+    ticket === "REFUNDED"
+  ) {
+    return "Đã hủy";
   }
+
+  if (status === "HOLD") return "Chưa thanh toán";
+  if (status === "CONFIRMED") return "Đã xác nhận";
+
+  if (
+    status === "PENDING_APPROVAL" ||
+    (status === "CONVERTED" && ticket === "PENDING")
+  ) {
+    return "Chờ xác nhận";
+  }
+
+  if (status === "CONVERTED" && ticket === "PAID") return "Chờ khởi hành";
+
   return "Chưa thanh toán";
 };
 

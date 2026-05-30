@@ -38,6 +38,7 @@ const STATUS_CONFIG: Record<
   "Chờ khởi hành": { color: "#854d0e", bg: "#fef9c3", dot: "#eab308" },
   "Chờ xác nhận": { color: "#1d4ed8", bg: "#dbeafe", dot: "#3b82f6" },
   "Chưa thanh toán": { color: "#9a3412", bg: "#ffedd5", dot: "#f97316" },
+  "Đã hủy": { color: "#991b1b", bg: "#fee2e2", dot: "#ef4444" },
 };
 
 const PICKUP_OPTIONS = [
@@ -207,7 +208,9 @@ const BookingDetail = ({
                 ? "Vé đã xác nhận — không thể chỉnh sửa thêm."
                 : booking.status === "Chờ xác nhận"
                   ? "Đơn đang chờ nhà xe xác nhận — không thể chỉnh sửa."
-                  : "Chỉ có thể chỉnh sửa khi đơn đang giữ chỗ và chưa hết hạn."}
+                  : booking.status === "Đã hủy"
+                    ? "Đơn đặt vé đã bị hủy — không thể chỉnh sửa."
+                    : "Chỉ có thể chỉnh sửa khi đơn đang giữ chỗ và chưa hết hạn."}
             </span>
           </div>
         ) : (
