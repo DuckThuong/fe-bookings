@@ -1,65 +1,74 @@
-import { mockPromoCodes } from "../../mocks/booking.mock.data";
-import { useState } from "react";
+import type { PromoCode } from "@/common/constants/booking";
+import { useEffect, useState } from "react";
 
 export const PromoSection = ({
+  promoCodes,
   applied,
-  onApply,
+  validating,
+  onApplyCode,
 }: {
+  promoCodes: PromoCode[];
   applied: string | null;
-  onApply: (code: string | null) => void;
+  validating?: boolean;
+  onApplyCode: (code: string) => void;
 }) => {
   const [input, setInput] = useState(applied ?? "");
 
+  useEffect(() => {
+    setInput(applied ?? "");
+  }, [applied]);
+
   const handleApply = () => {
-    const code = input.trim().toUpperCase();
-    onApply(mockPromoCodes.find((p) => p.code === code) ? code : null);
+    onApplyCode(input.trim().toUpperCase());
   };
 
   const handleTagClick = (code: string) => {
     if (applied === code) {
-      onApply(null);
-      setInput("");
+      onApplyCode("");
       return;
     }
     setInput(code);
-    onApply(code);
+    onApplyCode(code);
   };
 
   return (
     <div className="extras-card">
       <div className="extras-card__hd">
-        <i className="ti ti-tag" aria-hidden="true" />
+        <i className="ti ti-ticket" aria-hidden="true" />
         <span className="extras-card__title">Mã khuyến mãi</span>
       </div>
-      <div className="extras-promo-input-row">
+      <div className="extras-promo-input">
         <input
-          className="extras-promo-input"
-          placeholder="Nhập mã giảm giá..."
-          maxLength={12}
+          className="extras-promo-input__field"
+          placeholder="Nhập mã khuyến mãi"
           value={input}
-          onChange={(e) => setInput(e.target.value.toUpperCase())}
-          onKeyDown={(e) => e.key === "Enter" && handleApply()}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleApply();
+          }}
         />
-        <button className="extras-promo-apply" onClick={handleApply}>
-          Áp dụng
+        <button
+          type="button"
+          className="extras-promo-input__btn"
+          onClick={handleApply}
+          disabled={validating}
+        >
+          {validating ? "Đang kiểm tra..." : "Áp dụng"}
         </button>
       </div>
       <div className="extras-promo-tags">
-        {mockPromoCodes.map((p) => (
-          <div
+        {promoCodes.map((p) => (
+          <button
             key={p.code}
-            className={`extras-promo-tag${
-              applied === p.code ? " extras-promo-tag--applied" : ""
-            }`}
+            type="button"
+            className={`extras-promo-tag${applied === p.code ? " extras-promo-tag--active" : ""}`}
             onClick={() => handleTagClick(p.code)}
+            disabled={validating}
           >
             <i className={`ti ${p.icon}`} aria-hidden="true" />
-            <div>
-              <div className="extras-promo-tag__code">{p.code}</div>
-              <div className="extras-promo-tag__off">{p.discount}</div>
-              <div className="extras-promo-tag__desc">{p.desc}</div>
-            </div>
-          </div>
+            <span className="extras-promo-tag__code">{p.code}</span>
+            <span className="extras-promo-tag__desc">{p.discount}</span>
+          </button>
         ))}
       </div>
     </div>

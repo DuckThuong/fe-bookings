@@ -1,7 +1,17 @@
+import { updateHoldPassenger } from "@/api/configs/bookings.config";
+import {
+  DEFAULT_MESSAGE,
+  NOTI_ERROR,
+} from "@/common/constants/constants";
 import { HomeHeader } from "@/components/TopBar";
-import { Button, Form, Input, Select } from "antd";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLoading } from "@/providers/loadingProvider";
+import { useNotification } from "@/providers/notificationProvider";
 import { ROUTER_PATH } from "@/routers/Route";
+import { useMutation } from "@tanstack/react-query";
+import { Button, Form, Input, Select } from "antd";
+import { isAxiosError } from "axios";
+import { useEffect } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import ProgressSteps from "../../component/ProgressSteps";
 import type { BookingConfirmData } from "../../types/confirm.types";
 import "./style.scss";
@@ -9,6 +19,21 @@ import "./style.scss";
 export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const { setLoading } = useLoading();
+  const { showNotification } = useNotification();
+
+  const passengerMutation = useMutation({
+    mutationFn: (values: {
+      fullName: string;
+      phone: string;
+      pickupPoint: string;
+      dropoffPoint: string;
+    }) => updateHoldPassenger(data.holdId!, values),
+  });
+
+  useEffect(() => {
+    setLoading(passengerMutation.isPending);
+  }, [passengerMutation.isPending, setLoading]);
 
   const initialValues = {
     fullName: data.pageData.passenger.fullName,
@@ -17,28 +42,54 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
     dropoffPoint: data.pageData.passenger.dropoffPointDefault,
   };
 
-  const handleContinue = (values: typeof initialValues) => {
-    const updatedData = {
-      ...data,
-      pageData: {
-        ...data.pageData,
-        passenger: {
-          ...data.pageData.passenger,
-          fullName: values.fullName,
-          phone: values.phone,
-          pickupPointDefault: values.pickupPoint,
-          dropoffPointDefault: values.dropoffPoint,
-        },
-      },
-    };
+  const handleContinue = async (values: typeof initialValues) => {
+    try {
+      const draft = await passengerMutation.mutateAsync(values);
 
-    navigate(ROUTER_PATH.BOOKING_CONFIRM, {
-      state: { data: updatedData },
-    });
+      const updatedData: BookingConfirmData = {
+        ...data,
+        holdSeconds: draft.holdSeconds,
+        subTotal: draft.pricing.subTotal,
+        addonsTotal: draft.pricing.addonsTotal,
+        fee: draft.pricing.fee,
+        promoCode: draft.pricing.promoCode ?? null,
+        promoDiscount: draft.pricing.promoDiscount,
+        total: draft.pricing.total,
+        pageData: {
+          ...data.pageData,
+          passenger: {
+            ...data.pageData.passenger,
+            fullName: values.fullName,
+            phone: values.phone,
+            pickupPointDefault: values.pickupPoint,
+            dropoffPointDefault: values.dropoffPoint,
+          },
+        },
+      };
+
+      navigate(ROUTER_PATH.BOOKING_CONFIRM, {
+        state: { data: updatedData },
+      });
+    } catch (err) {
+      let message = DEFAULT_MESSAGE;
+      if (isAxiosError(err)) {
+        const apiMessage = err.response?.data?.message;
+        if (typeof apiMessage === "string") message = apiMessage;
+        else if (Array.isArray(apiMessage) && apiMessage[0]) {
+          message = apiMessage[0];
+        }
+      }
+      showNotification(message, NOTI_ERROR);
+    }
   };
 
   const handleBack = () => {
-    navigate(ROUTER_PATH.BOOKING);
+    navigate(ROUTER_PATH.BOOKING, {
+      state: {
+        trip: { id: data.tripId ?? String(data.companyTripId) },
+        date: data.pageData.trip.date,
+      },
+    });
   };
 
   return (
@@ -47,7 +98,6 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
 
       <ProgressSteps activeIdx={1} />
 
-      {/* Breadcrumb */}
       <nav className="info-bc" aria-label="Breadcrumb">
         {data.pageData.breadcrumb.map((item, idx) => (
           <span key={item.label + idx}>
@@ -61,14 +111,11 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
             )}
           </span>
         ))}
-        {/* append current step */}
         <i className="ti ti-chevron-right" aria-hidden="true" />
         <span>Thông tin hành khách</span>
       </nav>
 
-      {/* Main grid */}
       <div className="info-layout">
-        {/* LEFT - Compact summary */}
         <div className="info-left">
           <div className="info-summary-card">
             <div className="info-summary-card__header">
@@ -76,7 +123,6 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
               <span>Tóm tắt đặt vé</span>
             </div>
 
-            {/* Trip info */}
             <div className="info-summary-card__section">
               <div className="info-summary-card__section-title">
                 <i className="ti ti-route" aria-hidden="true" />
@@ -99,8 +145,8 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                     {data.pageData.trip.arriveTime}
                     {data.pageData.trip.arriveNote && (
                       <span className="info-summary-card__note">
-                    {data.pageData.trip.arriveNote}
-                  </span>
+                        {data.pageData.trip.arriveNote}
+                      </span>
                     )}
                   </div>
                   <div className="info-summary-card__city">
@@ -110,7 +156,6 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
               </div>
             </div>
 
-            {/* Seats */}
             <div className="info-summary-card__section">
               <div className="info-summary-card__section-title">
                 <i className="ti ti-chair" aria-hidden="true" />
@@ -125,7 +170,6 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
               </div>
             </div>
 
-            {/* Addons */}
             {data.addons.length > 0 && (
               <div className="info-summary-card__section">
                 <div className="info-summary-card__section-title">
@@ -145,7 +189,6 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
           </div>
         </div>
 
-        {/* RIGHT - Passenger form */}
         <div className="info-right">
           <div className="info-form-card">
             <div className="info-form-card__title">
@@ -153,11 +196,10 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
               Thông tin hành khách
             </div>
 
-            {/* Form fields */}
             <Form
               form={form}
               initialValues={initialValues}
-              onFinish={handleContinue}
+              onFinish={(values) => void handleContinue(values)}
               layout="vertical"
               className="info-form"
             >
@@ -166,10 +208,7 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                 name="fullName"
                 rules={[{ required: true, message: "Vui lòng nhập họ và tên" }]}
               >
-                <Input
-                  placeholder="Nhập họ và tên"
-                  size="large"
-                />
+                <Input placeholder="Nhập họ và tên" size="large" />
               </Form.Item>
 
               <Form.Item
@@ -177,20 +216,22 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                 name="phone"
                 rules={[
                   { required: true, message: "Vui lòng nhập số điện thoại" },
-                  { pattern: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ" },
+                  {
+                    pattern: /^[0-9]{10}$/,
+                    message: "Số điện thoại phải gồm 10 chữ số",
+                  },
                 ]}
               >
-                <Input
-                  placeholder="Nhập số điện thoại"
-                  size="large"
-                />
+                <Input placeholder="Nhập số điện thoại" size="large" />
               </Form.Item>
 
               <div className="info-form__row2">
                 <Form.Item
                   label="Điểm lên xe"
                   name="pickupPoint"
-                  rules={[{ required: true, message: "Vui lòng chọn điểm lên xe" }]}
+                  rules={[
+                    { required: true, message: "Vui lòng chọn điểm lên xe" },
+                  ]}
                 >
                   <Select
                     options={data.pageData.passenger.pickupPointOptions}
@@ -202,7 +243,9 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                 <Form.Item
                   label="Điểm xuống xe"
                   name="dropoffPoint"
-                  rules={[{ required: true, message: "Vui lòng chọn điểm xuống xe" }]}
+                  rules={[
+                    { required: true, message: "Vui lòng chọn điểm xuống xe" },
+                  ]}
                 >
                   <Select
                     options={data.pageData.passenger.dropoffPointOptions}
@@ -220,6 +263,7 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                   onClick={handleBack}
                   className="info-btn-secondary"
                   size="large"
+                  disabled={passengerMutation.isPending}
                 >
                   ← Quay lại
                 </Button>
@@ -229,6 +273,7 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                   block
                   className="info-btn-primary"
                   size="large"
+                  loading={passengerMutation.isPending}
                 >
                   Tiếp tục →
                 </Button>
@@ -246,7 +291,7 @@ export const BookingInfoRoute = () => {
   const state = location.state as { data?: BookingConfirmData } | null;
   const data = state?.data;
 
-  if (!data) {
+  if (!data?.holdId) {
     return <Navigate to={ROUTER_PATH.BOOKING} replace />;
   }
 

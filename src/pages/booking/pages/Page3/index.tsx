@@ -1,40 +1,70 @@
+import { confirmHoldPayment } from "@/api/configs/bookings.config";
 import { formatVnd } from "@/common/contexts/booking";
 import { useCountdown } from "@/common/contexts/helper";
+import {
+  DEFAULT_MESSAGE,
+  NOTI_ERROR,
+  NOTI_SUCCESS,
+} from "@/common/constants/constants";
 import { HomeHeader } from "@/components/TopBar";
-import { Button } from "antd";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLoading } from "@/providers/loadingProvider";
+import { useNotification } from "@/providers/notificationProvider";
 import { ROUTER_PATH } from "@/routers/Route";
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { Button } from "antd";
+import { isAxiosError } from "axios";
+import { useEffect, useState } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import AddonsCard from "../../component/AddonsCard";
 import PassengerCard from "../../component/PassengerCard";
 import PaymentSelector from "../../component/PaymentSelector";
 import ProgressSteps from "../../component/ProgressSteps";
 import TicketCard from "../../component/TicketCard";
 import type { BookingConfirmData } from "../../types/confirm.types";
+import { toBookingSuccessData } from "../../utils/mapBookingSuccess";
 import "./style.scss";
 
 export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
   const navigate = useNavigate();
   const [payMethod, setPayMethod] = useState("card");
   const timer = useCountdown(data.holdSeconds ?? 600);
-  const handleConfirm = () => {
-    const updatedData = {
-      ...data,
-      pageData: {
-        ...data.pageData,
-        passenger: {
-          ...data.pageData.passenger,
-        },
-      },
-    };
+  const { setLoading } = useLoading();
+  const { showNotification } = useNotification();
 
-    navigate(ROUTER_PATH.BOOKING_SUCCESS, {
-      state: { data: updatedData },
-    });
+  const payMutation = useMutation({
+    mutationFn: () =>
+      confirmHoldPayment(data.holdId!, {
+        paymentMethodId: payMethod,
+      }),
+  });
+
+  useEffect(() => {
+    setLoading(payMutation.isPending);
+  }, [payMutation.isPending, setLoading]);
+
+  const handleConfirm = async () => {
+    try {
+      const result = await payMutation.mutateAsync();
+      const successData = toBookingSuccessData(result, data);
+      showNotification("Thanh toán thành công", NOTI_SUCCESS);
+      navigate(ROUTER_PATH.BOOKING_SUCCESS, {
+        state: { data: successData },
+      });
+    } catch (err) {
+      let message = DEFAULT_MESSAGE;
+      if (isAxiosError(err)) {
+        const apiMessage = err.response?.data?.message;
+        if (typeof apiMessage === "string") message = apiMessage;
+        else if (Array.isArray(apiMessage) && apiMessage[0]) {
+          message = apiMessage[0];
+        }
+      }
+      showNotification(message, NOTI_ERROR);
+    }
   };
 
-  const handleEdit = (section: string) => {
-    console.log("edit:", section);
+  const handleEdit = () => {
+    navigate(ROUTER_PATH.BOOKING_INFO, { state: { data } });
   };
 
   return (
@@ -43,7 +73,6 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
 
       <ProgressSteps activeIdx={2} />
 
-      {/* Breadcrumb */}
       <nav className="confirm-bc" aria-label="Breadcrumb">
         {data.pageData.breadcrumb.map((item, idx) => (
           <span key={item.label + idx}>
@@ -57,28 +86,21 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
             )}
           </span>
         ))}
-        {/* append current step */}
         <i className="ti ti-chevron-right" aria-hidden="true" />
         <span>Xác nhận đặt vé</span>
       </nav>
 
-      {/* Main grid */}
       <div className="confirm-layout">
-        {/* LEFT */}
         <div className="confirm-left">
           <TicketCard data={data} seats={data.seats} />
           <PassengerCard
             passenger={data.pageData.passenger}
-            onEdit={() => handleEdit("passenger")}
+            onEdit={handleEdit}
           />
           {data.addons.length > 0 && (
-            <AddonsCard
-              addons={data.addons}
-              onEdit={() => handleEdit("addons")}
-            />
+            <AddonsCard addons={data.addons} onEdit={handleEdit} />
           )}
 
-          {/* Cancellation note */}
           <div className="confirm-policy-note">
             <i className="ti ti-info-circle" aria-hidden="true" />
             <div>
@@ -94,7 +116,6 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
           </div>
         </div>
 
-        {/* RIGHT */}
         <div className="confirm-right">
           <div className="confirm-summary">
             <div className="confirm-summary__title">
@@ -102,7 +123,6 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
               Chi tiết thanh toán
             </div>
 
-            {/* Countdown */}
             <div className="confirm-countdown">
               <i className="ti ti-clock" aria-hidden="true" />
               <div>
@@ -115,7 +135,6 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
               </div>
             </div>
 
-            {/* Price rows */}
             <div className="confirm-price">
               <div className="confirm-price__row">
                 <span>Giá vé ({data.seats.length} ghế)</span>
@@ -149,7 +168,6 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
 
             <div className="confirm-summary__sep" />
 
-            {/* Payment methods */}
             <div className="confirm-summary__section-label">
               Phương thức thanh toán
             </div>
@@ -160,7 +178,9 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
               block
               className="confirm-cta-btn"
               icon={<i className="ti ti-lock" aria-hidden="true" />}
-              onClick={handleConfirm}
+              disabled={payMutation.isPending}
+              loading={payMutation.isPending}
+              onClick={() => void handleConfirm()}
             >
               Thanh toán ngay — {formatVnd(data.total)}
             </Button>
@@ -179,7 +199,7 @@ export const BookingConfirmRoute = () => {
   const state = location.state as { data?: BookingConfirmData } | null;
   const data = state?.data;
 
-  if (!data) {
+  if (!data?.holdId) {
     return <Navigate to={ROUTER_PATH.BOOKING} replace />;
   }
 

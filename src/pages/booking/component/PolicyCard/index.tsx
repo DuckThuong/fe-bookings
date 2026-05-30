@@ -1,12 +1,12 @@
-import { mockPolicies } from "../../mocks/booking.mock.data";
+import type { Policy } from "@/common/constants/booking";
 
-export const PolicyCard = () => (
+export const PolicyCard = ({ policies }: { policies: Policy[] }) => (
   <div className="extras-card">
     <div className="extras-card__hd">
       <i className="ti ti-clipboard-list" aria-hidden="true" />
       <span className="extras-card__title">Chính sách nhà xe</span>
     </div>
-    {mockPolicies.map((p) => (
+    {policies.map((p) => (
       <div key={p.title} className="extras-policy">
         <i className={`ti ti-${p.icon}`} aria-hidden="true" />
         <div className="extras-policy__body">

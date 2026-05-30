@@ -1,57 +1,127 @@
+import { searchTrips } from "@/api/configs/trips.config";
+import type { SearchTripsParams } from "@/api/dtos/trips.dto";
 import {
-  FAKE_TRIPS,
+  DEFAULT_MESSAGE,
+  NOTI_ERROR,
+} from "@/common/constants/constants";
+import {
   type FilterKey,
+  type SeatType,
   type SortKey,
   type Trip,
 } from "@/common/types/ticket";
-import { ROUTER_PATH } from "@/routers/Route";
 import { ScrollTopButton } from "@/components/ScrollTopButton";
 import { HomeHeader } from "@/components/TopBar";
+import { useLoading } from "@/providers/loadingProvider";
+import { useNotification } from "@/providers/notificationProvider";
+import { ROUTER_PATH } from "@/routers/Route";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "antd";
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 import { BookingHero } from "../../components/Page2/BookingHero";
 import { FilterBar } from "../../components/Page2/FilterBar";
 import { SearchCard } from "../../components/Page2/SearchCard";
 import { TripList } from "../../components/Page2/TripList";
 import "./style.scss";
 
-const INITIAL_SEARCH = {
-  from: "Hà Nội",
-  to: "TP. Hồ Chí Minh",
-  date: "11/05/2026",
-};
-
-const FAKE_USER = {
-  userName: "Nguyễn Văn A",
-  notifCount: 3,
-};
-
 const PAGE_SIZE = 10;
+
+type TripSearchState = {
+  fromCity: string;
+  fromStation: string;
+  toCity: string;
+  toStation: string;
+  date: string;
+  passengers: number;
+  seatType: SeatType;
+};
+
+const INITIAL_SEARCH: TripSearchState = {
+  fromCity: "Hà Nội",
+  fromStation: "Bến xe Mỹ Đình",
+  toCity: "TP. Hồ Chí Minh",
+  toStation: "Bến xe Miền Đông",
+  date: dayjs().format("DD/MM/YYYY"),
+  passengers: 1,
+  seatType: "all",
+};
+
+const buildSearchParams = (
+  pageSize: number,
+): SearchTripsParams => ({
+  page: 1,
+  pageSize,
+});
 
 export const TripPage = () => {
   const navigate = useNavigate();
-  const [searchMeta, setSearchMeta] = useState(INITIAL_SEARCH);
+  const { setLoading } = useLoading();
+  const { showNotification } = useNotification();
 
+  const [searchState, setSearchState] =
+    useState<TripSearchState>(INITIAL_SEARCH);
   const [activeFilters, setFilters] = useState<FilterKey[]>(["all"]);
   const [sortKey, setSort] = useState<SortKey>("price");
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const trips: Trip[] = FAKE_TRIPS;
+  const [pageSize, setPageSize] = useState(PAGE_SIZE);
+
+  const queryParams = useMemo(
+    () => buildSearchParams(pageSize),
+    [pageSize],
+  );
+
+  const { data, isLoading, isFetching, isError, error } = useQuery({
+    queryKey: ["tripSearch", queryParams],
+    queryFn: () => searchTrips(queryParams),
+    placeholderData: (previousData) => previousData,
+  });
+
+  useEffect(() => {
+    setLoading(isLoading || isFetching);
+  }, [isLoading, isFetching, setLoading]);
+
+  useEffect(() => {
+    if (!isError) return;
+
+    let message = DEFAULT_MESSAGE;
+    if (isAxiosError(error)) {
+      const apiMessage = error.response?.data?.message;
+      if (typeof apiMessage === "string") {
+        message = apiMessage;
+      } else if (Array.isArray(apiMessage) && apiMessage[0]) {
+        message = apiMessage[0];
+      }
+    }
+    showNotification(message, NOTI_ERROR);
+  }, [isError, error, showNotification]);
+
+  const trips: Trip[] = data?.trips ?? [];
+  const resultCount = data?.meta.resultCount ?? 0;
+  const hasMoreTrips = data?.meta.hasMore ?? false;
 
   const handleSearch = (params: {
-    from: { city: string };
-    to: { city: string };
+    from: { city: string; station: string };
+    to: { city: string; station: string };
     date: string;
+    passengers: number;
+    seatType: SeatType;
   }) => {
-    setSearchMeta({
-      from: params.from.city,
-      to: params.to.city,
+    setSearchState({
+      fromCity: params.from.city,
+      fromStation: params.from.station,
+      toCity: params.to.city,
+      toStation: params.to.station,
       date: params.date,
+      passengers: params.passengers,
+      seatType: params.seatType,
     });
-    setVisibleCount(PAGE_SIZE);
+    setPageSize(PAGE_SIZE);
   };
 
   const handleToggleFilter = (key: FilterKey) => {
+    setPageSize(PAGE_SIZE);
     if (key === "all") {
       setFilters(["all"]);
       return;
@@ -71,28 +141,19 @@ export const TripPage = () => {
       state: {
         from: trip.departure.city,
         to: trip.arrival.city,
-        date: searchMeta.date,
+        date: searchState.date,
         trip,
       },
     });
   };
 
-  const displayedTrips = [...trips].sort((a, b) => {
-    if (sortKey === "price") return a.price - b.price;
-    if (sortKey === "rating") return b.operator.rating - a.operator.rating;
-    if (sortKey === "duration") return a.duration.localeCompare(b.duration);
-    return 0;
-  });
-  const visibleTrips = displayedTrips.slice(0, visibleCount);
-  const hasMoreTrips = visibleCount < displayedTrips.length;
-
   const handleLoadMore = () => {
-    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, displayedTrips.length));
+    setPageSize((prev) => prev + PAGE_SIZE);
   };
 
   const handleSortChange = (nextSort: SortKey) => {
     setSort(nextSort);
-    setVisibleCount(PAGE_SIZE);
+    setPageSize(PAGE_SIZE);
   };
 
   return (
@@ -106,17 +167,17 @@ export const TripPage = () => {
 
       <div className="booking-page__content">
         <FilterBar
-          activeFilters={activeFilters as FilterKey[]}
+          activeFilters={activeFilters}
           sortKey={sortKey}
-          resultCount={displayedTrips.length}
-          from={searchMeta.from}
-          to={searchMeta.to}
-          date={searchMeta.date}
+          resultCount={resultCount}
+          from={searchState.fromCity}
+          to={searchState.toCity}
+          date={searchState.date}
           onToggleFilter={handleToggleFilter}
           onSortChange={handleSortChange}
         />
 
-        <TripList trips={visibleTrips} onBook={handleBook} />
+        <TripList trips={trips} onBook={handleBook} />
 
         <div className="booking-page__actions">
           {hasMoreTrips && (
@@ -124,9 +185,9 @@ export const TripPage = () => {
               className="booking-page__action-btn booking-page__action-btn--primary"
               type="primary"
               onClick={handleLoadMore}
+              loading={isFetching && !isLoading}
             >
-              Xem thêm {Math.min(PAGE_SIZE, displayedTrips.length - visibleCount)}{" "}
-              chuyến
+              Xem thêm {Math.min(PAGE_SIZE, resultCount - trips.length)} chuyến
             </Button>
           )}
 
