@@ -72,7 +72,11 @@ export const BookingSuccessPage = ({ data }: { data: BookingSuccessData }) => {
       </nav>
 
       <div className="success-page-body">
-        <SuccessHero bookingId={bookingId} phone={phone} />
+        <SuccessHero
+          bookingId={bookingId}
+          phone={phone}
+          pendingApproval={data.status === "pending_approval"}
+        />
 
         <div className="success-main-grid">
           <TicketCard data={data} seats={data.seats} />

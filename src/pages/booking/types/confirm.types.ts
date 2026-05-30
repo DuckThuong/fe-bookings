@@ -85,6 +85,7 @@ export type TripInfo = {
 };
 
 export type BookingSuccessData = BookingConfirmData & {
+  status?: string;
   trip: TripInfo;
   notifications: NotifItem[];
   nextActions: NextAction[];

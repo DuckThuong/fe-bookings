@@ -46,7 +46,12 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
     try {
       const result = await payMutation.mutateAsync();
       const successData = toBookingSuccessData(result, data);
-      showNotification("Thanh toán thành công", NOTI_SUCCESS);
+      showNotification(
+        result.status === "pending_approval"
+          ? "Đã gửi yêu cầu — chờ nhà xe xác nhận"
+          : "Thanh toán thành công",
+        NOTI_SUCCESS,
+      );
       navigate(ROUTER_PATH.BOOKING_SUCCESS, {
         state: { data: successData },
       });

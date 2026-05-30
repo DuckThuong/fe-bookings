@@ -12,6 +12,7 @@ export function toBookingSuccessData(
   return {
     ...base,
     bookingId: api.bookingId,
+    status: api.status,
     seats: api.seats,
     subTotal: api.pricing.subTotal,
     addonsTotal: api.pricing.addonsTotal,

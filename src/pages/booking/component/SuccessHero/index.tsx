@@ -4,9 +4,14 @@ import type { TripInfo } from "../../types/confirm.types";
 interface SuccessHeroProps {
   bookingId: TripInfo["bookingId"];
   phone: string;
+  pendingApproval?: boolean;
 }
 
-const SuccessHero = ({ bookingId, phone }: SuccessHeroProps) => {
+const SuccessHero = ({
+  bookingId,
+  phone,
+  pendingApproval = false,
+}: SuccessHeroProps) => {
   const handleCopy = () => {
     navigator.clipboard?.writeText(bookingId);
     message.success("Đã sao chép mã đặt vé");
@@ -54,11 +59,26 @@ const SuccessHero = ({ bookingId, phone }: SuccessHeroProps) => {
         </button>
       </div>
 
-      <h1 className="success-hero__title">Đặt vé thành công!</h1>
+      <h1 className="success-hero__title">
+        {pendingApproval ? "Đã gửi yêu cầu đặt vé!" : "Đặt vé thành công!"}
+      </h1>
       <p className="success-hero__sub">
-        Vé điện tử đã được gửi đến <strong>{phone}</strong> và email của bạn.
-        <br />
-        Chúc bạn có một hành trình thật tuyệt vời.
+        {pendingApproval ? (
+          <>
+            Đơn của bạn đang <strong>chờ nhà xe xác nhận</strong>. Mã đặt vé:{" "}
+            <strong>{bookingId}</strong>.
+            <br />
+            Chúng tôi sẽ thông báo qua <strong>{phone}</strong> và email khi vé
+            được duyệt.
+          </>
+        ) : (
+          <>
+            Vé điện tử đã được gửi đến <strong>{phone}</strong> và email của
+            bạn.
+            <br />
+            Chúc bạn có một hành trình thật tuyệt vời.
+          </>
+        )}
       </p>
 
       <div className="success-hero__actions">
