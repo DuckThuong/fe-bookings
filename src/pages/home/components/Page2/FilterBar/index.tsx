@@ -29,7 +29,12 @@ export const FilterBar = ({
 }: FilterBarProps) => (
   <div className="filter-bar">
     <p className="filter-bar__count">
-      Tìm thấy <strong>{resultCount} chuyến xe</strong> — {from} → {to}, {date}
+      {from != "" && to != "" && (
+        <>
+          Tìm thấy <strong>{resultCount} chuyến xe</strong> — {from} → {to},{" "}
+          {date}
+        </>
+      )}
     </p>
 
     <div className="filter-bar__controls">

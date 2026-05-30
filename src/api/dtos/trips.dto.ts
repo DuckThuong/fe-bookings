@@ -2,9 +2,7 @@ import type { FilterKey, SeatType, SortKey, Trip } from "@/common/types/ticket";
 
 export interface SearchTripsParams {
   fromCity?: string;
-  fromStation?: string;
   toCity?: string;
-  toStation?: string;
   date?: string;
   passengers?: number;
   seatType?: SeatType;
@@ -16,8 +14,8 @@ export interface SearchTripsParams {
 
 export interface SearchTripsResponse {
   search: {
-    from: { city: string; station: string };
-    to: { city: string; station: string };
+    from: string;
+    to: string;
     date: string;
     passengers: number;
     seatType: SeatType;

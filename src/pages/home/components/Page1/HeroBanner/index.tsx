@@ -87,7 +87,7 @@ export const HeroBanner = () => {
                 options={fromOptions}
                 onChange={setFrom}
                 className="hero__autocomplete"
-                placeholder="Điểm đi"
+                placeholder="Hà Nội"
                 popupMatchSelectWidth={false}
               />
             </div>
@@ -112,7 +112,7 @@ export const HeroBanner = () => {
                 options={toOptions}
                 onChange={setTo}
                 className="hero__autocomplete"
-                placeholder="Điểm đến"
+                placeholder="Đà Nẵng"
                 popupMatchSelectWidth={false}
               />
             </div>
