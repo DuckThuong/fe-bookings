@@ -1,5 +1,6 @@
 import { Button, Typography, message } from "antd";
 import { useRef } from "react";
+import { useNavigate } from "react-router";
 
 interface PromoCarouselProps {
   data: any;
@@ -7,6 +8,7 @@ interface PromoCarouselProps {
 
 export const PromoCarousel = ({ data }: PromoCarouselProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const copyCode = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -17,7 +19,7 @@ export const PromoCarousel = ({ data }: PromoCarouselProps) => {
     <section className="section promo-section">
       <div className="section__head">
         <h3 className="section__title">Khuyến mãi</h3>
-        <Typography.Link className="section__more">
+        <Typography.Link className="section__more" onClick={() => navigate("/promos")}>
           Tất cả ưu đãi →
         </Typography.Link>
       </div>
@@ -55,7 +57,7 @@ export const PromoCarousel = ({ data }: PromoCarouselProps) => {
         ))}
 
         {/* CTA card */}
-        <div className="promo-card promo-card--cta">
+        <div className="promo-card promo-card--cta" onClick={() => navigate("/promos")}>
           <span className="promo-card__cta-icon">🎁</span>
           <p className="promo-card__cta-text">
             Xem thêm
