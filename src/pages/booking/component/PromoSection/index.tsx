@@ -1,4 +1,5 @@
 import type { PromoCode } from "@/common/constants/booking";
+import { Button, Input } from "antd";
 import { useEffect, useState } from "react";
 
 export const PromoSection = ({
@@ -38,23 +39,23 @@ export const PromoSection = ({
         <span className="extras-card__title">Mã khuyến mãi</span>
       </div>
       <div className="extras-promo-input">
-        <input
+        <Input
           className="extras-promo-input__field"
           placeholder="Nhập mã khuyến mãi"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleApply();
-          }}
+          onPressEnter={handleApply}
+          disabled={validating}
         />
-        <button
-          type="button"
+        <Button
+          htmlType="button"
           className="extras-promo-input__btn"
           onClick={handleApply}
           disabled={validating}
+          loading={validating}
         >
           {validating ? "Đang kiểm tra..." : "Áp dụng"}
-        </button>
+        </Button>
       </div>
       <div className="extras-promo-tags">
         {promoCodes.map((p) => (

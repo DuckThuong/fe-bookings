@@ -1,9 +1,6 @@
 import { searchTrips } from "@/api/configs/trips.config";
 import type { SearchTripsParams } from "@/api/dtos/trips.dto";
-import {
-  DEFAULT_MESSAGE,
-  NOTI_ERROR,
-} from "@/common/constants/constants";
+import { DEFAULT_MESSAGE, NOTI_ERROR } from "@/common/constants/constants";
 import {
   type FilterKey,
   type SeatType,
@@ -31,19 +28,15 @@ const PAGE_SIZE = 10;
 
 type TripSearchState = {
   fromCity: string;
-  fromStation: string;
   toCity: string;
-  toStation: string;
   date: string;
   passengers: number;
   seatType: SeatType;
 };
 
-const INITIAL_SEARCH: TripSearchState = {
-  fromCity: "Hà Nội",
-  fromStation: "Bến xe Mỹ Đình",
-  toCity: "TP. Hồ Chí Minh",
-  toStation: "Bến xe Miền Đông",
+const INITIAL_SEARCH_STATE: TripSearchState = {
+  fromCity: "",
+  toCity: "",
   date: dayjs().format("DD/MM/YYYY"),
   passengers: 1,
   seatType: "all",
@@ -51,9 +44,15 @@ const INITIAL_SEARCH: TripSearchState = {
 
 const buildSearchParams = (
   pageSize: number,
+  searchState: TripSearchState,
 ): SearchTripsParams => ({
   page: 1,
   pageSize,
+  fromCity: searchState.fromCity,
+  toCity: searchState.toCity,
+  date: searchState.date,
+  passengers: searchState.passengers,
+  seatType: searchState.seatType,
 });
 
 export const TripPage = () => {
@@ -62,14 +61,14 @@ export const TripPage = () => {
   const { showNotification } = useNotification();
 
   const [searchState, setSearchState] =
-    useState<TripSearchState>(INITIAL_SEARCH);
+    useState<TripSearchState>(INITIAL_SEARCH_STATE);
   const [activeFilters, setFilters] = useState<FilterKey[]>(["all"]);
   const [sortKey, setSort] = useState<SortKey>("price");
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
 
   const queryParams = useMemo(
-    () => buildSearchParams(pageSize),
-    [pageSize],
+    () => buildSearchParams(pageSize, searchState),
+    [pageSize, searchState],
   );
 
   const { data, isLoading, isFetching, isError, error } = useQuery({
@@ -102,17 +101,15 @@ export const TripPage = () => {
   const hasMoreTrips = data?.meta.hasMore ?? false;
 
   const handleSearch = (params: {
-    from: { city: string; station: string };
-    to: { city: string; station: string };
+    fromCity: string;
+    toCity: string;
     date: string;
     passengers: number;
     seatType: SeatType;
   }) => {
     setSearchState({
-      fromCity: params.from.city,
-      fromStation: params.from.station,
-      toCity: params.to.city,
-      toStation: params.to.station,
+      fromCity: params.fromCity,
+      toCity: params.toCity,
       date: params.date,
       passengers: params.passengers,
       seatType: params.seatType,
@@ -141,7 +138,7 @@ export const TripPage = () => {
       state: {
         from: trip.departure.city,
         to: trip.arrival.city,
-        date: searchState.date,
+        date: searchState.date ?? "",
         trip,
       },
     });
