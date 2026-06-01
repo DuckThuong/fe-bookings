@@ -3,12 +3,19 @@ export type VehicleType = "16" | "36" | "45";
 
 export interface SeatDef {
   id: string;
+  label?: string;
   status: SeatStatus;
 }
 
+export type SeatCellDef =
+  | ({ type: "seat" } & SeatDef)
+  | { type: "aisle" }
+  | { type: "empty" };
+
 export interface RowDef {
   row: number;
-  seats: Array<SeatDef | null>;
+  cells?: SeatCellDef[];
+  seats?: Array<SeatDef | null>;
   full?: boolean;
 }
 

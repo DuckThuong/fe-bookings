@@ -32,9 +32,16 @@ export const BusMap = ({
       {layout.map((rowDef) => (
         <div key={rowDef.row} className="seat-map__row">
           <span className="seat-map__row-num">{rowDef.row}</span>
-          {rowDef.seats.map((cell, ci) =>
-            cell === null ? (
+          {(rowDef.cells ??
+            rowDef.seats?.map((seat) =>
+              seat ? ({ type: "seat", ...seat } as const) : { type: "aisle" as const },
+            ) ??
+            []
+          ).map((cell, ci) =>
+            cell.type === "aisle" ? (
               <div key={ci} className="seat-map__aisle" />
+            ) : cell.type === "empty" ? (
+              <div key={ci} className="seat-map__empty" />
             ) : (
               <Seat
                 key={cell.id}
