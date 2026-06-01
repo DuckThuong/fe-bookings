@@ -20,6 +20,7 @@ type SignInStep2Data = {
     name: string;
     requiredMessage: string;
     format: string;
+    placeholder: string;
   };
   gender: {
     label: string;
@@ -42,7 +43,8 @@ const SIGNIN_STEP2_DATA: SignInStep2Data = {
     label: "Ngày sinh",
     name: "dateOfBirth",
     requiredMessage: "Vui lòng nhập ngày sinh của bạn",
-    format: "DD/MM/YYYY",
+    format: "YYYY-MM-DD",
+    placeholder: "YYYY-MM-DD",
   },
   gender: {
     label: "Giới tính",
@@ -98,6 +100,7 @@ export const Step2 = (props: SignInProps) => {
             format={SIGNIN_STEP2_DATA.dob.format}
             className="signin-date-full"
             size="large"
+            placeholder={SIGNIN_STEP2_DATA.dob.placeholder}
           />
         </Form.Item>
       </div>

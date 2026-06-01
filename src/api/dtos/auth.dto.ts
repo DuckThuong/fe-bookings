@@ -1,23 +1,23 @@
 export interface LoginPayloadDto {
   phoneNumber: string;
-  
+
   password: string;
 }
 
 export interface SignUpPayloadDto {
-  fullName: string;
+  name: string;
 
-  phoneNumber: string;
+  phone: string;
 
   password: string;
 
   confirm_password: string;
 
-  submitRule: number;
+  acceptRole: number;
 
   email: string;
 
-  dob: string;
+  dateOfBirth: string;
 
   gender: number;
 }

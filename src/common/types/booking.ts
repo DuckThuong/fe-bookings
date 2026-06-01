@@ -28,6 +28,8 @@ export type BookingPageData = {
   user: { userName: string; notifCount: number; phone: string | null };
   breadcrumb: { label: string; href: string }[];
   trip: {
+    tripId?: string;
+    companyTripId?: number;
     from: string;
     to: string;
     operatorCode: string;

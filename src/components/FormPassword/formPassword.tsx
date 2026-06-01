@@ -1,76 +1,83 @@
-import { Form, type FormItemProps } from "antd";
-import Password from "antd/es/input/Password";
-import type { ReactNode } from "react";
+import { Form, Input, type FormItemProps } from "antd";
+import type { PasswordProps } from "antd/es/input";
+import { Link } from "react-router-dom";
 import "./formPassword.scss";
-import { useNavigate } from "react-router-dom";
-import { ROUTER_PATH } from "../../router/Route";
 
-interface IFormPassword {
+interface FormPasswordProps {
   label: string;
-  subLabel?: string;
-  formItemProps?: FormItemProps;
-  passwordProps?: any;
   name: string;
-  vertical?: boolean;
   placeholder?: string;
+  formItemProps?: FormItemProps;
+  passwordProps?: PasswordProps;
   size?: "small" | "middle" | "large";
-  prefix?: ReactNode;
-  suffix?: ReactNode;
+  actionText?: string;
+  actionTo?: string;
+  onActionClick?: () => void;
+  vertical?: boolean;
   disabled?: boolean;
-  allowClear?: boolean;
-  bordered?: boolean;
   status?: "error" | "warning";
-  visibilityToggle?: boolean;
 }
 
 export const FormPassword = ({
   label,
+  name,
+  placeholder,
   formItemProps,
   passwordProps,
-  name,
-  vertical = false,
-  placeholder,
-  subLabel,
   size = "middle",
-  prefix,
-  suffix,
+  actionText,
+  actionTo,
+  onActionClick,
+  vertical = false,
   disabled = false,
-  allowClear = true,
-  bordered = true,
   status,
-  visibilityToggle = true,
-}: IFormPassword) => {
-  const navigate = useNavigate();
+}: FormPasswordProps) => {
+  const hasRequiredRule = formItemProps?.rules?.some((rule) => {
+    if (typeof rule !== "object" || !rule) {
+      return false;
+    }
+
+    return "required" in rule && Boolean(rule.required);
+  });
+
+  const actionNode =
+    actionText && actionTo ? (
+      <Link to={actionTo} className="label__left">
+        {actionText}
+      </Link>
+    ) : actionText && onActionClick ? (
+      <button
+        type="button"
+        className="label__left label__left--button"
+        onClick={onActionClick}
+      >
+        {actionText}
+      </button>
+    ) : null;
 
   return (
-    <div className={`form-input`}>
+    <div className={`form-input ${vertical ? "form-input--vertical" : ""}`}>
       <div className="label">
-        <span className="label__right">{label}</span>
         <span
-          className="label__left"
-          onClick={() => {
-            navigate(ROUTER_PATH.FORGOT_PASSWORD);
-          }}
+          className={`label__right ${hasRequiredRule ? "label__right--required" : ""}`}
         >
-          {subLabel}
+          {label}
         </span>
+        {actionNode}
       </div>
       <Form.Item
         name={name}
         {...formItemProps}
-        labelCol={vertical  ? { span: 24 } : undefined}
+        label={undefined}
+        labelCol={vertical ? { span: 24 } : undefined}
       >
-        <Password
+        <Input.Password
           className="form-input__password"
           placeholder={placeholder}
           size={size}
-          prefix={prefix}
-          suffix={suffix}
           disabled={disabled}
-          allowClear={allowClear}
-          bordered={bordered}
           status={status}
-          visibilityToggle={visibilityToggle}
+          visibilityToggle
           {...passwordProps}
         />
       </Form.Item>

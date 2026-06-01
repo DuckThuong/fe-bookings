@@ -1,4 +1,4 @@
-// ─── Types ───────────────────────────────────────────────
+import type { MasterResponseDto } from "@/api/dtos/master.dto";
 
 export interface Service {
   id: string;
@@ -44,176 +44,207 @@ export interface Trip {
   rating: number;
 }
 
-// ─── Services ─────────────────────────────────────────────
+export interface Hotel {
+  id: string;
+  name: string;
+  logo: string;
+  rating: number;
+  reviews: number;
+  address: string;
+}
 
-export const SERVICES: Service[] = [
-  { id: "s1", icon: "🚌", label: "Xe khách", desc: "Liên tỉnh" },
-  {
-    id: "s2",
-    icon: "🛵",
-    label: "Xe máy",
-    desc: "Nội thành",
-    tag: "Hot",
-    tagColor: "red",
-  },
-  { id: "s3", icon: "🚗", label: "Xe hợp đồng", desc: "Theo ngày" },
-  {
-    id: "s4",
-    icon: "🚐",
-    label: "Xe đưa đón",
-    desc: "Sân bay",
-    tag: "Mới",
-    tagColor: "green",
-  },
-  { id: "s5", icon: "🚂", label: "Tàu hoả", desc: "Liên tỉnh" },
-  {
-    id: "s6",
-    icon: "✈️",
-    label: "Vé máy bay",
-    desc: "Nội địa",
-    tag: "Sale",
-    tagColor: "amber",
-  },
-  { id: "s7", icon: "🏨", label: "Khách sạn", desc: "Combo tiết kiệm" },
-  { id: "s8", icon: "🗺️", label: "Tour du lịch", desc: "Khám phá" },
-];
+export interface Tour {
+  id: string;
+  name: string;
+  logo: string;
+  rating: number;
+  reviews: number;
+  address: string;
+}
 
-// ─── Promos ───────────────────────────────────────────────
+export interface Transport {
+  id: string;
+  name: string;
+  logo: string;
+  rating: number;
+  reviews: number;
+  address: string;
+}
 
-export const PROMOS: Promo[] = [
-  {
-    id: "p1",
-    title: "Giảm ngay 50K",
-    subtitle: "Cho chuyến xe đầu tiên trong tháng",
-    code: "GORIDE50",
-    discount: "50.000đ",
-    expiry: "31/05/2026",
-    bg: "#0a0e1a",
-    textColor: "#fff",
-  },
-  {
-    id: "p2",
-    title: "Ưu đãi cuối tuần",
-    subtitle: "Giảm 20% toàn bộ vé xe khách",
-    code: "WEEKEND20",
-    discount: "20%",
-    expiry: "Mỗi T7 & CN",
-    bg: "#f5a623",
-    textColor: "#0a0e1a",
-  },
-  {
-    id: "p3",
-    title: "Combo Hà Nội – HCM",
-    subtitle: "Vé + Khách sạn chỉ từ 990K",
-    code: "COMBO990",
-    discount: "990.000đ",
-    expiry: "30/06/2026",
-    bg: "#1a3a2a",
-    textColor: "#fff",
-  },
-];
+export interface Activity {
+  id: string;
+  name: string;
+  logo: string;
+  rating: number;
+  reviews: number;
+  address: string;
+}
 
-// ─── Operators ────────────────────────────────────────────
+export interface Food {
+  id: string;
+  name: string;
+  logo: string;
+  rating: number;
+  reviews: number;
+  address: string;
+}
 
-export const OPERATORS: Operator[] = [
-  {
-    id: "o1",
-    name: "Phương Trang",
-    logo: "PT",
-    rating: 4.8,
-    reviews: 12400,
-    routes: "Hà Nội · HCM · Đà Nẵng",
-    badge: "Top #1",
-  },
-  {
-    id: "o2",
-    name: "Thành Bưởi",
-    logo: "TB",
-    rating: 4.7,
-    reviews: 8900,
-    routes: "HCM · Đà Lạt · Nha Trang",
-    badge: "Top #2",
-  },
-  {
-    id: "o3",
-    name: "Hoàng Long",
-    logo: "HL",
-    rating: 4.6,
-    reviews: 7300,
-    routes: "Hà Nội · Vinh · Huế",
-    badge: "Top #3",
-  },
-  {
-    id: "o4",
-    name: "Kumho Samco",
-    logo: "KS",
-    rating: 4.6,
-    reviews: 6100,
-    routes: "HCM · Vũng Tàu · Cần Thơ",
-  },
-  {
-    id: "o5",
-    name: "Xe Canh Thịnh",
-    logo: "CT",
-    rating: 4.5,
-    reviews: 4200,
-    routes: "Hà Nội · Hải Phòng · QN",
-  },
-];
+export interface Shop {
+  id: string;
+  name: string;
+  logo: string;
+  rating: number;
+  reviews: number;
+  address: string;
+}
 
-// ─── Top Trips ────────────────────────────────────────────
+export interface Faq {
+  id: string;
+  question: string;
+  answer: string;
+}
 
-export const TOP_TRIPS: Trip[] = [
-  {
-    id: "t1",
-    from: "Hà Nội",
-    to: "Đà Nẵng",
-    operator: "Phương Trang",
-    operatorLogo: "PT",
-    departure: "20:00 · Hôm nay",
-    duration: "14 tiếng",
-    seats: 8,
-    price: 320000,
-    type: "Giường nằm 40 chỗ",
-    rating: 4.8,
-  },
-  {
-    id: "t2",
-    from: "HCM",
-    to: "Đà Lạt",
-    operator: "Thành Bưởi",
-    operatorLogo: "TB",
-    departure: "21:30 · Hôm nay",
-    duration: "7 tiếng",
-    seats: 14,
-    price: 180000,
-    type: "Limousine 22 chỗ",
-    rating: 4.7,
-  },
-  {
-    id: "t3",
-    from: "Hà Nội",
-    to: "Vinh",
-    operator: "Hoàng Long",
-    operatorLogo: "HL",
-    departure: "06:00 · Ngày mai",
-    duration: "5 tiếng",
-    seats: 3,
-    price: 150000,
-    type: "Ghế ngồi 45 chỗ",
-    rating: 4.6,
-  },
-  {
-    id: "t4",
-    from: "HCM",
-    to: "Cần Thơ",
-    operator: "Kumho Samco",
-    operatorLogo: "KS",
-    departure: "07:00 · Ngày mai",
-    duration: "3.5 tiếng",
-    seats: 22,
-    price: 120000,
-    type: "Xe Limousine",
-    rating: 4.6,
-  },
-];
+export interface SupportContact {
+  id: string;
+  label: string;
+  value: string;
+  note: string;
+}
+
+export const mapTopTripsFromMaster = (items: MasterResponseDto[]): Trip[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const trip = JSON.parse(item.rule) as Trip;
+        return [{ ...trip, id: trip.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapServicesFromMaster = (items: MasterResponseDto[]): Service[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const service = JSON.parse(item.rule) as Service;
+        return [{ ...service, id: service.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapPromosFromMaster = (items: MasterResponseDto[]): Promo[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const promo = JSON.parse(item.rule) as Promo;
+        return [{ ...promo, id: promo.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapOperatorsFromMaster = (
+  items: MasterResponseDto[],
+): Operator[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const operator = JSON.parse(item.rule) as Operator;
+        return [{ ...operator, id: operator.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapTripsFromMaster = (items: MasterResponseDto[]): Trip[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const trip = JSON.parse(item.rule) as Trip;
+        return [{ ...trip, id: trip.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapHotelsFromMaster = (items: MasterResponseDto[]): Hotel[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const hotel = JSON.parse(item.rule) as Hotel;
+        return [{ ...hotel, id: hotel.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapToursFromMaster = (items: MasterResponseDto[]): Tour[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const tour = JSON.parse(item.rule) as Tour;
+        return [{ ...tour, id: tour.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapTransportsFromMaster = (
+  items: MasterResponseDto[],
+): Transport[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const transport = JSON.parse(item.rule) as Transport;
+        return [{ ...transport, id: transport.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapActivitiesFromMaster = (
+  items: MasterResponseDto[],
+): Activity[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const activity = JSON.parse(item.rule) as Activity;
+        return [{ ...activity, id: activity.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapFoodsFromMaster = (items: MasterResponseDto[]): Food[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const food = JSON.parse(item.rule) as Food;
+        return [{ ...food, id: food.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });
+
+export const mapShopsFromMaster = (items: MasterResponseDto[]): Shop[] =>
+  [...items]
+    .sort((a, b) => a.sort - b.sort)
+    .flatMap((item) => {
+      try {
+        const shop = JSON.parse(item.rule) as Shop;
+        return [{ ...shop, id: shop.id ?? item.code }];
+      } catch {
+        return [];
+      }
+    });

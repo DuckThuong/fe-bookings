@@ -14,12 +14,6 @@ const App = () => {
     },
   });
 
-  const initialUser = {
-    userName: "Nguyễn An",
-    notifCount: 3,
-    phone: "098 765 4321",
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigProvider
@@ -29,7 +23,7 @@ const App = () => {
           },
         }}
       >
-        <UserProvider initialUser={initialUser}>
+        <UserProvider>
           <LoadingProvider>
             <NotificationProvider>
               <AntdApp>

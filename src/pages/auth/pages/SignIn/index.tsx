@@ -15,18 +15,57 @@ import { ROUTER_PATH } from "@/routers/Route";
 import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Steps } from "antd";
 import { isAxiosError } from "axios";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { setStoredAuth } from "@/common/utils/authStorage";
 import back from "../../../../assets/icons/back.svg";
 import { Step1 } from "./steps/Step1";
 import { Step2 } from "./steps/Step2";
+import { Step3 } from "./steps/Step3";
 import "./style.scss";
+
+type SignUpFormValues = {
+  name?: string;
+  phone?: string;
+  password?: string;
+  confirm_password?: string;
+  acceptRole?: boolean;
+  email?: string;
+  dateOfBirth?: string;
+  gender?: string;
+};
 
 const subTitleMap: Record<number, string> = {
   0: "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để tạo tài khoản GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính xác và cập nhật để trải nghiệm dịch vụ tốt nhất.",
   1: "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để tạo tài khoản GoRide. Bạn vui lòng đảm bảo rằng thông tin bạn cung cấp là chính xác và cập nhật để trải nghiệm dịch vụ tốt nhất.",
-  2: "Chúng tôi đã gửi mã xác minh đến số điện thoại của bạn. Vui lòng nhập mã có 4 chữ số để hoàn tất đăng ký. Lưu ý: Mã xác minh có hiệu lực trong vòng 5 phút, hãy kiểm tra hộp thư đến của bạn và nhập mã kịp thời để hoàn tất quá trình đăng ký.",
+  2: "Kiểm tra lại thông tin bạn đã nhập. Nếu có sai sót, bấm Sửa để quay lại bước tương ứng trước khi tạo tài khoản.",
 };
+
+const STEP1_FIELDS = [
+  "name",
+  "phone",
+  "password",
+  "confirm_password",
+  "acceptRole",
+] as const;
+
+const STEP2_FIELDS = ["email", "dateOfBirth", "gender"] as const;
+
+const buildSignUpPayload = (
+  values: Record<string, unknown>,
+): SignUpPayloadDto => ({
+  name: String(values.name ?? ""),
+  phone: String(values.phone ?? ""),
+  password: String(values.password ?? ""),
+  confirm_password: String(values.confirm_password ?? ""),
+  acceptRole: values.acceptRole ? 1 : 0,
+  email: String(values.email ?? ""),
+  dateOfBirth: values.dateOfBirth
+    ? dayjs(values.dateOfBirth as dayjs.ConfigType).format("YYYY-MM-DD")
+    : "",
+  gender: Number(values.gender ?? 0),
+});
 
 export const SignIn = () => {
   const [form] = Form.useForm();
@@ -34,24 +73,14 @@ export const SignIn = () => {
   const { showNotification } = useNotification();
   const { setLoading } = useLoading();
   const [step, setStep] = useState<number>(0);
-  const [data, setData] = useState<SignUpPayloadDto>(null);
-  const contentRender = () => {
-    switch (step) {
-      case 0:
-        return <Step1 form={form} />;
-      case 1:
-        return <Step2 form={form} />;
-      default:
-        return <Step1 form={form} />;
-    }
-  };
+  const [data, setData] = useState<SignUpFormValues>({});
 
   const signUpMutation = useMutation({
     mutationFn: (payload: SignUpPayloadDto) => signUp(payload),
     onSuccess: (data) => {
       console.log(data);
       showNotification(SUCCESS_MESSAGE, NOTI_SUCCESS);
-      localStorage.setItem('token', data.accessToken);
+      setStoredAuth(data.accessToken);
       navigate(ROUTER_PATH.FINISH);
     },
     onError: (error) => {
@@ -74,26 +103,34 @@ export const SignIn = () => {
     },
   });
 
-  const handleSubmit = async () => {
-    await form.validateFields();
+  const buildSignUpPayload = (values: SignUpFormValues): SignUpPayloadDto => ({
+    name: values.name ?? "",
+    phone: values.phone ?? "",
+    password: values.password ?? "",
+    confirm_password: values.confirm_password ?? "",
+    acceptRole: values.acceptRole ? 1 : 0,
+    email: values.email ?? "",
+    dateOfBirth: values.dateOfBirth ?? "",
+    gender: Number(values.gender ?? 0),
+  });
 
-    if (step < 2) {
-      const currentValues = form.getFieldsValue();
-      setData((prev) => ({ ...prev, ...currentValues }));
-      setStep((v) => v + 1);
-    } else {
-      const finalData: SignUpPayloadDto = {
-        ...data,
-        ...form.getFieldsValue(),
-      };
-      setData(finalData);
+  const handleSubmit = async () => {
+    try {
+      await form.validateFields();
+    } catch {
+      return;
     }
 
-    if (step === 1) {
-      navigate(ROUTER_PATH.FINISH);
+    const currentValues = form.getFieldsValue() as SignUpFormValues;
+    const nextData = { ...data, ...currentValues };
+    setData(nextData);
 
-      // signUpMutation.mutate(data);
-    } 
+    if (step === 0) {
+      setStep(1);
+      return;
+    }
+
+    signUpMutation.mutate(buildSignUpPayload(nextData));
   };
 
   return (
@@ -113,7 +150,7 @@ export const SignIn = () => {
               title: "Thông Tin Cá Nhân",
             },
             {
-              title: "Xác Minh",
+              title: "Xác Nhận",
             },
           ]}
         />
@@ -142,7 +179,21 @@ export const SignIn = () => {
             {subTitleMap[step]}
           </p>
           <Form form={form} layout="vertical">
-            {contentRender()}
+            <div
+              className={`signin-step-panel${step !== 0 ? " signin-step-panel--hidden" : ""}`}
+            >
+              <Step1 form={form} />
+            </div>
+            <div
+              className={`signin-step-panel${step !== 1 ? " signin-step-panel--hidden" : ""}`}
+            >
+              <Step2 form={form} />
+            </div>
+            <div
+              className={`signin-step-panel${step !== 2 ? " signin-step-panel--hidden" : ""}`}
+            >
+              <Step3 form={form} onEditStep={setStep} />
+            </div>
           </Form>
         </div>
         <Button
@@ -151,7 +202,7 @@ export const SignIn = () => {
           className="signin-btn"
           onClick={handleSubmit}
         >
-          Tạo tài khoản
+          {step === 0 ? "Tiếp tục" : "Tạo tài khoản"}
         </Button>
 
         <p className="signin-login-link">

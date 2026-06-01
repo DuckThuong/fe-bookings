@@ -23,6 +23,12 @@ export type PaymentMethod = {
 
 export type BookingConfirmData = {
   pageData: BookingPageData;
+  bookingId?: string;
+  holdId?: string;
+  tripId?: string;
+  companyTripId?: number;
+  vehicleType?: string;
+  floor?: number;
   seats: SelectedSeat[];
   addons: ConfirmedAddon[];
   subTotal: number;
@@ -79,6 +85,7 @@ export type TripInfo = {
 };
 
 export type BookingSuccessData = BookingConfirmData & {
+  status?: string;
   trip: TripInfo;
   notifications: NotifItem[];
   nextActions: NextAction[];

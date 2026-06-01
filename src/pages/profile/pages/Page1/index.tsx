@@ -1,5 +1,6 @@
 import { Button, Progress, Tag } from "antd";
 import "./style.scss";
+import { useUser } from "@/common/contexts/UserContext";
 
 // ─── Static data (thay bằng props / API call thật) ────────
 const SUMMARY_STATS = [
@@ -144,73 +145,79 @@ const RemindersCard = () => (
 );
 
 // ─── Main component ───────────────────────────────────────
-export const ProfileSummary = ({ onEdit }: { onEdit?: () => void }) => (
-  <div className="profile-summary">
-    {/* Hero banner */}
-    <div className="ps-hero">
-      <div className="ps-hero__avatar">NA</div>
-      <div className="ps-hero__info">
-        <div className="ps-hero__greeting">Tổng quan tài khoản</div>
-        <div className="ps-hero__name">Nguyễn Văn An</div>
-        <div className="ps-hero__meta">
-          <Tag
-            className="ps-hero__badge"
-            icon={<i className="ti ti-star-filled" aria-hidden="true" />}
-            bordered={false}
-          >
-            Thành viên Gold
-          </Tag>
-          <span className="ps-hero__since">Tham gia từ tháng 1, 2025</span>
+
+export const ProfileSummary = ({ onEdit }: { onEdit?: () => void }) => {
+  const { user } = useUser();
+  return (
+    <div className="profile-summary">
+      {/* Hero banner */}
+      <div className="ps-hero">
+        <div className="ps-hero__avatar">
+          {user?.userName?.charAt(0).toUpperCase() || "N"}
         </div>
-      </div>
-      <Button
-        className="ps-hero__btn"
-        icon={<i className="ti ti-edit" aria-hidden="true" />}
-        onClick={onEdit}
-        size="large"
-      >
-        Cập nhật hồ sơ
-      </Button>
-    </div>
-
-    {/* Stat cards */}
-    <div className="ps-stats">
-      {SUMMARY_STATS.map((s) => (
-        <StatCard key={s.id} stat={s} />
-      ))}
-    </div>
-
-    {/* Activity section */}
-    <div className="ps-activity">
-      <div className="ps-activity__hd">
-        <div className="ps-activity__title">
-          <i className="ti ti-history" aria-hidden="true" />
-          Hoạt động gần đây
+        <div className="ps-hero__info">
+          <div className="ps-hero__greeting">Tổng quan tài khoản</div>
+          <div className="ps-hero__name">{user?.userName}</div>
+          <div className="ps-hero__meta">
+            <Tag
+              className="ps-hero__badge"
+              icon={<i className="ti ti-star-filled" aria-hidden="true" />}
+              bordered={false}
+            >
+              Thành viên Gold
+            </Tag>
+            <span className="ps-hero__since">Tham gia từ tháng 1, 2025</span>
+          </div>
         </div>
         <Button
-          type="link"
-          className="ps-activity__view-all"
-          icon={<i className="ti ti-arrow-right" aria-hidden="true" />}
-          iconPosition="end"
+          className="ps-hero__btn"
+          icon={<i className="ti ti-edit" aria-hidden="true" />}
+          onClick={onEdit}
+          size="large"
         >
-          Xem tất cả
+          Cập nhật hồ sơ
         </Button>
       </div>
 
-      <div className="ps-activity__grid">
-        {/* Trip list */}
-        <div className="ps-trip-list">
-          {RECENT_TRIPS.map((t) => (
-            <TripItem key={t.id} trip={t} />
-          ))}
+      {/* Stat cards */}
+      <div className="ps-stats">
+        {SUMMARY_STATS.map((s) => (
+          <StatCard key={s.id} stat={s} />
+        ))}
+      </div>
+
+      {/* Activity section */}
+      <div className="ps-activity">
+        <div className="ps-activity__hd">
+          <div className="ps-activity__title">
+            <i className="ti ti-history" aria-hidden="true" />
+            Hoạt động gần đây
+          </div>
+          <Button
+            type="link"
+            className="ps-activity__view-all"
+            icon={<i className="ti ti-arrow-right" aria-hidden="true" />}
+            iconPosition="end"
+          >
+            Xem tất cả
+          </Button>
         </div>
 
-        {/* Sidebar */}
-        <div className="ps-sidebar">
-          <MemberCard />
-          <RemindersCard />
+        <div className="ps-activity__grid">
+          {/* Trip list */}
+          <div className="ps-trip-list">
+            {RECENT_TRIPS.map((t) => (
+              <TripItem key={t.id} trip={t} />
+            ))}
+          </div>
+
+          {/* Sidebar */}
+          <div className="ps-sidebar">
+            <MemberCard />
+            <RemindersCard />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};

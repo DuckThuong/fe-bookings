@@ -1,105 +1,72 @@
-import { useEffect, useState } from "react";
-import { Button, Empty, Form, Input, Tag } from "antd";
+import { getMyBooking, listMyBookings } from "@/api/configs/account.config";
+import { updateHoldPassenger } from "@/api/configs/bookings.config";
 import {
-  ArrowLeftOutlined,
+  DEFAULT_MESSAGE,
+  NOTI_ERROR,
+  NOTI_SUCCESS,
+  SUCCESS_MESSAGE,
+} from "@/common/constants/constants";
+import { useUser } from "@/common/contexts/UserContext";
+import { useLoading } from "@/providers/loadingProvider";
+import { useNotification } from "@/providers/notificationProvider";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
   CalendarOutlined,
-  EnvironmentOutlined,
+  ClockCircleOutlined,
+  FileTextOutlined,
   MailOutlined,
   PhoneOutlined,
-  UserOutlined,
-  FileTextOutlined,
-  ClockCircleOutlined,
   SafetyOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
+import { Button, Empty, Form, Input, Select, Spin } from "antd";
+import { isAxiosError } from "axios";
+import { useEffect, useMemo, useState } from "react";
+import {
+  mapAccountBookingToProfile,
+  type ProfileBooking,
+  type ProfileBookingStatus,
+  toPassengerPayload,
+} from "../../utils/mapProfileBooking";
 import "./style.scss";
 
-// ─── Types ────────────────────────────────────────────────
-interface Booking {
-  id: string;
-  route: string;
-  date: string;
-  time: string;
-  passengerName: string;
-  seat: string;
-  pickup: string;
-  dropoff: string;
-  paymentMethod: string;
-  status: "Đã xác nhận" | "Chờ khởi hành" | "Chưa thanh toán";
-  bookingCode: string;
-  contactPhone: string;
-  contactEmail: string;
-  note: string;
-}
-
-// ─── Fake data ────────────────────────────────────────────
-const INITIAL_BOOKINGS: Booking[] = [
-  {
-    id: "BKG-001",
-    route: "Hà Nội → TP. Hồ Chí Minh",
-    date: "22/06/2026",
-    time: "06:00",
-    passengerName: "Nguyễn Văn An",
-    seat: "12A",
-    pickup: "Bến xe Mỹ Đình",
-    dropoff: "Bến xe Miền Đông",
-    paymentMethod: "Thẻ tín dụng",
-    status: "Đã xác nhận",
-    bookingCode: "AN1234",
-    contactPhone: "0987654321",
-    contactEmail: "an.nguyen@example.com",
-    note: "Vui lòng ưu tiên ghế gần cửa sổ.",
-  },
-  {
-    id: "BKG-002",
-    route: "Hà Nội → Đà Nẵng",
-    date: "28/06/2026",
-    time: "08:30",
-    passengerName: "Lê Thị Hoa",
-    seat: "05B",
-    pickup: "Bến xe Giáp Bát",
-    dropoff: "Bến xe Trung tâm Đà Nẵng",
-    paymentMethod: "Chuyển khoản",
-    status: "Chờ khởi hành",
-    bookingCode: "HOA237",
-    contactPhone: "0912345678",
-    contactEmail: "hoa.le@example.com",
-    note: "Mang theo hành lý cỡ lớn.",
-  },
-  {
-    id: "BKG-003",
-    route: "Hà Nội → Nha Trang",
-    date: "04/07/2026",
-    time: "20:00",
-    passengerName: "Phạm Minh Tuấn",
-    seat: "03C",
-    pickup: "Đón tận nơi",
-    dropoff: "Giao tận nơi",
-    paymentMethod: "Tiền mặt",
-    status: "Chưa thanh toán",
-    bookingCode: "TUN789",
-    contactPhone: "0935123456",
-    contactEmail: "tuan.pham@example.com",
-    note: "Yêu cầu ghế riêng tư nếu có thể.",
-  },
-];
-
-// ─── Status config ────────────────────────────────────────
 const STATUS_CONFIG: Record<
-  Booking["status"],
+  ProfileBookingStatus,
   { color: string; bg: string; dot: string }
 > = {
   "Đã xác nhận": { color: "#15803d", bg: "#dcfce7", dot: "#22c55e" },
   "Chờ khởi hành": { color: "#854d0e", bg: "#fef9c3", dot: "#eab308" },
+  "Chờ xác nhận": { color: "#1d4ed8", bg: "#dbeafe", dot: "#3b82f6" },
   "Chưa thanh toán": { color: "#9a3412", bg: "#ffedd5", dot: "#f97316" },
+  "Đã hủy": { color: "#991b1b", bg: "#fee2e2", dot: "#ef4444" },
 };
 
-// ─── Sub: BookingListItem ─────────────────────────────────
+const PICKUP_OPTIONS = [
+  { value: "mydinh", label: "Bến xe Mỹ Đình" },
+  { value: "giapbat", label: "Bến xe Giáp Bát" },
+  { value: "nuocngam", label: "Bến xe Nước Ngầm" },
+];
+
+const DROPOFF_OPTIONS = [
+  { value: "mienDong", label: "Bến xe Miền Đông" },
+  { value: "mienTay", label: "Bến xe Miền Tây" },
+  { value: "binhTrieu", label: "Bến xe Bình Triệu" },
+];
+
+const resolveApiMessage = (error: unknown) => {
+  if (!isAxiosError(error)) return DEFAULT_MESSAGE;
+  const apiMessage = error.response?.data?.message;
+  if (typeof apiMessage === "string") return apiMessage;
+  if (Array.isArray(apiMessage) && apiMessage[0]) return String(apiMessage[0]);
+  return DEFAULT_MESSAGE;
+};
+
 const BookingListItem = ({
   booking,
   isActive,
   onClick,
 }: {
-  booking: Booking;
+  booking: ProfileBooking;
   isActive: boolean;
   onClick: () => void;
 }) => {
@@ -107,10 +74,10 @@ const BookingListItem = ({
 
   return (
     <button
+      type="button"
       className={`pt-list-item${isActive ? " pt-list-item--active" : ""}`}
       onClick={onClick}
     >
-      {/* Route + status */}
       <div className="pt-list-item__top">
         <span className="pt-list-item__route">{booking.route}</span>
         <span
@@ -122,7 +89,6 @@ const BookingListItem = ({
         </span>
       </div>
 
-      {/* Meta row */}
       <div className="pt-list-item__meta">
         <span>
           <CalendarOutlined /> {booking.date} · {booking.time}
@@ -131,7 +97,6 @@ const BookingListItem = ({
         <span>Ghế {booking.seat}</span>
       </div>
 
-      {/* Code */}
       <div className="pt-list-item__code">
         <span>#{booking.bookingCode}</span>
         <span className="pt-list-item__arrow">›</span>
@@ -140,7 +105,6 @@ const BookingListItem = ({
   );
 };
 
-// ─── Sub: DetailRow ───────────────────────────────────────
 const DetailRow = ({ label, value }: { label: string; value: string }) => (
   <div className="pt-detail-row">
     <span className="pt-detail-row__label">{label}</span>
@@ -148,34 +112,50 @@ const DetailRow = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
-// ─── Sub: BookingDetail ───────────────────────────────────
 const BookingDetail = ({
   booking,
+  saving,
   onSave,
 }: {
-  booking: Booking;
-  onSave: (id: string, values: Partial<Booking>) => void;
+  booking: ProfileBooking;
+  saving: boolean;
+  onSave: (values: Partial<ProfileBooking>) => void;
 }) => {
   const [form] = Form.useForm();
   const cfg = STATUS_CONFIG[booking.status];
-  const locked = booking.status === "Đã xác nhận";
+  const locked = !booking.canEdit;
 
   useEffect(() => {
     form.setFieldsValue({
       passengerName: booking.passengerName,
       contactPhone: booking.contactPhone,
       contactEmail: booking.contactEmail,
-      pickup: booking.pickup,
-      dropoff: booking.dropoff,
+      pickupValue: booking.pickupValue,
+      dropoffValue: booking.dropoffValue,
       note: booking.note,
     });
   }, [booking, form]);
 
-  const handleFinish = (values: Partial<Booking>) => onSave(booking.id, values);
+  const handleFinish = (values: {
+    passengerName: string;
+    contactPhone: string;
+    contactEmail?: string;
+    pickupValue: string;
+    dropoffValue: string;
+    note?: string;
+  }) => {
+    onSave({
+      passengerName: values.passengerName,
+      contactPhone: values.contactPhone,
+      contactEmail: values.contactEmail ?? booking.contactEmail,
+      pickupValue: values.pickupValue,
+      dropoffValue: values.dropoffValue,
+      note: values.note ?? "",
+    });
+  };
 
   return (
     <div className="pt-detail">
-      {/* ── Ticket hero ─────────────────────────────── */}
       <div className="pt-ticket-hero">
         <div className="pt-ticket-hero__left">
           <p className="pt-ticket-hero__code">#{booking.bookingCode}</p>
@@ -194,7 +174,6 @@ const BookingDetail = ({
         </span>
       </div>
 
-      {/* ── Info grid ───────────────────────────────── */}
       <div className="pt-info-card">
         <p className="pt-card-title">
           <FileTextOutlined /> Chi tiết chuyến
@@ -216,7 +195,6 @@ const BookingDetail = ({
         )}
       </div>
 
-      {/* ── Edit form ───────────────────────────────── */}
       <div className="pt-form-card">
         <p className="pt-card-title">
           <UserOutlined /> Cập nhật thông tin
@@ -225,7 +203,15 @@ const BookingDetail = ({
         {locked ? (
           <div className="pt-locked-notice">
             <SafetyOutlined className="pt-locked-notice__icon" />
-            <span>Vé đã xác nhận — không thể chỉnh sửa thêm.</span>
+            <span>
+              {booking.status === "Đã xác nhận"
+                ? "Vé đã xác nhận — không thể chỉnh sửa thêm."
+                : booking.status === "Chờ xác nhận"
+                  ? "Đơn đang chờ nhà xe xác nhận — không thể chỉnh sửa."
+                  : booking.status === "Đã hủy"
+                    ? "Đơn đặt vé đã bị hủy — không thể chỉnh sửa."
+                    : "Chỉ có thể chỉnh sửa khi đơn đang giữ chỗ và chưa hết hạn."}
+            </span>
           </div>
         ) : (
           <Form form={form} layout="vertical" onFinish={handleFinish}>
@@ -241,7 +227,13 @@ const BookingDetail = ({
               <Form.Item
                 label="Số điện thoại"
                 name="contactPhone"
-                rules={[{ required: true, message: "Nhập số điện thoại" }]}
+                rules={[
+                  { required: true, message: "Nhập số điện thoại" },
+                  {
+                    pattern: /^[0-9]{10}$/,
+                    message: "Số điện thoại phải gồm 10 chữ số",
+                  },
+                ]}
               >
                 <Input prefix={<PhoneOutlined />} placeholder="0987654321" />
               </Form.Item>
@@ -249,13 +241,7 @@ const BookingDetail = ({
               <Form.Item
                 label="Email liên hệ"
                 name="contactEmail"
-                rules={[
-                  {
-                    required: true,
-                    type: "email",
-                    message: "Email không hợp lệ",
-                  },
-                ]}
+                rules={[{ type: "email", message: "Email không hợp lệ" }]}
               >
                 <Input
                   prefix={<MailOutlined />}
@@ -265,24 +251,24 @@ const BookingDetail = ({
 
               <Form.Item
                 label="Điểm lên xe"
-                name="pickup"
-                rules={[{ required: true, message: "Nhập điểm lên xe" }]}
+                name="pickupValue"
+                rules={[{ required: true, message: "Chọn điểm lên xe" }]}
               >
-                <Input
-                  prefix={<EnvironmentOutlined />}
-                  placeholder="Bến xe Mỹ Đình"
+                <Select
+                  options={PICKUP_OPTIONS}
+                  placeholder="Chọn điểm lên xe"
                 />
               </Form.Item>
             </div>
 
             <Form.Item
               label="Điểm xuống xe"
-              name="dropoff"
-              rules={[{ required: true, message: "Nhập điểm xuống xe" }]}
+              name="dropoffValue"
+              rules={[{ required: true, message: "Chọn điểm xuống xe" }]}
             >
-              <Input
-                prefix={<EnvironmentOutlined />}
-                placeholder="Bến xe Miền Đông"
+              <Select
+                options={DROPOFF_OPTIONS}
+                placeholder="Chọn điểm xuống xe"
               />
             </Form.Item>
 
@@ -299,6 +285,7 @@ const BookingDetail = ({
                 htmlType="submit"
                 block
                 className="pt-save-btn"
+                loading={saving}
               >
                 Lưu cập nhật
               </Button>
@@ -310,24 +297,107 @@ const BookingDetail = ({
   );
 };
 
-// ─── Main component ───────────────────────────────────────
 export const ProfileTicket = () => {
-  const [bookings, setBookings] = useState<Booking[]>(INITIAL_BOOKINGS);
-  const [selectedId, setSelectedId] = useState<string | null>(
-    INITIAL_BOOKINGS[0].id, // mặc định chọn item đầu
-  );
+  const queryClient = useQueryClient();
+  const { user } = useUser();
+  const { setLoading } = useLoading();
+  const { showNotification } = useNotification();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const activeBooking = bookings.find((b) => b.id === selectedId) ?? null;
+  const contactEmail = user?.userEmail ?? "";
 
-  const handleSave = (id: string, values: Partial<Booking>) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, ...values } : b)),
+  const listQuery = useQuery({
+    queryKey: ["myBookings"],
+    queryFn: () => listMyBookings({ page: 1, limit: 50 }),
+  });
+
+  const listBookings = useMemo(() => {
+    const items = listQuery.data?.items ?? [];
+    return items.map((item) =>
+      mapAccountBookingToProfile(item, contactEmail),
     );
+  }, [listQuery.data, contactEmail]);
+
+  useEffect(() => {
+    if (listBookings.length === 0) {
+      setSelectedId(null);
+      return;
+    }
+    if (!selectedId || !listBookings.some((b) => b.id === selectedId)) {
+      setSelectedId(listBookings[0].id);
+    }
+  }, [listBookings, selectedId]);
+
+  const selectedNumericId = selectedId ? Number(selectedId) : null;
+
+  const detailQuery = useQuery({
+    queryKey: ["myBooking", selectedNumericId],
+    queryFn: () => getMyBooking(selectedNumericId!),
+    enabled: selectedNumericId !== null && !Number.isNaN(selectedNumericId),
+  });
+
+  const activeBooking = useMemo(() => {
+    if (!detailQuery.data) {
+      return listBookings.find((b) => b.id === selectedId) ?? null;
+    }
+    return mapAccountBookingToProfile(detailQuery.data, contactEmail);
+  }, [detailQuery.data, listBookings, selectedId, contactEmail]);
+
+  useEffect(() => {
+    setLoading(listQuery.isLoading || detailQuery.isFetching);
+  }, [listQuery.isLoading, detailQuery.isFetching, setLoading]);
+
+  useEffect(() => {
+    if (!listQuery.isError) return;
+    showNotification(resolveApiMessage(listQuery.error), NOTI_ERROR);
+  }, [listQuery.isError, listQuery.error, showNotification]);
+
+  useEffect(() => {
+    if (!detailQuery.isError) return;
+    showNotification(resolveApiMessage(detailQuery.error), NOTI_ERROR);
+  }, [detailQuery.isError, detailQuery.error, showNotification]);
+
+  const updateMutation = useMutation({
+    mutationFn: async ({
+      holdCode,
+      values,
+    }: {
+      holdCode: string;
+      values: Partial<ProfileBooking>;
+    }) => {
+      const merged = {
+        ...activeBooking!,
+        ...values,
+      };
+      return updateHoldPassenger(holdCode, toPassengerPayload(merged));
+    },
+    onSuccess: () => {
+      showNotification(SUCCESS_MESSAGE, NOTI_SUCCESS);
+      void queryClient.invalidateQueries({ queryKey: ["myBookings"] });
+      if (selectedNumericId !== null) {
+        void queryClient.invalidateQueries({
+          queryKey: ["myBooking", selectedNumericId],
+        });
+      }
+    },
+    onError: (error) => {
+      showNotification(resolveApiMessage(error), NOTI_ERROR);
+    },
+  });
+
+  const handleSave = (values: Partial<ProfileBooking>) => {
+    if (!activeBooking?.canEdit) return;
+    updateMutation.mutate({
+      holdCode: activeBooking.holdCode,
+      values,
+    });
   };
+
+  const isListLoading = listQuery.isLoading;
+  const isEmpty = !isListLoading && listBookings.length === 0;
 
   return (
     <div className="profile-ticket">
-      {/* ── Page header ─────────────────────────────────── */}
       <div className="profile-ticket__header">
         <div className="pt-header__text">
           <h2 className="pt-header__title">Vé đã đặt</h2>
@@ -335,27 +405,42 @@ export const ProfileTicket = () => {
             Xem và cập nhật thông tin cho từng chuyến xe.
           </p>
         </div>
-        <span className="pt-header__count">{bookings.length} vé</span>
+        <span className="pt-header__count">
+          {listQuery.data?.total ?? listBookings.length} vé
+        </span>
       </div>
 
-      {/* ── Master-detail layout ─────────────────────────── */}
       <div className="profile-ticket__layout">
-        {/* Left: list */}
         <aside className="profile-ticket__list">
-          {bookings.map((b) => (
-            <BookingListItem
-              key={b.id}
-              booking={b}
-              isActive={b.id === selectedId}
-              onClick={() => setSelectedId(b.id)}
-            />
-          ))}
+          {isListLoading ? (
+            <div className="profile-ticket__list-loading">
+              <Spin />
+            </div>
+          ) : isEmpty ? (
+            <Empty description="Chưa có vé nào" />
+          ) : (
+            listBookings.map((b) => (
+              <BookingListItem
+                key={b.id}
+                booking={b}
+                isActive={b.id === selectedId}
+                onClick={() => setSelectedId(b.id)}
+              />
+            ))
+          )}
         </aside>
 
-        {/* Right: detail */}
         <main className="profile-ticket__detail-pane">
-          {activeBooking ? (
-            <BookingDetail booking={activeBooking} onSave={handleSave} />
+          {detailQuery.isLoading && selectedId ? (
+            <div className="profile-ticket__detail-loading">
+              <Spin />
+            </div>
+          ) : activeBooking ? (
+            <BookingDetail
+              booking={activeBooking}
+              saving={updateMutation.isPending}
+              onSave={handleSave}
+            />
           ) : (
             <Empty description="Chọn một vé để xem chi tiết" />
           )}
