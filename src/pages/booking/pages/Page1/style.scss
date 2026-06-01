@@ -308,26 +308,32 @@ $green-text: #16a34a;
 }
 
 .seat-map__aisle {
-  width: 20px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 4px;
-    bottom: 4px;
-    border-left: 1px dashed #cbd5e1;
-    transform: translateX(-50%);
-  }
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: $muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+  user-select: none;
 }
 
 .seat-map__empty {
   width: 44px;
   height: 44px;
   flex-shrink: 0;
+}
+
+.seat-map__shell--sleeper .seat-map__aisle {
+  width: 52px;
+  height: 36px;
 }
 
 .seat-map__seat {
@@ -664,6 +670,15 @@ $green-text: #16a34a;
   }
 
   .seat-map__seat--sleeper {
+    width: 42px;
+    height: 30px;
+  }
+  .seat-map__aisle {
+    width: 36px;
+    height: 36px;
+    font-size: 8px;
+  }
+  .seat-map__shell--sleeper .seat-map__aisle {
     width: 42px;
     height: 30px;
   }

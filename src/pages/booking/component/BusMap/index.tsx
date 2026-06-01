@@ -12,7 +12,9 @@ export const BusMap = ({
   isSleeper: boolean;
   onToggle: (id: string) => void;
 }) => (
-  <div className="seat-map__shell">
+  <div
+    className={`seat-map__shell${isSleeper ? " seat-map__shell--sleeper" : ""}`}
+  >
     {/* Front row */}
     <div className="seat-map__front">
       <div className="seat-map__driver">
@@ -39,7 +41,9 @@ export const BusMap = ({
             []
           ).map((cell, ci) =>
             cell.type === "aisle" ? (
-              <div key={ci} className="seat-map__aisle" />
+              <div key={ci} className="seat-map__aisle" aria-hidden="true">
+                Lối đi
+              </div>
             ) : cell.type === "empty" ? (
               <div key={ci} className="seat-map__empty" />
             ) : (
