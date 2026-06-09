@@ -88,12 +88,11 @@ export const ProfileSideBar = ({
           </p>
 
           {/* Member tier badge */}
-          <Tag icon={<StarFilled />} className="profile-sidebar__tier-tag">
-            {user.rank ? `Thành viên ${user.rank}` : "Chưa xếp hạng"}
-          </Tag>
-          <p className="profile-sidebar__meta profile-sidebar__meta--rank">
-            Hạng tiếp theo: {user.nextRank || "Đã đạt hạng cao nhất"}
-          </p>
+          {user.rank && (
+            <Tag icon={<StarFilled />} className="profile-sidebar__tier-tag">
+              {`Thành viên ${user.rank}`}
+            </Tag>
+          )}
         </div>
       </div>
 
