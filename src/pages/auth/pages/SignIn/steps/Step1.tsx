@@ -1,7 +1,6 @@
 import { InputPhoneNumber } from "@pages/auth/component/InputPhoneNumber";
 import { Checkbox, Form, Input, type FormInstance } from "antd";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import "../style.scss";
 import profileIcn from "@/assets/icons/profile.svg";
 import { ROUTER_PATH } from "@/routers/Route";
@@ -42,8 +41,6 @@ const SIGNIN_STEP1_DATA: SignInStep1Data = {
 };
 
 export const Step1 = (props: SignInProps) => {
-  const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
-
   return (
     <>
       <div className="signin-header">

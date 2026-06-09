@@ -45,6 +45,8 @@ const INITIAL_SEARCH_STATE: TripSearchState = {
 const buildSearchParams = (
   pageSize: number,
   searchState: TripSearchState,
+  activeFilters: FilterKey[],
+  sortKey: SortKey,
 ): SearchTripsParams => ({
   page: 1,
   pageSize,
@@ -53,6 +55,8 @@ const buildSearchParams = (
   date: searchState.date,
   passengers: searchState.passengers,
   seatType: searchState.seatType,
+  filters: activeFilters.includes("all") ? undefined : activeFilters.join(","),
+  sortKey,
 });
 
 export const TripPage = () => {
@@ -67,8 +71,8 @@ export const TripPage = () => {
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
 
   const queryParams = useMemo(
-    () => buildSearchParams(pageSize, searchState),
-    [pageSize, searchState],
+    () => buildSearchParams(pageSize, searchState, activeFilters, sortKey),
+    [activeFilters, pageSize, searchState, sortKey],
   );
 
   const { data, isLoading, isFetching, isError, error } = useQuery({

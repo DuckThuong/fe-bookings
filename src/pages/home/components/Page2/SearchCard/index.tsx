@@ -60,6 +60,16 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
   const [passengers, setPax] = useState(1);
   const [seatType, setSeat] = useState<SeatType>("all");
 
+  const triggerSearch = (nextSeatType: SeatType = seatType) => {
+    onSearch?.({
+      fromCity: from,
+      toCity: to,
+      date: date.format("DD/MM/YYYY"),
+      passengers,
+      seatType: nextSeatType,
+    });
+  };
+
   const fromOptions = [...HOME_CITIES]
     .filter((c) => c.toLowerCase().includes(from.toLowerCase()) && from)
     .map((c) => ({ value: c, label: c }));
@@ -79,13 +89,7 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
   };
 
   const handleSearch = () => {
-    onSearch?.({
-      fromCity: from,
-      toCity: to,
-      date: date.format("DD/MM/YYYY"),
-      passengers,
-      seatType,
-    });
+    triggerSearch();
   };
 
   return (
@@ -185,7 +189,10 @@ export const SearchCard = ({ onSearch }: SearchCardProps) => {
             <Button
               key={s.key}
               className={`seat-chip${seatType === s.key ? " seat-chip--active" : ""}`}
-              onClick={() => setSeat(s.key)}
+              onClick={() => {
+                setSeat(s.key);
+                triggerSearch(s.key);
+              }}
               type="default"
               size="small"
             >

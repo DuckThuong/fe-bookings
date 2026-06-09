@@ -115,8 +115,15 @@ export const SignIn = () => {
   });
 
   const handleSubmit = async () => {
+    const fieldsToValidate =
+      step === 0
+        ? [...STEP1_FIELDS]
+        : step === 1
+          ? [...STEP2_FIELDS]
+          : [...STEP1_FIELDS, ...STEP2_FIELDS];
+
     try {
-      await form.validateFields();
+      await form.validateFields(fieldsToValidate);
     } catch {
       return;
     }
@@ -125,8 +132,8 @@ export const SignIn = () => {
     const nextData = { ...data, ...currentValues };
     setData(nextData);
 
-    if (step === 0) {
-      setStep(1);
+    if (step < 2) {
+      setStep(step + 1);
       return;
     }
 
@@ -202,7 +209,7 @@ export const SignIn = () => {
           className="signin-btn"
           onClick={handleSubmit}
         >
-          {step === 0 ? "Tiếp tục" : "Tạo tài khoản"}
+          {step === 2 ? "Tạo tài khoản" : "Tiếp tục"}
         </Button>
 
         <p className="signin-login-link">
