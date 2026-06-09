@@ -2,171 +2,218 @@ import { Button, Progress, Tag } from "antd";
 import "./style.scss";
 import { useUser } from "@/common/contexts/UserContext";
 
-// ─── Static data (thay bằng props / API call thật) ────────
 const SUMMARY_STATS = [
   {
     id: "trips",
     icon: "ti-bus",
     label: "Số chuyến đã đặt",
-    value: "14",
+    key: "bookingCount",
     sub: "chuyến xe",
   },
   {
-    id: "points",
+    id: "paid",
     icon: "ti-coin",
-    label: "Điểm thưởng",
-    value: "2.560",
-    sub: "điểm tích lũy",
+    label: "Tổng chi tiêu",
+    key: "spentAmount",
+    sub: "VND",
   },
   {
-    id: "visits",
+    id: "tickets",
     icon: "ti-eye",
-    label: "Lượt truy cập",
-    value: "1.248",
-    sub: "tổng lượt",
+    label: "Số vé",
+    key: "ticketCount",
+    sub: "vé đã phát hành",
   },
-];
+] as const;
 
-const RECENT_TRIPS = [
-  {
-    id: "trip-1",
-    icon: "ti-bus",
-    title: "Hà Nội → Sapa",
-    date: "12 Tháng 5, 2026",
-    note: "Xe giường nằm, 2 vé",
-    status: "done" as const,
-    statusLabel: "Hoàn thành",
-  },
-  {
-    id: "trip-2",
-    icon: "ti-car",
-    title: "Hồ Chí Minh → Đà Lạt",
-    date: "24 Tháng 5, 2026",
-    note: "Xe limousine, 1 vé",
-    status: "upcoming" as const,
-    statusLabel: "Sắp tới",
-  },
-];
+type ProfileStatKey = (typeof SUMMARY_STATS)[number]["key"];
 
-const REMINDERS = [
-  "Hoàn tất thông tin thanh toán",
-  "Kiểm tra lại chuyến đi sắp tới",
-  "Nhận ưu đãi khi đặt tiếp",
-];
+type ProfileLikeUser = ReturnType<typeof useUser>["user"] & {
+  ticketCount?: number;
+  bookingCount?: number;
+  totalPaid?: number;
+  rank?: string;
+  spentAmount?: number;
+  nextRank?: string;
+  nextRankThreshold?: number;
+  rankProgressPercent?: number;
+  lastBookingAt?: string;
+  pendingTicketCount?: number;
+  refundCount?: number;
+};
 
-const MEMBER_PROGRESS = 68;
+const formatCurrency = (value?: number) =>
+  new Intl.NumberFormat("vi-VN").format(value ?? 0);
 
-// ─── Sub-components ───────────────────────────────────────
+const formatDate = (value?: string) => {
+  if (!value) return "Chưa có dữ liệu";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
+};
 
-const StatCard = ({ stat }: { stat: (typeof SUMMARY_STATS)[number] }) => (
-  <div className="ps-stat">
-    <div className="ps-stat__icon">
-      <i className={`ti ${stat.icon}`} aria-hidden="true" />
+const StatCard = ({
+  stat,
+  user,
+}: {
+  stat: (typeof SUMMARY_STATS)[number];
+  user: ProfileLikeUser;
+}) => {
+  const values: Record<ProfileStatKey, string> = {
+    bookingCount: formatCurrency(user.bookingCount),
+    spentAmount: formatCurrency(user.spentAmount ?? user.totalPaid),
+    ticketCount: formatCurrency(user.ticketCount),
+  };
+
+  return (
+    <div className="ps-stat">
+      <div className="ps-stat__icon">
+        <i className={`ti ${stat.icon}`} aria-hidden="true" />
+      </div>
+      <div className="ps-stat__label">{stat.label}</div>
+      <div className="ps-stat__value">{values[stat.key]}</div>
+      <div className="ps-stat__sub">{stat.sub}</div>
     </div>
-    <div className="ps-stat__label">{stat.label}</div>
-    <div className="ps-stat__value">{stat.value}</div>
-    <div className="ps-stat__sub">{stat.sub}</div>
-  </div>
-);
+  );
+};
 
-const TripItem = ({ trip }: { trip: (typeof RECENT_TRIPS)[number] }) => (
+const ActivityItem = ({
+  icon,
+  title,
+  meta,
+  status,
+}: {
+  icon: string;
+  title: string;
+  meta: string;
+  status: string;
+}) => (
   <div className="ps-trip">
     <div className="ps-trip__icon">
-      <i className={`ti ${trip.icon}`} aria-hidden="true" />
+      <i className={`ti ${icon}`} aria-hidden="true" />
     </div>
     <div className="ps-trip__body">
-      <div className="ps-trip__title">{trip.title}</div>
+      <div className="ps-trip__title">{title}</div>
       <div className="ps-trip__meta">
-        <span className="ps-trip__date">
-          <i className="ti ti-calendar" aria-hidden="true" />
-          {trip.date}
-        </span>
-        <span className="ps-trip__sep" />
-        <span className="ps-trip__note">{trip.note}</span>
+        <span className="ps-trip__note">{meta}</span>
       </div>
     </div>
-    <Tag
-      className={`ps-trip__tag ps-trip__tag--${trip.status}`}
-      bordered={false}
-    >
-      {trip.statusLabel}
+    <Tag className={`ps-trip__tag ps-trip__tag--${status}`} bordered={false}>
+      {status}
     </Tag>
     <i className="ti ti-chevron-right ps-trip__chevron" aria-hidden="true" />
   </div>
 );
 
-const MemberCard = () => (
-  <div className="ps-member">
-    <div className="ps-member__top">
-      <div className="ps-member__icon">
-        <i className="ti ti-crown" aria-hidden="true" />
-      </div>
-      <div className="ps-member__info">
-        <div className="ps-member__tier">Hạng Gold</div>
-        <div className="ps-member__next">Tiến độ lên Kim Cương</div>
-      </div>
-      <div className="ps-member__pct">{MEMBER_PROGRESS}%</div>
-    </div>
-    <div className="ps-member__body">
-      <Progress
-        percent={MEMBER_PROGRESS}
-        showInfo={false}
-        strokeColor={{ from: "#f5a623", to: "#fdc96a" }}
-        trailColor="var(--color-background-secondary)"
-        size={["100%", 6]}
-        className="ps-member__progress"
-      />
-      <div className="ps-member__labels">
-        <span>Gold</span>
-        <span>Còn {100 - MEMBER_PROGRESS}% nữa → Kim Cương</span>
-      </div>
-    </div>
-  </div>
-);
+const MemberCard = ({ user }: { user: ProfileLikeUser }) => {
+  const rank = user.rank ?? "Chưa xếp hạng";
+  const nextRank = user.nextRank;
+  const progress = user.rankProgressPercent ?? 0;
 
-const RemindersCard = () => (
-  <div className="ps-reminders">
-    <div className="ps-reminders__hd">
-      <i className="ti ti-bell-ringing" aria-hidden="true" />
-      <span>Lời nhắc</span>
-      <span className="ps-reminders__count">{REMINDERS.length}</span>
-    </div>
-    {REMINDERS.map((text) => (
-      <div key={text} className="ps-reminders__item">
-        <span className="ps-reminders__dot" />
-        <span className="ps-reminders__text">{text}</span>
-        <i
-          className="ti ti-chevron-right ps-reminders__arrow"
-          aria-hidden="true"
+  return (
+    <div className="ps-member">
+      <div className="ps-member__top">
+        <div className="ps-member__icon">
+          <i className="ti ti-crown" aria-hidden="true" />
+        </div>
+        <div className="ps-member__info">
+          <div className="ps-member__tier">Hạng {rank}</div>
+          <div className="ps-member__next">
+            {nextRank ? `Tiến độ lên ${nextRank}` : "Đã đạt hạng cao nhất"}
+          </div>
+        </div>
+        <div className="ps-member__pct">{progress}%</div>
+      </div>
+      <div className="ps-member__body">
+        <Progress
+          percent={progress}
+          showInfo={false}
+          strokeColor={{ from: "#f5a623", to: "#fdc96a" }}
+          trailColor="var(--color-background-secondary)"
+          size={["100%", 6]}
+          className="ps-member__progress"
         />
+        <div className="ps-member__labels">
+          <span>{rank}</span>
+          <span>
+            {nextRank
+              ? `Còn ${100 - progress}% nữa → ${nextRank}`
+              : "Không còn mốc tiếp theo"}
+          </span>
+        </div>
       </div>
-    ))}
-  </div>
-);
+    </div>
+  );
+};
 
-// ─── Main component ───────────────────────────────────────
+const RemindersCard = ({ user }: { user: ProfileLikeUser }) => {
+  const reminders = [
+    user.pendingTicketCount
+      ? `Có ${user.pendingTicketCount} vé đang chờ thanh toán`
+      : "Không có vé chờ thanh toán",
+    user.lastBookingAt
+      ? `Đơn gần nhất: ${formatDate(user.lastBookingAt)}`
+      : "Chưa có đơn gần nhất",
+    user.refundCount
+      ? `Đã xử lý ${user.refundCount} yêu cầu hoàn tiền`
+      : "Chưa có yêu cầu hoàn tiền",
+  ];
+
+  return (
+    <div className="ps-reminders">
+      <div className="ps-reminders__hd">
+        <i className="ti ti-bell-ringing" aria-hidden="true" />
+        <span>Lời nhắc</span>
+        <span className="ps-reminders__count">{reminders.length}</span>
+      </div>
+      {reminders.map((text) => (
+        <div key={text} className="ps-reminders__item">
+          <span className="ps-reminders__dot" />
+          <span className="ps-reminders__text">{text}</span>
+          <i
+            className="ti ti-chevron-right ps-reminders__arrow"
+            aria-hidden="true"
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export const ProfileSummary = ({ onEdit }: { onEdit?: () => void }) => {
   const { user } = useUser();
+  const profile = user as ProfileLikeUser;
+  const rank = profile.rank ?? "Chưa xếp hạng";
+  const nextRank = profile.nextRank;
+  const progress = profile.rankProgressPercent ?? 0;
+  const memberSince = profile.lastBookingAt
+    ? formatDate(profile.lastBookingAt)
+    : "Chưa có dữ liệu";
+
   return (
     <div className="profile-summary">
-      {/* Hero banner */}
       <div className="ps-hero">
         <div className="ps-hero__avatar">
-          {user?.userName?.charAt(0).toUpperCase() || "N"}
+          {profile?.userName?.charAt(0).toUpperCase() || "N"}
         </div>
         <div className="ps-hero__info">
           <div className="ps-hero__greeting">Tổng quan tài khoản</div>
-          <div className="ps-hero__name">{user?.userName}</div>
+          <div className="ps-hero__name">{profile?.userName}</div>
           <div className="ps-hero__meta">
             <Tag
               className="ps-hero__badge"
               icon={<i className="ti ti-star-filled" aria-hidden="true" />}
               bordered={false}
             >
-              Thành viên Gold
+              Thành viên {rank}
             </Tag>
-            <span className="ps-hero__since">Tham gia từ tháng 1, 2025</span>
+            <span className="ps-hero__since">
+              {nextRank ? `Tiến độ lên ${nextRank} ${progress}%` : memberSince}
+            </span>
           </div>
         </div>
         <Button
@@ -179,42 +226,39 @@ export const ProfileSummary = ({ onEdit }: { onEdit?: () => void }) => {
         </Button>
       </div>
 
-      {/* Stat cards */}
       <div className="ps-stats">
         {SUMMARY_STATS.map((s) => (
-          <StatCard key={s.id} stat={s} />
+          <StatCard key={s.id} stat={s} user={profile} />
         ))}
       </div>
 
-      {/* Activity section */}
       <div className="ps-activity">
         <div className="ps-activity__hd">
           <div className="ps-activity__title">
             <i className="ti ti-history" aria-hidden="true" />
             Hoạt động gần đây
           </div>
-          <Button
-            type="link"
-            className="ps-activity__view-all"
-            icon={<i className="ti ti-arrow-right" aria-hidden="true" />}
-            iconPosition="end"
-          >
-            Xem tất cả
-          </Button>
         </div>
 
         <div className="ps-activity__grid">
-          {/* Trip list */}
           <div className="ps-trip-list">
-            {RECENT_TRIPS.map((t) => (
-              <TripItem key={t.id} trip={t} />
-            ))}
+            <ActivityItem
+              icon="ti-ticket"
+              title={`Đơn đặt gần nhất${profile.lastBookingAt ? ` · ${formatDate(profile.lastBookingAt)}` : ""}`}
+              meta={`Tổng đã thanh toán: ${formatCurrency(profile.spentAmount ?? profile.totalPaid)} VND`}
+              status={profile.pendingTicketCount ? "Đang xử lý" : "Hoàn tất"}
+            />
+            <ActivityItem
+              icon="ti-bus"
+              title={`Số chuyến đã đặt: ${formatCurrency(profile.bookingCount)}`}
+              meta={`Số vé: ${formatCurrency(profile.ticketCount)}`}
+              status={profile.refundCount ? "Có hoàn tiền" : "Bình thường"}
+            />
           </div>
 
-          {/* Sidebar */}
           <div className="ps-sidebar">
-            <MemberCard />
-            <RemindersCard />
+            <MemberCard user={profile} />
+            <RemindersCard user={profile} />
           </div>
         </div>
       </div>

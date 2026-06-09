@@ -21,24 +21,25 @@ export interface UpdateUserProfilePayloadDto {
 
 export interface UserProfileResponseDto {
   id: number;
-
   userCode: string;
-
   userName: string;
-
   userDob: string;
-
   userGender: number;
-
   userPhone: string;
-
   userEmail: string;
-
   userAvatar: string;
-
   userRole: UserRole;
-
   userStatus: UserStatus;
-
   userIsEmailVerified: boolean;
+  ticketCount?: number;
+  bookingCount?: number;
+  totalPaid?: number;
+  rank?: string;
+  spentAmount?: number;
+  nextRank?: string;
+  nextRankThreshold?: number;
+  rankProgressPercent?: number;
+  lastBookingAt?: string;
+  pendingTicketCount?: number;
+  refundCount?: number;
 }

@@ -66,10 +66,10 @@ export const ProfileSideBar = ({
           <Avatar
             size={64}
             className="profile-sidebar__avatar"
-            src={user.avatarUrl || undefined}
-            icon={!user.avatarUrl ? <UserOutlined /> : undefined}
+            src={user.userAvatar || undefined}
+            icon={!user.userAvatar ? <UserOutlined /> : undefined}
           >
-            {!user.avatarUrl && initials}
+            {!user.userAvatar && initials}
           </Avatar>
 
           {/* Online dot */}
@@ -84,13 +84,16 @@ export const ProfileSideBar = ({
 
           <p className="profile-sidebar__meta">
             <PhoneOutlined className="profile-sidebar__meta-icon" />
-            {user.phone || "Chưa cập nhật"}
+            {user.userPhone || "Chưa cập nhật"}
           </p>
 
           {/* Member tier badge */}
           <Tag icon={<StarFilled />} className="profile-sidebar__tier-tag">
-            Thành viên Vàng
+            {user.rank ? `Thành viên ${user.rank}` : "Chưa xếp hạng"}
           </Tag>
+          <p className="profile-sidebar__meta profile-sidebar__meta--rank">
+            Hạng tiếp theo: {user.nextRank || "Đã đạt hạng cao nhất"}
+          </p>
         </div>
       </div>
 
