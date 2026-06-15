@@ -1,4 +1,8 @@
 import type { MasterResponseDto } from "@/api/dtos/master.dto";
+import type {
+  HomeHighlightOperator,
+  HomeHighlightTrip,
+} from "@/api/dtos/home.dto";
 
 export interface Service {
   id: string;
@@ -43,6 +47,9 @@ export interface Trip {
   type: string;
   rating: number;
 }
+
+export type HomeTopOperator = HomeHighlightOperator;
+export type HomeTopTrip = HomeHighlightTrip;
 
 export interface Hotel {
   id: string;

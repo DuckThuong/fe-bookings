@@ -1,7 +1,20 @@
 import { findByType } from "@/api/configs/master.config";
+import { getHomeHighlights } from "@/api/configs/home.config";
 import type { MasterResponseDto } from "@/api/dtos/master.dto";
-import { TYPE_OPERATOR, TYPE_PROMO, TYPE_SERVICE, TYPE_TOP_TRIP } from "@/common/types/common";
-import { mapOperatorsFromMaster, mapPromosFromMaster, mapServicesFromMaster, mapTopTripsFromMaster, type Operator, type Promo, type Service, type Trip } from "@/common/types/home";
+import {
+  HIGHLIGHT_TYPE_OPERATOR,
+  HIGHLIGHT_TYPE_TRIP,
+  TYPE_PROMO,
+  TYPE_SERVICE,
+} from "@/common/types/common";
+import {
+  mapPromosFromMaster,
+  mapServicesFromMaster,
+  type HomeTopOperator,
+  type HomeTopTrip,
+  type Promo,
+  type Service,
+} from "@/common/types/home";
 import { useLoading } from "@/providers/loadingProvider";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -17,12 +30,18 @@ export const HomePage = () => {
   const { setLoading } = useLoading();
   const [servicesData, setServicesData] = useState<Service[]>([]);
   const [promosData, setPromosData] = useState<Promo[]>([]);
-  const [operatorsData, setOperatorsData] = useState<Operator[]>([]);
-  const [tripsData, setTripsData] = useState<Trip[]>([]);
+  const [operatorsData, setOperatorsData] = useState<HomeTopOperator[]>([]);
+  const [tripsData, setTripsData] = useState<HomeTopTrip[]>([]);
+
+  const { data: topOperators, isLoading: isLoadingTopOperators } = useQuery({
+    queryKey: ["topOperators", HIGHLIGHT_TYPE_OPERATOR],
+    queryFn: () =>
+      getHomeHighlights({ type: HIGHLIGHT_TYPE_OPERATOR, limit: 10 }),
+  });
 
   const { data: topTrips, isLoading: isLoadingTopTrips } = useQuery({
-    queryKey: ["topTrips", TYPE_TOP_TRIP],
-    queryFn: () => findByType({ type: TYPE_TOP_TRIP, code: "" }),
+    queryKey: ["topTrips", HIGHLIGHT_TYPE_TRIP],
+    queryFn: () => getHomeHighlights({ type: HIGHLIGHT_TYPE_TRIP, limit: 10 }),
   });
 
   const { data: services, isLoading: isLoadingServices } = useQuery({
@@ -35,12 +54,11 @@ export const HomePage = () => {
     queryFn: () => findByType({ type: TYPE_PROMO, code: "" }),
   });
 
-  const { data: operators, isLoading: isLoadingOperators } = useQuery({
-    queryKey: ["operators", TYPE_OPERATOR],
-    queryFn: () => findByType({ type: TYPE_OPERATOR, code: "" }),
-  });
-
-  const isLoading = isLoadingTopTrips || isLoadingServices || isLoadingPromos || isLoadingOperators;
+  const isLoading =
+    isLoadingTopOperators ||
+    isLoadingTopTrips ||
+    isLoadingServices ||
+    isLoadingPromos;
 
   useEffect(() => {
     setLoading(isLoading);
@@ -59,16 +77,13 @@ export const HomePage = () => {
   }, [promos]);
 
   useEffect(() => {
-    if (!operators) return;
-    const items = Array.isArray(operators) ? operators : [operators];
-    setOperatorsData(mapOperatorsFromMaster(items as MasterResponseDto[]));
-  }, [operators]);
+    if (!topOperators?.operators) return;
+    setOperatorsData(topOperators.operators);
+  }, [topOperators]);
 
   useEffect(() => {
-    if (!topTrips) return;
-
-    const items = Array.isArray(topTrips) ? topTrips : [topTrips];
-    setTripsData(mapTopTripsFromMaster(items as MasterResponseDto[]));
+    if (!topTrips?.trips) return;
+    setTripsData(topTrips.trips);
   }, [topTrips]);
 
   return (

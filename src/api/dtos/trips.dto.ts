@@ -10,6 +10,7 @@ export interface SearchTripsParams {
   sortKey?: SortKey;
   page?: number;
   pageSize?: number;
+  companyId?: number;
 }
 
 export interface SearchTripsResponse {
@@ -19,6 +20,8 @@ export interface SearchTripsResponse {
     date: string;
     passengers: number;
     seatType: SeatType;
+    companyId?: number;
+    companyName?: string;
   };
   meta: {
     resultCount: number;
@@ -29,4 +32,9 @@ export interface SearchTripsResponse {
     filters: FilterKey[];
   };
   trips: Trip[];
+}
+
+export interface TripPagePrefillState {
+  companyId?: number;
+  companyName?: string;
 }

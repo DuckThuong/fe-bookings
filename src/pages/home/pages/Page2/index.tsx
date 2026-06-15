@@ -1,5 +1,9 @@
 import { searchTrips } from "@/api/configs/trips.config";
-import type { SearchTripsParams } from "@/api/dtos/trips.dto";
+import type {
+  SearchTripsParams,
+  SearchTripsResponse,
+  TripPagePrefillState,
+} from "@/api/dtos/trips.dto";
 import { DEFAULT_MESSAGE, NOTI_ERROR } from "@/common/constants/constants";
 import {
   type FilterKey,
@@ -16,7 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import { BookingHero } from "../../components/Page2/BookingHero";
 import { FilterBar } from "../../components/Page2/FilterBar";
@@ -32,6 +36,8 @@ type TripSearchState = {
   date: string;
   passengers: number;
   seatType: SeatType;
+  companyId?: number;
+  companyName?: string;
 };
 
 const INITIAL_SEARCH_STATE: TripSearchState = {
@@ -57,12 +63,16 @@ const buildSearchParams = (
   seatType: searchState.seatType,
   filters: activeFilters.includes("all") ? undefined : activeFilters.join(","),
   sortKey,
+  companyId: searchState.companyId,
 });
 
 export const TripPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setLoading } = useLoading();
   const { showNotification } = useNotification();
+
+  const prefill = (location.state as TripPagePrefillState | null) ?? null;
 
   const [searchState, setSearchState] =
     useState<TripSearchState>(INITIAL_SEARCH_STATE);
@@ -70,12 +80,26 @@ export const TripPage = () => {
   const [sortKey, setSort] = useState<SortKey>("price");
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
 
+  useEffect(() => {
+    if (prefill?.companyId) {
+      setSearchState((prev) => ({
+        ...prev,
+        companyId: prefill.companyId,
+        companyName: prefill.companyName,
+      }));
+      window.history.replaceState({}, document.title);
+    }
+  }, [prefill?.companyId, prefill?.companyName]);
+
   const queryParams = useMemo(
     () => buildSearchParams(pageSize, searchState, activeFilters, sortKey),
     [activeFilters, pageSize, searchState, sortKey],
   );
 
-  const { data, isLoading, isFetching, isError, error } = useQuery({
+  const { data, isLoading, isFetching, isError, error } = useQuery<
+    SearchTripsResponse,
+    Error
+  >({
     queryKey: ["tripSearch", queryParams],
     queryFn: () => searchTrips(queryParams),
     placeholderData: (previousData) => previousData,
@@ -111,14 +135,23 @@ export const TripPage = () => {
     passengers: number;
     seatType: SeatType;
   }) => {
-    setSearchState({
+    setSearchState((prev) => ({
+      ...prev,
       fromCity: params.fromCity,
       toCity: params.toCity,
       date: params.date,
       passengers: params.passengers,
       seatType: params.seatType,
-    });
+    }));
     setPageSize(PAGE_SIZE);
+  };
+
+  const handleClearCompany = () => {
+    setSearchState((prev) => ({
+      ...prev,
+      companyId: undefined,
+      companyName: undefined,
+    }));
   };
 
   const handleToggleFilter = (key: FilterKey) => {
@@ -174,6 +207,10 @@ export const TripPage = () => {
           from={searchState.fromCity}
           to={searchState.toCity}
           date={searchState.date}
+          companyName={searchState.companyName}
+          onClearCompany={
+            searchState.companyId ? handleClearCompany : undefined
+          }
           onToggleFilter={handleToggleFilter}
           onSortChange={handleSortChange}
         />

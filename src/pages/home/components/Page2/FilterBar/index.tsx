@@ -4,7 +4,8 @@ import {
   type FilterKey,
   type SortKey,
 } from "@/common/types/ticket";
-import { Button, Select } from "antd";
+import { Button, Select, Tag } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 
 interface FilterBarProps {
   activeFilters: FilterKey[];
@@ -13,6 +14,8 @@ interface FilterBarProps {
   from: string;
   to: string;
   date: string;
+  companyName?: string;
+  onClearCompany?: () => void;
   onToggleFilter: (key: FilterKey) => void;
   onSortChange: (key: SortKey) => void;
 }
@@ -24,6 +27,8 @@ export const FilterBar = ({
   from,
   to,
   date,
+  companyName,
+  onClearCompany,
   onToggleFilter,
   onSortChange,
 }: FilterBarProps) => (
@@ -35,10 +40,31 @@ export const FilterBar = ({
           {date}
         </>
       )}
+      {from == "" && to == "" && companyName && (
+        <>
+          Tìm thấy <strong>{resultCount} chuyến xe</strong> của nhà xe{" "}
+          <strong>{companyName}</strong>
+        </>
+      )}
     </p>
 
     <div className="filter-bar__controls">
       <span className="filter-bar__label">Lọc:</span>
+
+      {companyName && onClearCompany && (
+        <Tag
+          className="filter-bar__company-chip"
+          color="blue"
+          closable
+          closeIcon={<CloseOutlined />}
+          onClose={(e) => {
+            e.preventDefault();
+            onClearCompany();
+          }}
+        >
+          Nhà xe: {companyName}
+        </Tag>
+      )}
 
       <div className="filter-bar__chips">
         {FILTER_CHIPS.map((f) => (
