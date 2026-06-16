@@ -29,7 +29,7 @@ import {
 } from "./mocks/chat.mock";
 
 // ─── Mock fallback (khi backend chưa có endpoint) ────────────────────────
-export const USE_MOCK = true;
+export const USE_MOCK = false;
 
 const tryRealOrMock = async <T>(
   real: () => Promise<T>,

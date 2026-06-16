@@ -151,9 +151,9 @@ export const ChatWindow = ({
   );
 
   useEffect(() => {
-    if (!data.conversationId || USE_MOCK) return;
+    if (!data.conversationId) return;
     chatSocket.joinConversation(data.conversationId).catch(() => {
-      // socket gateway chưa sẵn sàng - bỏ qua im lặng
+      // socket chưa sẵn sàng - bỏ qua im lặng
     });
     return () => {
       chatSocket.leaveConversation(data.conversationId).catch(() => undefined);
@@ -303,20 +303,20 @@ export const ChatWindow = ({
     setLightbox((current) =>
       current && current.images.length > 1
         ? {
-            ...current,
-            index:
-              (current.index - 1 + current.images.length) %
-              current.images.length,
-          }
+          ...current,
+          index:
+            (current.index - 1 + current.images.length) %
+            current.images.length,
+        }
         : current,
     );
   const showNext = () =>
     setLightbox((current) =>
       current && current.images.length > 1
         ? {
-            ...current,
-            index: (current.index + 1) % current.images.length,
-          }
+          ...current,
+          index: (current.index + 1) % current.images.length,
+        }
         : current,
     );
 
@@ -439,8 +439,8 @@ export const ChatWindow = ({
                 onOpenImageViewer={openImageViewer}
                 messageStatus={
                   message.status === "SENT" ||
-                  message.status === "DELIVERED" ||
-                  message.status === "READ"
+                    message.status === "DELIVERED" ||
+                    message.status === "READ"
                     ? message.status
                     : undefined
                 }
