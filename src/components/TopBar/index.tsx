@@ -28,6 +28,7 @@ const NAV_ITEMS = [
   { label: "Đặt vé", href: ROUTER_PATH.TRIP },
   { label: "Khuyến mãi", href: ROUTER_PATH.PROMOS },
   { label: "Hỗ trợ", href: ROUTER_PATH.SUPPORT },
+  { label: "Tin nhắn", href: ROUTER_PATH.CHAT },
 ];
 
 const NOTIF_ICON: Record<NotifType, string> = {
@@ -235,6 +236,26 @@ export const HomeHeader = () => {
 
         {/* Right actions */}
         <div className="home-header__actions">
+          {/* Chat shortcut */}
+          <Link
+            to={ROUTER_PATH.CHAT}
+            className="home-header__chat-btn"
+            aria-label="Tin nhắn"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </Link>
+
           {/* Notification bell + panel */}
           <NotificationPanel />
 

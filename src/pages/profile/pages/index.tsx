@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./style.scss";
 import { ProfileSideBar } from "../components/ProfileSideBar";
 import { ProfileSummary } from "./Page1";
@@ -15,6 +15,13 @@ export const ProfilePage = () => {
   const initialTab = location.state?.tab || "overview";
   const [activeKey, setActiveKey] = useState<string>(initialTab);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (activeKey === "messages") {
+      navigate(ROUTER_PATH.CHAT);
+    }
+  }, [activeKey, navigate]);
+
   const renderContent = () => {
     switch (activeKey) {
       case "account":

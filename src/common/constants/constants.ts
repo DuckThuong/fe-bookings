@@ -45,3 +45,24 @@ export const TAG_COLORS: Record<string, string> = {
   green: "service-card__tag--green",
   red: "service-card__tag--red",
 };
+
+export const MessageType = {
+  TEXT: "TEXT",
+  IMAGE: "IMAGE",
+  FILE: "FILE",
+  SYSTEM: "SYSTEM",
+} as const;
+
+export type MessageType = (typeof MessageType)[keyof typeof MessageType];
+
+export const MessageTypeEnum = {
+  TEXT: "TEXT",
+  IMAGE: "IMAGE",
+  FILE: "FILE",
+  SYSTEM: "SYSTEM",
+  RENT: "RENT",
+  CONTACT: "CONTACT",
+} as const;
+
+export type MessageTypeEnum =
+  (typeof MessageTypeEnum)[keyof typeof MessageTypeEnum];

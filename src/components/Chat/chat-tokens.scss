@@ -1,0 +1,88 @@
+// Shared design tokens for the chat feature.
+// Keep values in sync with mockup / pages/profile styling.
+
+// ─── Color tokens ────────────────────────────────────────
+$chat-night: #0a0e1a;
+$chat-night-soft: #14213d;
+$chat-amber: #f5a623;
+$chat-amber-pale: #fff8ec;
+$chat-amber-soft: #ffe9c2;
+
+$chat-text: #0a0e1a;
+$chat-text-soft: #4a5568;
+$chat-text-muted: #6b7280;
+$chat-text-faint: #9ca3af;
+
+$chat-surface: #ffffff;
+$chat-surface-soft: #fafbfc;
+$chat-surface-muted: #f3f5f7;
+
+$chat-border: rgba(10, 14, 26, 0.08);
+$chat-border-strong: rgba(10, 14, 26, 0.14);
+
+$chat-success: #22c55e;
+$chat-success-soft: #dcfce7;
+$chat-info: #00609c;
+$chat-info-soft: #e0f2fe;
+$chat-warning: #f5a623;
+$chat-danger: #ef4444;
+$chat-danger-soft: #fee2e2;
+
+// ─── Shadows ─────────────────────────────────────────────
+$chat-shadow-sm: 0 1px 2px rgba(10, 14, 26, 0.04);
+$chat-shadow-md: 0 4px 16px rgba(10, 14, 26, 0.06);
+$chat-shadow-lg: 0 12px 40px rgba(10, 14, 26, 0.1);
+$chat-shadow-pop: 0 8px 28px rgba(10, 14, 26, 0.14);
+
+// ─── Radius ──────────────────────────────────────────────
+$chat-radius-sm: 8px;
+$chat-radius-md: 14px;
+$chat-radius-lg: 20px;
+$chat-radius-xl: 24px;
+$chat-radius-pill: 999px;
+
+// ─── Spacing ─────────────────────────────────────────────
+$chat-space-1: 4px;
+$chat-space-2: 8px;
+$chat-space-3: 12px;
+$chat-space-4: 16px;
+$chat-space-5: 20px;
+$chat-space-6: 24px;
+$chat-space-7: 32px;
+$chat-space-8: 40px;
+
+// ─── Animation ───────────────────────────────────────────
+$chat-ease: cubic-bezier(0.22, 1, 0.36, 1);
+$chat-fast: 0.18s;
+$chat-medium: 0.28s;
+$chat-slow: 0.42s;
+
+// ─── Mixins ──────────────────────────────────────────────
+@mixin chat-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(10, 14, 26, 0.18);
+    border-radius: 999px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(10, 14, 26, 0.32);
+  }
+}
+
+@mixin chat-avatar-fallback($color) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $color;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

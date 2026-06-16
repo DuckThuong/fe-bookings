@@ -1,52 +1,155 @@
-import pinIcn from "../../../assets/svg/profile/pin.svg";
-import { MessageTypeEnum } from "../../../common/constants/constants";
+import { Avatar, Badge } from "antd";
+import {
+  CheckCircleFilled,
+  CustomerServiceOutlined,
+  PushpinFilled,
+  ShopOutlined,
+} from "@ant-design/icons";
 import { formatLastMessageAt } from "../../../common/contexts/format";
 import "../style.scss";
+import type { ConversationResponseDto } from "../../../api/dtos/chat.dto";
 
-export interface ChatItemProps {
-  icon?: string;
-  name?: string;
-  content?: string;
-  time?: string;
-  isRead?: boolean;
-  focus?: boolean;
-  type?: string;
-  isPinned?: boolean;
+export interface ChatListItemProps {
+  conversation: ConversationResponseDto;
+  isActive?: boolean;
+  onClick?: () => void;
 }
 
-export const ChatItem = (props: ChatItemProps) => {
-  const isSystemConversation =
-    props.type === MessageTypeEnum.RENT || props.type === MessageTypeEnum.CONTACT;
+const TYPE_ICON: Record<ConversationResponseDto["type"], React.ReactNode> = {
+  OPERATOR: <ShopOutlined />,
+  ADMIN: <CustomerServiceOutlined />,
+  SUPPORT: <CustomerServiceOutlined />,
+};
 
-  const previewContent = isSystemConversation
-    ? "Tư vấn đặt phòng"
-    : props.content || "Không có tin nhắn nào";
+const TYPE_LABEL: Record<ConversationResponseDto["type"], string> = {
+  OPERATOR: "Nhà xe",
+  ADMIN: "Hỗ trợ viên",
+  SUPPORT: "Hỗ trợ viên",
+};
+
+const TYPE_BADGE_CLASS: Record<ConversationResponseDto["type"], string> = {
+  OPERATOR: "chat__list-type--op",
+  ADMIN: "chat__list-type--admin",
+  SUPPORT: "chat__list-type--admin",
+};
+
+const getDisplayName = (conversation: ConversationResponseDto) =>
+  conversation.conversationName ||
+  conversation.toUser?.fullName ||
+  "Cuộc trò chuyện";
+
+const getInitials = (conversation: ConversationResponseDto) => {
+  const name = getDisplayName(conversation);
+  return name
+    .split(/\s+/)
+    .map((part) => part.charAt(0).toUpperCase())
+    .slice(0, 2)
+    .join("");
+};
+
+const getPreview = (conversation: ConversationResponseDto) => {
+  if (conversation.lastMessagePreview) {
+    return conversation.lastMessagePreview;
+  }
+  if (conversation.type === "OPERATOR") {
+    return "Hỗ trợ về vé, lịch trình và dịch vụ nhà xe.";
+  }
+  return "Đội ngũ GoRide luôn sẵn sàng hỗ trợ bạn.";
+};
+
+const isOnline = (conversation: ConversationResponseDto) =>
+  conversation.type === "ADMIN" ||
+  (conversation.participants[1]?.isMuted === false &&
+    conversation.participants.length > 1);
+
+export const ChatListItem = ({
+  conversation,
+  isActive,
+  onClick,
+}: ChatListItemProps) => {
+  const displayName = getDisplayName(conversation);
+  const initials = getInitials(conversation);
+  const preview = getPreview(conversation);
+  const unread = conversation.unreadCount ?? 0;
+  const isPinned = conversation.participants[0]?.isPinned;
+  const isMuted = conversation.participants[0]?.isMuted;
+  const online = isOnline(conversation);
 
   return (
-    <div className={`chat__item ${props.focus && "focus"}`}>
-      <div className="chat__item-left">
-        <img src={props.icon} alt={props.name || "avatar"} />
+    <button
+      type="button"
+      className={`chat__list-item ${isActive ? "chat__list-item--active" : ""}`}
+      onClick={onClick}
+    >
+      <div className="chat__list-avatar">
+        <Avatar
+          size={48}
+          className="chat__list-avatar-img"
+          src={conversation.conversationAvatar || undefined}
+        >
+          {initials}
+        </Avatar>
+        <span
+          className={`chat__list-type ${TYPE_BADGE_CLASS[conversation.type]}`}
+        >
+          {TYPE_ICON[conversation.type]}
+        </span>
+        {online ? <span className="chat__list-online" /> : null}
+        {unread > 0 ? (
+          <Badge
+            count={unread}
+            size="small"
+            className="chat__list-badge"
+            overflowCount={99}
+          />
+        ) : null}
       </div>
-      <div className="chat__item-right">
-        <p className={`line-1 ${props.isRead && "read"}`}>
-          <span className="chat__item-name">
-            {props.name || "Cuộc trò chuyện"}
+
+      <div className="chat__list-body">
+        <div className="chat__list-line-1">
+          <span
+            className={`chat__list-name ${unread > 0 ? "chat__list-name--unread" : ""}`}
+          >
+            {displayName}
           </span>
-          <span className="chat__item-meta">
-            {props.isPinned && (
-              <span className="chat__item-pin">
-                <img src={pinIcn} alt="pinned" />
+          <span className="chat__list-time">
+            {conversation.lastMessageAt
+              ? formatLastMessageAt(conversation.lastMessageAt)
+              : ""}
+          </span>
+        </div>
+
+        <div className="chat__list-line-2">
+          <span
+            className={`chat__list-preview ${unread > 0 ? "chat__list-preview--unread" : ""}`}
+          >
+            {preview}
+          </span>
+          <span className="chat__list-meta">
+            {isPinned ? (
+              <span className="chat__list-pin" aria-label="Đã ghim">
+                <PushpinFilled />
               </span>
-            )}
+            ) : null}
+            {isMuted && !isPinned ? (
+              <span className="chat__list-muted" aria-label="Đang tắt tiếng">
+                🔕
+              </span>
+            ) : null}
           </span>
-        </p>
-        <p className={`line-2 ${isSystemConversation ? "system" : ""}`}>
-          <span className="chat__item-preview">{previewContent}</span>
-          <span className="chat__item-time">
-            {props.time ? formatLastMessageAt(props.time) : ""}
+        </div>
+
+        <div className="chat__list-tags">
+          <span className={`chat__list-tag ${TYPE_BADGE_CLASS[conversation.type]}`}>
+            {TYPE_LABEL[conversation.type]}
           </span>
-        </p>
+          {conversation.toUser?.email ? (
+            <span className="chat__list-tag chat__list-tag--muted">
+              <CheckCircleFilled /> Đã xác minh
+            </span>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </button>
   );
 };

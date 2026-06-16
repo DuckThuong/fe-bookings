@@ -17,6 +17,9 @@ import BookingSuccessRoute, {
   BookingSuccessPage,
 } from "@/pages/booking/pages/Page4";
 import { NotificationsPage } from "@/pages/notification";
+import { ChatLayout } from "@/pages/chat/ChatLayout";
+import { ChatPage } from "@/pages/chat/ChatPage";
+import { ChatDetailPage } from "@/pages/chat/ChatDetailPage";
 
 export const WebRouter = () => (
   <Routes>
@@ -43,5 +46,10 @@ export const WebRouter = () => (
     <Route path={ROUTER_PATH.SUPPORT} element={<SupportPage />} />
     <Route path={ROUTER_PATH.PROFILE} element={<ProfilePage />} />
     <Route path={ROUTER_PATH.NOTIFICATION} element={<NotificationsPage />} />
+    {/* chat */}
+    <Route path={ROUTER_PATH.CHAT} element={<ChatLayout />}>
+      <Route index element={<ChatPage />} />
+      <Route path=":id" element={<ChatDetailPage />} />
+    </Route>
   </Routes>
 );

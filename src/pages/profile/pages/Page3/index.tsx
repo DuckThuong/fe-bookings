@@ -28,6 +28,7 @@ import {
   type ProfileBookingStatus,
   toPassengerPayload,
 } from "../../utils/mapProfileBooking";
+import { TicketStatusTracker } from "./TicketStatusTracker";
 import "./style.scss";
 
 const STATUS_CONFIG: Record<
@@ -195,24 +196,26 @@ const BookingDetail = ({
         )}
       </div>
 
+      <TicketStatusTracker booking={booking} />
+
       <div className="pt-form-card">
         <p className="pt-card-title">
           <UserOutlined /> Cập nhật thông tin
         </p>
 
         {locked ? (
-          <div className="pt-locked-notice">
-            <SafetyOutlined className="pt-locked-notice__icon" />
-            <span>
-              {booking.status === "Đã xác nhận"
-                ? "Vé đã xác nhận — không thể chỉnh sửa thêm."
-                : booking.status === "Chờ xác nhận"
+          booking.status === "Đã xác nhận" || booking.status === "Chờ khởi hành" ? null : (
+            <div className="pt-locked-notice">
+              <SafetyOutlined className="pt-locked-notice__icon" />
+              <span>
+                {booking.status === "Chờ xác nhận"
                   ? "Đơn đang chờ nhà xe xác nhận — không thể chỉnh sửa."
                   : booking.status === "Đã hủy"
                     ? "Đơn đặt vé đã bị hủy — không thể chỉnh sửa."
                     : "Chỉ có thể chỉnh sửa khi đơn đang giữ chỗ và chưa hết hạn."}
-            </span>
-          </div>
+              </span>
+            </div>
+          )
         ) : (
           <Form form={form} layout="vertical" onFinish={handleFinish}>
             <div className="pt-form-grid">
