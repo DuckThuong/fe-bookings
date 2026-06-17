@@ -76,6 +76,7 @@ const formatSeatLabel = (item: AccountBookingItem | AccountBookingDetail): strin
 export const mapBookingStatus = (
   item: AccountBookingItem,
   ticketStatus?: string | null,
+  holdExpiresAt?: string | null,
 ): ProfileBookingStatus => {
   const status = item.status?.toUpperCase() ?? "";
   const ticket = ticketStatus?.toUpperCase() ?? "";
@@ -86,6 +87,13 @@ export const mapBookingStatus = (
     ticket === "REFUNDED"
   ) {
     return "Đã hủy";
+  }
+
+  // Check if HOLD booking has expired
+  if (status === "HOLD" && holdExpiresAt) {
+    if (new Date() > new Date(holdExpiresAt)) {
+      return "Đã hủy";
+    }
   }
 
   if (status === "HOLD") return "Chưa thanh toán";
@@ -145,7 +153,7 @@ export const mapAccountBookingToProfile = (
       PAYMENT_LABELS[item.paymentMethodId ?? ""] ??
       item.paymentMethodId ??
       "—",
-    status: mapBookingStatus(item, ticketStatus),
+    status: mapBookingStatus(item, ticketStatus, item.holdExpiresAt),
     rawStatus: item.status,
     bookingCode: ticket?.code ?? item.code,
     contactPhone: passenger?.phone ?? "",
