@@ -253,12 +253,12 @@ export const ChatPanel = (props: ChatPanelProps) => {
 
     chatSocket
       .joinConversation(props.data.conversationId)
-      .catch(() => undefined);
+      .catch((): void => undefined);
 
     return () => {
       chatSocket
         .leaveConversation(props.data!.conversationId)
-        .catch(() => undefined);
+        .catch((): void => undefined);
     };
   }, [props.data?.conversationId]);
 
@@ -438,7 +438,7 @@ export const ChatPanel = (props: ChatPanelProps) => {
         conversationId: props.data.conversationId,
         messageId: latestMessage.id,
       })
-      .catch(() => undefined);
+      .catch((): void => undefined);
   }, [latestMessage, props.currentUserId, props.data?.conversationId]);
 
   useEffect(() => {

@@ -19,6 +19,7 @@ export interface ChatLabelProps {
   avartar: string;
   type?: string;
   attachments?: MessageAttachmentResponseDto[];
+  metadata?: Record<string, unknown>;
   onOpenImageViewer?: (
     images: MessageAttachmentResponseDto[],
     startIndex: number,

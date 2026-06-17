@@ -13,6 +13,8 @@ export const ConverationEndpoint = {
   CHAT_OPERATOR_HOTLINE: "/chat/operators",
   CHAT_ADMIN_HOTLINE: "/chat/admin",
   CHAT_UPLOAD_ATTACHMENT: "/chat/attachments",
+  GET_CHAT_CONVERSATION: "GET_CHAT_CONVERSATION",
+  GET_CHAT_CONVERSATION_MESSAGE: "GET_CHAT_CONVERSATION_MESSAGE",
 } as const;
 
 export const CHAT_QUERY_KEYS = {
