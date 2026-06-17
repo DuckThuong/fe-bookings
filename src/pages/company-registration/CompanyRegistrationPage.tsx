@@ -97,14 +97,15 @@ const StatusView = ({
 
   return (
     <div className="registration-status">
-      <div className={`registration-status__icon registration-status__icon--${cfg.className}`}>
+      {/* <div className={`registration-status__icon registration-status__icon--${cfg.className}`}>
         {cfg.icon}
-      </div>
+      </div> */}
       <span className={`registration-status__badge registration-status__badge--${cfg.className}`}>
         {cfg.icon}
         {cfg.label}
       </span>
       <p className="registration-company-name">
+        <span>Thông tin nhà xe: </span>
         <ShopOutlined style={{ marginRight: 8, color: "#6b7280" }} />
         {existingRegistration.companyName}
       </p>
@@ -115,14 +116,16 @@ const StatusView = ({
       )}
       <p className="registration-note">{noteMessages[existingRegistration.status as RegistrationStatus]}</p>
       {existingRegistration.status === RegistrationStatus.REJECTED && (
-        <Button
-          type="primary"
-          className="btn-primary"
-          onClick={onReapply}
-          style={{ marginTop: 8 }}
-        >
-          Đăng ký lại
-        </Button>
+        <div className="action">
+          <Button
+            type="primary"
+            className="btn-primary"
+            onClick={onReapply}
+            style={{ marginTop: 8 }}
+          >
+            Đăng ký lại
+          </Button>
+        </div>
       )}
     </div>
   );
@@ -135,6 +138,7 @@ export const CompanyRegistrationPage = () => {
   const [step, setStep] = useState(0);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [idCardFileList, setIdCardFileList] = useState<UploadFile[]>([]);
+  const [isReapplying, setIsReapplying] = useState(false);
 
   const { data: existingRegistration, isLoading } = useQuery({
     queryKey: ["myCompanyRegistration"],
@@ -146,6 +150,7 @@ export const CompanyRegistrationPage = () => {
     mutationFn: createCompanyRegistration,
     onSuccess: () => {
       message.success("Gửi yêu cầu đăng ký nhà xe thành công");
+      setIsReapplying(false);
       queryClient.invalidateQueries({ queryKey: ["myCompanyRegistration"] });
     },
     onError: (error) => {
@@ -202,13 +207,14 @@ export const CompanyRegistrationPage = () => {
     form.resetFields();
     setFileList([]);
     setIdCardFileList([]);
+    setIsReapplying(true);
   };
 
   if (isLoading) {
     return <div className="loading-container">Đang tải...</div>;
   }
 
-  if (existingRegistration) {
+  if (existingRegistration && !isReapplying) {
     return (
       <div className="registration-page">
         <div className="registration-card">
@@ -340,7 +346,7 @@ export const CompanyRegistrationPage = () => {
                     const { url } = await handleUploadFile(file as File);
                     onSuccess({ url });
                   } catch (e) {
-                    onError(e);
+                    onError(e as any);
                   }
                 }}
                 maxCount={1}
@@ -376,7 +382,7 @@ export const CompanyRegistrationPage = () => {
                     const { url } = await handleUploadFile(file as File);
                     onSuccess({ url });
                   } catch (e) {
-                    onError(e);
+                    onError(e as any);
                   }
                 }}
                 maxCount={1}
