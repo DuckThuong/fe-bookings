@@ -40,7 +40,6 @@ import type {
   MessageResponseDto,
   MuteConversationPreset,
 } from "../../../api/dtos/chat.dto";
-import { USE_MOCK } from "../../../api/configs/chat.config";
 import "../style.scss";
 
 export interface ChatWindowProps {
@@ -204,7 +203,6 @@ export const ChatWindow = ({
     if (!latestMessage) return;
     if (latestMessage.senderId === currentUserId) return;
     if (latestMessage.status === "READ") return;
-    if (USE_MOCK) return;
     chatSocket
       .markConversationAsRead({
         conversationId: data.conversationId,

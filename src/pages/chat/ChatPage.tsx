@@ -5,6 +5,7 @@ import {
   getOperatorHotlines,
   sendChatMessage,
 } from "@/api/configs/chat.config";
+import { chatSocket } from "@/socket/domains/chat.socket";
 import {
   useMutation,
   useQuery,
@@ -94,6 +95,52 @@ export const ChatPage = () => {
 
   const conversations = conversationsQuery.data ?? [];
   const operators = operatorsQuery.data ?? [];
+
+  // Keep conversations list live via socket
+  useEffect(() => {
+    const unsubConversation = chatSocket.subscribeConversationUpdated((event) => {
+      const updated = event.data;
+      queryClient.setQueryData<ConversationResponseDto[]>(
+        [CHAT_QUERY_KEYS.CONVERSATIONS],
+        (current = []) => {
+          const exists = current.some(
+            (c) => c.conversationId === updated.conversationId,
+          );
+          if (exists) {
+            return current.map((c) =>
+              c.conversationId === updated.conversationId ? updated : c,
+            );
+          }
+          return [updated, ...current];
+        },
+      );
+    });
+
+    const unsubMessage = chatSocket.subscribeMessageSent((event) => {
+      const incoming = event.data;
+      queryClient.setQueryData<ConversationResponseDto[]>(
+        [CHAT_QUERY_KEYS.CONVERSATIONS],
+        (current = []) => {
+          return current.map((c) =>
+            c.conversationId === incoming.conversationId
+              ? {
+                  ...c,
+                  lastMessagePreview: incoming.content ?? "(đính kèm)",
+                  lastMessageAt: incoming.createdAt,
+                  unreadCount:
+                    c.unreadCount !== undefined ? c.unreadCount + 1 : 1,
+                }
+              : c,
+          );
+        },
+      );
+    });
+
+    return () => {
+      unsubConversation();
+      unsubMessage();
+    };
+  }, [queryClient]);
 
   const filteredConversations = useMemo(() => {
     let items = conversations;
