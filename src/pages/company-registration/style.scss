@@ -1,42 +1,25 @@
-.registration-page {
-  min-height: 100vh;
-  padding: 24px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-}
+@import "../../color.scss";
 
-.registration-card {
-  max-width: 800px;
-  margin: 0 auto;
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 32px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.1);
-}
+$night: #0a0e1a;
+$amber: #f5a623;
+$amber-light: #fdc96a;
+$amber-pale: #fff8ec;
+$muted: #6b7280;
+$border: #e5e7eb;
+$green: #16a34a;
+$green-bg: #dcfce7;
+$red: #ef4444;
+$red-bg: #fee2e2;
 
-.registration-card h2 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.registration-subtitle {
-  margin: 0 0 24px 0;
-  color: #64748b;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.registration-steps {
-  margin-bottom: 32px;
-}
-
-.registration-form {
-  margin-bottom: 24px;
-}
-
-.registration-step {
-  animation: fadeIn 0.3s ease-in;
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
@@ -50,84 +33,358 @@
   }
 }
 
+// ─── Page wrapper ─────────────────────────────────────────
+.registration-page {
+  min-height: calc(100vh - 96px);
+  padding: 32px 24px;
+  background: $background-color;
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
+// ─── Hero banner ─────────────────────────────────────────
+.registration-hero {
+  background: $night;
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  overflow: hidden;
+  position: relative;
+  animation: fadeUp 0.4s ease;
+  margin-bottom: 20px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba($amber, 0.07);
+    pointer-events: none;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    right: 120px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: rgba($amber, 0.04);
+    pointer-events: none;
+  }
+
+  &__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $amber, $amber-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 3px solid rgba($amber, 0.3);
+
+    i {
+      font-size: 24px;
+      color: $night;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__greeting {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(#fff, 0.4);
+    margin-bottom: 4px;
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  &__desc {
+    font-size: 12.5px;
+    color: rgba(#fff, 0.5);
+    line-height: 1.5;
+  }
+
+  &__badge {
+    &.ant-tag {
+      background: rgba($amber, 0.15) !important;
+      border: 0.5px solid rgba($amber, 0.3) !important;
+      color: $amber !important;
+      font-size: 11px !important;
+      font-weight: 500 !important;
+      border-radius: 5px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      padding: 2px 9px !important;
+
+      i {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+// ─── Main card ────────────────────────────────────────────
+.registration-card {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 16px;
+  box-shadow:
+    0 1px 3px rgba(0, 41, 58, 0.04),
+    0 4px 16px rgba(0, 41, 58, 0.06);
+  padding: 28px;
+  animation: fadeUp 0.4s 0.05s ease both;
+}
+
+.registration-card h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: $night;
+}
+
+.registration-subtitle {
+  margin: 0 0 24px 0;
+  color: $muted;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+// ─── Steps ───────────────────────────────────────────────
+.registration-steps {
+  margin-bottom: 32px;
+
+  .ant-steps {
+    .ant-steps-item-title {
+      font-weight: 600 !important;
+      font-size: 13px !important;
+    }
+  }
+}
+
+// ─── Form ─────────────────────────────────────────────────
+.registration-form {
+  margin-bottom: 24px;
+
+  .ant-form-item-label > label {
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    color: $night !important;
+  }
+
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-input-textarea {
+    border-radius: 10px !important;
+    font-size: 13.5px !important;
+    border-color: $border !important;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s !important;
+
+    &:hover {
+      border-color: darken($border, 12%) !important;
+    }
+
+    &:focus,
+    &.ant-input-affix-wrapper-focused {
+      border-color: $amber !important;
+      box-shadow: 0 0 0 3px rgba($amber, 0.08) !important;
+    }
+  }
+
+  .ant-input-affix-wrapper {
+    height: 44px !important;
+  }
+
+  .ant-input-prefix {
+    color: $muted !important;
+    margin-right: 8px !important;
+  }
+
+  .ant-form-item {
+    margin-bottom: 16px !important;
+  }
+}
+
+// ─── Step content ─────────────────────────────────────────
+.registration-step {
+  animation: fadeIn 0.3s ease-in;
+}
+
+// ─── Summary box ──────────────────────────────────────────
 .registration-summary {
-  background: #f1f5f9;
-  padding: 16px;
-  border-radius: 8px;
-  border-left: 4px solid #3b82f6;
+  background: $amber-pale;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 0.5px solid rgba($amber, 0.2);
 }
 
 .registration-summary h4 {
   margin: 0 0 8px 0;
-  color: #1e293b;
-  font-size: 16px;
+  color: $night;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .registration-summary p {
   margin: 0;
-  color: #64748b;
-  font-size: 14px;
+  color: $muted;
+  font-size: 13px;
   line-height: 1.6;
 }
 
+// ─── Actions ──────────────────────────────────────────────
 .registration-actions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
-  gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
+  gap: 10px;
+  padding: 18px 0;
+  border-top: 0.5px solid $border;
 }
 
+.btn-ghost {
+  &.ant-btn {
+    height: 44px !important;
+    border-radius: 10px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: $muted !important;
+    border-color: $border !important;
+    background: #fff !important;
+    transition: all 0.15s !important;
+
+    &:hover {
+      color: $night !important;
+      border-color: darken($border, 12%) !important;
+    }
+
+    i {
+      font-size: 13px !important;
+    }
+  }
+}
+
+.btn-primary {
+  &.ant-btn-primary {
+    height: 44px !important;
+    padding: 0 24px !important;
+    border-radius: 10px !important;
+    background: $night !important;
+    border-color: $night !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    transition: opacity 0.15s !important;
+
+    &:hover {
+      opacity: 0.88 !important;
+    }
+
+    i {
+      font-size: 13px !important;
+    }
+  }
+}
+
+// ─── Status view ──────────────────────────────────────────
 .registration-status {
   text-align: center;
-  padding: 24px;
+  padding: 32px 24px;
+
+  .registration-status__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+
+    i {
+      font-size: 28px;
+    }
+  }
 }
 
 .registration-status__badge {
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
   font-weight: 600;
   margin-bottom: 16px;
 }
 
 .registration-status__badge--pending {
-  background: rgba(245, 158, 11, 0.12);
-  color: #f59e0b;
+  background: rgba($amber, 0.12) !important;
+  color: #b45309 !important;
+
+  i {
+    color: $amber !important;
+  }
 }
 
 .registration-status__badge--approved {
-  background: rgba(34, 197, 94, 0.12);
-  color: #22c55e;
+  background: $green-bg !important;
+  color: $green !important;
+
+  i {
+    color: $green !important;
+  }
 }
 
 .registration-status__badge--rejected {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
+  background: $red-bg !important;
+  color: $red !important;
+
+  i {
+    color: $red !important;
+  }
 }
 
 .registration-company-name {
   margin: 16px 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  color: #1e293b;
+  color: $night;
 }
 
 .registration-rejection-reason {
   margin: 12px 0;
-  padding: 12px;
-  background: #fef2f2;
-  border-left: 4px solid #ef4444;
-  border-radius: 4px;
+  padding: 14px 16px;
+  background: $red-bg;
+  border-left: 3px solid $red;
+  border-radius: 8px;
   color: #991b1b;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .registration-note {
   margin: 16px 0;
-  color: #64748b;
-  font-size: 14px;
+  color: $muted;
+  font-size: 13px;
   line-height: 1.6;
 }
 
@@ -135,7 +392,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  font-size: 16px;
-  color: #64748b;
+  min-height: calc(100vh - 96px);
+  font-size: 14px;
+  color: $muted;
+}
+
+// ─── Responsive ───────────────────────────────────────────
+@media (max-width: 768px) {
+  .registration-page {
+    padding: 16px;
+  }
+
+  .registration-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px;
+  }
+
+  .registration-card {
+    padding: 20px;
+  }
 }

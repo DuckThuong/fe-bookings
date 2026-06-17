@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Form, Select, Switch } from "antd";
+import { Button, Form, Select, Switch, Tag } from "antd";
 import {
   MailOutlined,
   MessageOutlined,
@@ -11,6 +11,8 @@ import {
   PhoneOutlined,
   SaveOutlined,
   ReloadOutlined,
+  CheckOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import "./style.scss";
 
@@ -115,26 +117,37 @@ const SwitchRow = ({
       <span className="ps-switch-row__label">{item.label}</span>
       <span className="ps-switch-row__desc">{item.desc}</span>
     </div>
-    <Switch checked={checked} onChange={onChange} className="ps-switch" />
+    <Switch
+      checked={checked}
+      onChange={onChange}
+      className="ps-switch"
+      checkedChildren={<CheckOutlined />}
+      unCheckedChildren={<CloseOutlined />}
+    />
   </div>
 );
 
-// ─── Sub: SettingsGroup ───────────────────────────────────
-const SettingsGroup = ({
-  title,
+// ─── Sub: StatsCard ───────────────────────────────────────
+const StatsCard = ({
   icon,
-  children,
+  label,
+  value,
+  sub,
+  color,
 }: {
-  title: string;
   icon: React.ReactNode;
-  children: React.ReactNode;
+  label: string;
+  value: string;
+  sub: string;
+  color: string;
 }) => (
-  <div className="ps-group">
-    <p className="ps-group__title">
-      <span className="ps-group__icon">{icon}</span>
-      {title}
-    </p>
-    <div className="ps-group__body">{children}</div>
+  <div className="ps-stat">
+    <div className="ps-stat__icon" style={{ background: `${color}15` }}>
+      <span style={{ color }}>{icon}</span>
+    </div>
+    <div className="ps-stat__label">{label}</div>
+    <div className="ps-stat__value">{value}</div>
+    <div className="ps-stat__sub">{sub}</div>
   </div>
 );
 
@@ -147,7 +160,6 @@ export const ProfileSettings = () => {
     setValues((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const handleSave = () => {
-    // TODO: call API to persist settings
     console.log("Saved settings:", values);
   };
 
@@ -156,97 +168,141 @@ export const ProfileSettings = () => {
     form.resetFields();
   };
 
+  const activeCount = Object.entries(values).filter(([k, v]) => {
+    if (k === "preferredContact") return false;
+    return v === true;
+  }).length;
+
+  const totalCount = Object.keys(values).filter(k => k !== "preferredContact").length;
+
   return (
     <div className="profile-settings">
-      {/* ── Header ──────────────────────────────────────── */}
-      <div className="profile-settings__header">
-        <div className="ps-header__text">
-          <h2 className="ps-header__title">Cài đặt thông báo</h2>
-          <p className="ps-header__desc">
-            Chọn kênh và loại thông báo bạn muốn nhận từ GoRide.
-          </p>
+      {/* ── Hero banner ──────────────────────────────────── */}
+      <div className="ps-hero">
+        <div className="ps-hero__icon">
+          <BellOutlined />
         </div>
+        <div className="ps-hero__info">
+          <div className="ps-hero__greeting">Cài đặt</div>
+          <div className="ps-hero__title">Thông báo</div>
+          <div className="ps-hero__desc">
+            Quản lý kênh và loại thông báo bạn muốn nhận từ GoRide
+          </div>
+        </div>
+        <Tag className="ps-hero__badge" bordered={false} icon={<CheckOutlined />}>
+          {activeCount}/{totalCount} đang bật
+        </Tag>
       </div>
 
-      {/* ── Settings card ───────────────────────────────── */}
-      <div className="profile-settings__card">
-        {/* Channel group */}
-        <SettingsGroup title="Kênh nhận thông báo" icon={<BellOutlined />}>
-          {CHANNEL_ITEMS.map((item) => (
-            <SwitchRow
-              key={item.key}
-              item={item}
-              checked={values[item.key]}
-              onChange={() => toggle(item.key)}
-            />
-          ))}
-        </SettingsGroup>
+      {/* ── Stats summary ───────────────────────────────── */}
+      <div className="ps-stats">
+        <StatsCard
+          icon={<MailOutlined />}
+          label="Kênh đã bật"
+          value={`${activeCount}`}
+          sub={`trong tổng ${totalCount} kênh`}
+          color="#f5a623"
+        />
+        <StatsCard
+          icon={<BellOutlined />}
+          label="Trạng thái"
+          value={activeCount > 0 ? "Hoạt động" : "Tắt"}
+          sub={activeCount > 0 ? "Đang nhận thông báo" : "Không nhận thông báo"}
+          color={activeCount > 0 ? "#16a34a" : "#6b7280"}
+        />
+        <StatsCard
+          icon={<PhoneOutlined />}
+          label="Liên hệ ưu tiên"
+          value={values.preferredContact === "email" ? "Email" : values.preferredContact === "sms" ? "SMS" : "Cuộc gọi"}
+          sub="Phương thức ưu tiên"
+          color="#3b82f6"
+        />
+      </div>
 
-        <div className="ps-divider" />
+      {/* ── Channel section ─────────────────────────────── */}
+      <div className="ps-section">
+        <p className="ps-section__title">
+          <i className="ti ti-bell" />
+          Kênh nhận thông báo
+        </p>
+        {CHANNEL_ITEMS.map((item) => (
+          <SwitchRow
+            key={item.key}
+            item={item}
+            checked={values[item.key]}
+            onChange={() => toggle(item.key)}
+          />
+        ))}
+      </div>
 
-        {/* Alert group */}
-        <SettingsGroup title="Cảnh báo & nhắc nhở" icon={<WarningOutlined />}>
-          {ALERT_ITEMS.map((item) => (
-            <SwitchRow
-              key={item.key}
-              item={item}
-              checked={values[item.key]}
-              onChange={() => toggle(item.key)}
-            />
-          ))}
-        </SettingsGroup>
+      {/* ── Alert section ───────────────────────────────── */}
+      <div className="ps-section">
+        <p className="ps-section__title">
+          <i className="ti ti-alarm" />
+          Cảnh báo & nhắc nhở
+        </p>
+        {ALERT_ITEMS.map((item) => (
+          <SwitchRow
+            key={item.key}
+            item={item}
+            checked={values[item.key]}
+            onChange={() => toggle(item.key)}
+          />
+        ))}
+      </div>
 
-        <div className="ps-divider" />
-
-        {/* Preferred contact */}
-        <SettingsGroup title="Liên hệ ưu tiên" icon={<PhoneOutlined />}>
-          <Form form={form} layout="vertical">
-            <Form.Item
-              name="preferredContact"
-              initialValue={values.preferredContact}
-              style={{ marginBottom: 0 }}
-            >
-              <div className="ps-contact-row">
-                {CONTACT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    className={`ps-contact-btn${values.preferredContact === opt.value ? " ps-contact-btn--active" : ""}`}
-                    onClick={() =>
-                      setValues((prev) => ({
-                        ...prev,
-                        preferredContact:
-                          opt.value as NotificationSettings["preferredContact"],
-                      }))
-                    }
-                  >
-                    <span className="ps-contact-btn__icon">{opt.icon}</span>
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </Form.Item>
-          </Form>
-        </SettingsGroup>
-
-        {/* Actions */}
-        <div className="ps-actions">
-          <Button
-            className="ps-actions__reset"
-            icon={<ReloadOutlined />}
-            onClick={handleReset}
+      {/* ── Preferred contact section ───────────────────── */}
+      <div className="ps-section">
+        <p className="ps-section__title">
+          <i className="ti ti-phone" />
+          Liên hệ ưu tiên
+        </p>
+        <Form form={form} layout="vertical" className="ps-form">
+          <Form.Item
+            name="preferredContact"
+            initialValue={values.preferredContact}
+            style={{ marginBottom: 0 }}
           >
-            Đặt lại
-          </Button>
-          <Button
-            type="primary"
-            icon={<SaveOutlined />}
-            className="ps-actions__save"
-            onClick={handleSave}
-          >
-            Lưu cài đặt
-          </Button>
-        </div>
+            <div className="ps-contact-row">
+              {CONTACT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  className={`ps-contact-btn${values.preferredContact === opt.value ? " ps-contact-btn--active" : ""}`}
+                  onClick={() =>
+                    setValues((prev) => ({
+                      ...prev,
+                      preferredContact:
+                        opt.value as NotificationSettings["preferredContact"],
+                    }))
+                  }
+                >
+                  <span className="ps-contact-btn__icon">{opt.icon}</span>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </Form.Item>
+        </Form>
+      </div>
+
+      {/* ── Actions ─────────────────────────────────────── */}
+      <div className="ps-actions">
+        <Button
+          className="ps-actions__reset"
+          icon={<ReloadOutlined />}
+          onClick={handleReset}
+        >
+          Đặt lại
+        </Button>
+        <Button
+          type="primary"
+          icon={<SaveOutlined />}
+          className="ps-actions__save"
+          onClick={handleSave}
+        >
+          Lưu cài đặt
+        </Button>
       </div>
     </div>
   );

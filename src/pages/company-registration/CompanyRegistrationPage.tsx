@@ -10,6 +10,17 @@ import type { UploadFile } from "antd/es/upload/interface";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "@/providers/notificationProvider";
 import { RegistrationStatus } from "@/api/dtos/company-registration.dto";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ClockCircleOutlined,
+  EnvironmentOutlined,
+  FileProtectOutlined,
+  PhoneOutlined,
+  ShopOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import "./style.scss";
 
 type CompanyRegistrationFormValues = {
@@ -26,9 +37,81 @@ type CompanyRegistrationFormValues = {
   description?: string;
 };
 
+// ─── Sub: Status card ─────────────────────────────────────
+const StatusView = ({
+  existingRegistration,
+  onReapply,
+}: {
+  existingRegistration: { status: RegistrationStatus; companyName: string; rejectionReason?: string };
+  onReapply: () => void;
+}) => {
+  const statusConfig: Record<
+    RegistrationStatus,
+    { label: string; icon: React.ReactNode; className: string }
+  > = {
+    [RegistrationStatus.PENDING]: {
+      label: "Đang chờ phê duyệt",
+      icon: <ClockCircleOutlined />,
+      className: "pending",
+    },
+    [RegistrationStatus.APPROVED]: {
+      label: "Đã được phê duyệt",
+      icon: <CheckCircleOutlined />,
+      className: "approved",
+    },
+    [RegistrationStatus.REJECTED]: {
+      label: "Đã bị từ chối",
+      icon: <CloseCircleOutlined />,
+      className: "rejected",
+    },
+  };
+
+  const cfg = statusConfig[existingRegistration.status as RegistrationStatus];
+
+  const noteMessages: Record<RegistrationStatus, string> = {
+    [RegistrationStatus.PENDING]:
+      "Yêu cầu của bạn đang được admin xem xét. Bạn sẽ nhận được thông báo khi có kết quả.",
+    [RegistrationStatus.APPROVED]:
+      "Chúc mừng! Bạn đã trở thành nhà xe. Vui lòng đăng nhập lại để sử dụng các chức năng dành cho nhà xe.",
+    [RegistrationStatus.REJECTED]:
+      "Vui lòng kiểm tra lại thông tin và gửi yêu cầu mới.",
+  };
+
+  return (
+    <div className="registration-status">
+      <div className={`registration-status__icon registration-status__icon--${cfg.className}`}>
+        {cfg.icon}
+      </div>
+      <span className={`registration-status__badge registration-status__badge--${cfg.className}`}>
+        {cfg.icon}
+        {cfg.label}
+      </span>
+      <p className="registration-company-name">
+        <ShopOutlined style={{ marginRight: 8, color: "#6b7280" }} />
+        {existingRegistration.companyName}
+      </p>
+      {existingRegistration.rejectionReason && (
+        <p className="registration-rejection-reason">
+          <strong>Lý do:</strong> {existingRegistration.rejectionReason}
+        </p>
+      )}
+      <p className="registration-note">{noteMessages[existingRegistration.status as RegistrationStatus]}</p>
+      {existingRegistration.status === RegistrationStatus.REJECTED && (
+        <Button
+          type="primary"
+          className="btn-primary"
+          onClick={onReapply}
+          style={{ marginTop: 8 }}
+        >
+          Đăng ký lại
+        </Button>
+      )}
+    </div>
+  );
+};
+
 export const CompanyRegistrationPage = () => {
   const { user } = useUser();
-  const { showNotification } = useNotification();
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const [step, setStep] = useState(0);
@@ -96,56 +179,25 @@ export const CompanyRegistrationPage = () => {
     setStep(step - 1);
   };
 
+  const handleReapply = () => {
+    setStep(0);
+    form.resetFields();
+    setFileList([]);
+    setIdCardFileList([]);
+  };
+
   if (isLoading) {
     return <div className="loading-container">Đang tải...</div>;
   }
 
   if (existingRegistration) {
-    const statusLabel: Record<RegistrationStatus, string> = {
-      [RegistrationStatus.PENDING]: "Đang chờ phê duyệt",
-      [RegistrationStatus.APPROVED]: "Đã được phê duyệt",
-      [RegistrationStatus.REJECTED]: "Đã bị từ chối",
-    };
-
     return (
       <div className="registration-page">
         <div className="registration-card">
-          <h2>Trạng thái đăng ký nhà xe</h2>
-          <div className="registration-status">
-            <span
-              className={`registration-status__badge registration-status__badge--${existingRegistration.status.toLowerCase()}`}
-            >
-              {statusLabel[existingRegistration.status as RegistrationStatus]}
-            </span>
-            <p className="registration-company-name">
-              Nhà xe: {existingRegistration.companyName}
-            </p>
-            {existingRegistration.rejectionReason && (
-              <p className="registration-rejection-reason">
-                Lý do: {existingRegistration.rejectionReason}
-              </p>
-            )}
-            <p className="registration-note">
-              {existingRegistration.status === RegistrationStatus.PENDING
-                ? "Yêu cầu của bạn đang được admin xem xét. Bạn sẽ nhận được thông báo khi có kết quả."
-                : existingRegistration.status === RegistrationStatus.APPROVED
-                  ? "Chúc mừng! Bạn đã trở thành nhà xe. Vui lòng đăng nhập lại để sử dụng các chức năng dành cho nhà xe."
-                  : "Vui lòng kiểm tra lại thông tin và gửi yêu cầu mới."}
-            </p>
-            {existingRegistration.status === RegistrationStatus.REJECTED && (
-              <Button
-                type="primary"
-                onClick={() => {
-                  setStep(0);
-                  form.resetFields();
-                  setFileList([]);
-                  setIdCardFileList([]);
-                }}
-              >
-                Đăng ký lại
-              </Button>
-            )}
-          </div>
+          <StatusView
+            existingRegistration={existingRegistration}
+            onReapply={handleReapply}
+          />
         </div>
       </div>
     );
@@ -153,20 +205,29 @@ export const CompanyRegistrationPage = () => {
 
   return (
     <div className="registration-page">
-      <div className="registration-card">
-        <h2>Đăng ký trở thành nhà xe</h2>
-        <p className="registration-subtitle">
-          Vui lòng điền đầy đủ thông tin để đăng ký trở thành nhà xe. Admin sẽ
-          xem xét và phê duyệt hồ sơ của bạn.
-        </p>
+      {/* ── Hero banner ──────────────────────────────────── */}
+      <div className="registration-hero">
+        <div className="registration-hero__icon">
+          <ShopOutlined />
+        </div>
+        <div className="registration-hero__info">
+          <div className="registration-hero__greeting">Trở thành đối tác</div>
+          <div className="registration-hero__title">Đăng ký nhà xe</div>
+          <div className="registration-hero__desc">
+            Cung cấp dịch vụ vận tải hành khách trên nền tảng GoRide
+          </div>
+        </div>
+      </div>
 
+      {/* ── Form card ───────────────────────────────────── */}
+      <div className="registration-card">
         <Steps
           current={step}
           className="registration-steps"
           items={[
-            { title: "Thông tin nhà xe" },
-            { title: "Giấy tờ pháp lý" },
-            { title: "Xác nhận" },
+            { title: "Thông tin nhà xe", icon: <ShopOutlined /> },
+            { title: "Giấy tờ pháp lý", icon: <FileProtectOutlined /> },
+            { title: "Xác nhận", icon: <CheckCircleOutlined /> },
           ]}
         />
 
@@ -186,103 +247,102 @@ export const CompanyRegistrationPage = () => {
             description: "",
           }}
         >
-          {step === 0 && (
-            <div className="registration-step">
-              <Form.Item
-                name="companyName"
-                label="Tên nhà xe"
-                rules={[
-                  { required: true, message: "Vui lòng nhập tên nhà xe" },
-                ]}
-              >
-                <Input placeholder="Nhập tên nhà xe" />
-              </Form.Item>
-              <Form.Item name="address" label="Địa chỉ trụ sở">
-                <Input placeholder="Nhập địa chỉ trụ sở" />
-              </Form.Item>
-              <Form.Item
-                name="representativeName"
-                label="Tên người đại diện pháp lý"
-                rules={[
-                  { required: true, message: "Vui lòng nhập tên đại diện" },
-                ]}
-              >
-                <Input placeholder="Nhập tên người đại diện" />
-              </Form.Item>
-              <Form.Item
-                name="representativePosition"
-                label="Chức vụ"
-                rules={[{ required: true, message: "Vui lòng nhập chức vụ" }]}
-              >
-                <Input placeholder="Nhập chức vụ" />
-              </Form.Item>
-              <Form.Item
-                name="representativePhone"
-                label="Số điện thoại đại diện"
-                rules={[
-                  { required: true, message: "Vui lòng nhập số điện thoại" },
-                ]}
-              >
-                <Input placeholder="Nhập số điện thoại" />
-              </Form.Item>
-              <Form.Item name="taxCode" label="Mã số thuế">
-                <Input placeholder="Nhập mã số thuế" />
-              </Form.Item>
-              <Form.Item name="businessAddress" label="Địa chỉ theo GPKD">
-                <Input placeholder="Nhập địa chỉ theo giấy phép kinh doanh" />
-              </Form.Item>
-            </div>
-          )}
+          {/* ── Step 1: Company info ──────────────────────── */}
+          <div className="registration-step" style={{ display: step === 0 ? "block" : "none" }}>
+            <Form.Item
+              name="companyName"
+              label="Tên nhà xe"
+              rules={[{ required: true, message: "Vui lòng nhập tên nhà xe" }]}
+            >
+              <Input prefix={<ShopOutlined />} placeholder="Nhập tên nhà xe" />
+            </Form.Item>
+            <Form.Item name="address" label="Địa chỉ trụ sở">
+              <Input prefix={<EnvironmentOutlined />} placeholder="Nhập địa chỉ trụ sở" />
+            </Form.Item>
+            <Form.Item
+              name="representativeName"
+              label="Tên người đại diện pháp lý"
+              rules={[{ required: true, message: "Vui lòng nhập tên đại diện" }]}
+            >
+              <Input prefix={<UserOutlined />} placeholder="Nhập tên người đại diện" />
+            </Form.Item>
+            <Form.Item
+              name="representativePosition"
+              label="Chức vụ"
+              rules={[{ required: true, message: "Vui lòng nhập chức vụ" }]}
+            >
+              <Input prefix={<TeamOutlined />} placeholder="Nhập chức vụ" />
+            </Form.Item>
+            <Form.Item
+              name="representativePhone"
+              label="Số điện thoại đại diện"
+              rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
+            >
+              <Input prefix={<PhoneOutlined />} placeholder="Nhập số điện thoại" />
+            </Form.Item>
+            <Form.Item name="taxCode" label="Mã số thuế">
+              <Input placeholder="Nhập mã số thuế" />
+            </Form.Item>
+            <Form.Item name="businessAddress" label="Địa chỉ theo GPKD">
+              <Input prefix={<EnvironmentOutlined />} placeholder="Nhập địa chỉ theo giấy phép kinh doanh" />
+            </Form.Item>
+          </div>
 
-          {step === 1 && (
-            <div className="registration-step">
-              <Form.Item
-                name="businessLicenseDate"
-                label="Ngày cấp giấy phép kinh doanh"
+          {/* ── Step 2: Legal documents ──────────────────── */}
+          <div className="registration-step" style={{ display: step === 1 ? "block" : "none" }}>
+            <Form.Item
+              name="businessLicenseDate"
+              label="Ngày cấp giấy phép kinh doanh"
+            >
+              <Input type="date" />
+            </Form.Item>
+            <Form.Item label="Giấy phép kinh doanh">
+              <Upload
+                listType="picture"
+                fileList={fileList}
+                onChange={({ fileList }) => setFileList(fileList)}
+                beforeUpload={() => false}
+                maxCount={1}
               >
-                <Input type="date" />
-              </Form.Item>
-              <Form.Item label="Giấy phép kinh doanh">
-                <Upload
-                  listType="picture"
-                  fileList={fileList}
-                  onChange={({ fileList }) => setFileList(fileList)}
-                  beforeUpload={() => false}
-                  maxCount={1}
-                >
-                  <Button>Chọn file giấy phép kinh doanh</Button>
-                </Upload>
-              </Form.Item>
-              <Form.Item label="CMND/CCCD người đại diện">
-                <Upload
-                  listType="picture"
-                  fileList={idCardFileList}
-                  onChange={({ fileList }) => setIdCardFileList(fileList)}
-                  beforeUpload={() => false}
-                  maxCount={1}
-                >
-                  <Button>Chọn file CMND/CCCD</Button>
-                </Upload>
-              </Form.Item>
-            </div>
-          )}
+                <Button className="btn-ghost" style={{ width: "fit-content" }}>
+                  Chọn file giấy phép kinh doanh
+                </Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item label="CMND/CCCD người đại diện">
+              <Upload
+                listType="picture"
+                fileList={idCardFileList}
+                onChange={({ fileList }) => setIdCardFileList(fileList)}
+                beforeUpload={() => false}
+                maxCount={1}
+              >
+                <Button className="btn-ghost" style={{ width: "fit-content" }}>
+                  Chọn file CMND/CCCD
+                </Button>
+              </Upload>
+            </Form.Item>
+          </div>
 
-          {step === 2 && (
-            <div className="registration-step">
-              <Form.Item name="description" label="Mô tả thêm">
-                <Input.TextArea rows={4} placeholder="Nhập mô tả thêm về nhà xe" />
-              </Form.Item>
-              <div className="registration-summary">
-                <h4>Xác nhận thông tin</h4>
-                <p>
-                  Vui lòng kiểm tra lại thông tin trước khi gửi yêu cầu. Sau khi
-                  gửi, admin sẽ xem xét và phê duyệt hồ sơ của bạn.
-                </p>
-              </div>
+          {/* ── Step 3: Confirmation ──────────────────────── */}
+          <div className="registration-step" style={{ display: step === 2 ? "block" : "none" }}>
+            <Form.Item name="description" label="Mô tả thêm">
+              <Input.TextArea
+                rows={4}
+                placeholder="Nhập mô tả thêm về nhà xe (fleets, routes, experience...)"
+              />
+            </Form.Item>
+            <div className="registration-summary">
+              <h4>Xác nhận thông tin</h4>
+              <p>
+                Vui lòng kiểm tra lại thông tin trước khi gửi yêu cầu. Sau khi gửi,
+                admin sẽ xem xét và phê duyệt hồ sơ của bạn trong vòng 24h.
+              </p>
             </div>
-          )}
+          </div>
         </Form>
 
+        {/* ── Actions ─────────────────────────────────────── */}
         <div className="registration-actions">
           {step > 0 && (
             <Button className="btn-ghost" onClick={handlePrev}>
