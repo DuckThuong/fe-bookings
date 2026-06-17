@@ -143,7 +143,7 @@ export const ChatInfoPanel = ({ conversation, onClose }: ChatInfoPanelProps) => 
       <div className="chat__info-section">
         <h4 className="chat__info-section-title">Thống kê hoạt động</h4>
         <div className="chat__info-stats">
-          {stats.map((stat) => (
+          {stats?.map((stat) => (
             <div className="chat__info-stat" key={stat.label}>
               <span className="chat__info-stat-icon">{stat.icon}</span>
               <span className="chat__info-stat-value">{stat.value}</span>

@@ -3,6 +3,7 @@ import { App as AntdApp, ConfigProvider } from "antd";
 import RouterWeb from "./routers/Routers";
 import { LoadingProvider } from "./providers/loadingProvider";
 import { NotificationProvider } from "./providers/notificationProvider";
+import { SocketProvider } from "./providers/SocketProvider";
 import { UserProvider } from "./common/contexts/UserContext";
 
 const App = () => {
@@ -24,13 +25,15 @@ const App = () => {
         }}
       >
         <UserProvider>
-          <LoadingProvider>
-            <NotificationProvider>
-              <AntdApp>
-                <RouterWeb />
-              </AntdApp>
-            </NotificationProvider>
-          </LoadingProvider>
+          <SocketProvider>
+            <LoadingProvider>
+              <NotificationProvider>
+                <AntdApp>
+                  <RouterWeb />
+                </AntdApp>
+              </NotificationProvider>
+            </LoadingProvider>
+          </SocketProvider>
         </UserProvider>
       </ConfigProvider>
     </QueryClientProvider>

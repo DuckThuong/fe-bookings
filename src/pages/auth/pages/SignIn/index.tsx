@@ -52,21 +52,6 @@ const STEP1_FIELDS = [
 
 const STEP2_FIELDS = ["email", "dateOfBirth", "gender"] as const;
 
-const buildSignUpPayload = (
-  values: Record<string, unknown>,
-): SignUpPayloadDto => ({
-  name: String(values.name ?? ""),
-  phone: String(values.phone ?? ""),
-  password: String(values.password ?? ""),
-  confirm_password: String(values.confirm_password ?? ""),
-  acceptRole: values.acceptRole ? 1 : 0,
-  email: String(values.email ?? ""),
-  dateOfBirth: values.dateOfBirth
-    ? dayjs(values.dateOfBirth as dayjs.ConfigType).format("YYYY-MM-DD")
-    : "",
-  gender: Number(values.gender ?? 0),
-});
-
 export const SignIn = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -105,12 +90,14 @@ export const SignIn = () => {
 
   const buildSignUpPayload = (values: SignUpFormValues): SignUpPayloadDto => ({
     name: values.name ?? "",
-    phone: values.phone ?? "",
+    phone: String(values.phone ?? "").replace(/\D/g, ""),
     password: values.password ?? "",
     confirm_password: values.confirm_password ?? "",
     acceptRole: values.acceptRole ? 1 : 0,
     email: values.email ?? "",
-    dateOfBirth: values.dateOfBirth ?? "",
+    dateOfBirth: values.dateOfBirth
+      ? dayjs(values.dateOfBirth as dayjs.ConfigType).format("YYYY-MM-DD")
+      : "",
     gender: Number(values.gender ?? 0),
   });
 

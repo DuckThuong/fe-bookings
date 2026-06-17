@@ -13,9 +13,7 @@ import {
   CHAT_QUERY_KEYS,
   ConverationEndpoint,
 } from "../endpoints/chat.endpoint";
-import {
-  isAxiosError,
-} from "axios";
+import { isAxiosError } from "axios";
 import {
   buildMockMessages,
   getMockConversationDetail,
@@ -47,18 +45,19 @@ const tryRealOrMock = async <T>(
 };
 
 // ─── Conversations ──────────────────────────────────────────────────────
-export const getChatConversations =
-  async (): Promise<ConversationResponseDto[]> => {
-    return tryRealOrMock(
-      async () => {
-        const response = await axiosClient.get<ConversationResponseDto[]>(
-          ConverationEndpoint.CHAT_CONVERSATIONS,
-        );
-        return response.data;
-      },
-      () => listMockConversations(),
-    );
-  };
+export const getChatConversations = async (): Promise<
+  ConversationResponseDto[]
+> => {
+  return tryRealOrMock(
+    async () => {
+      const response = await axiosClient.get<ConversationResponseDto[]>(
+        ConverationEndpoint.CHAT_CONVERSATIONS,
+      );
+      return response.data;
+    },
+    () => listMockConversations(),
+  );
+};
 
 export const getChatConversationDetail = async (
   id: number | string,
@@ -112,11 +111,11 @@ export const getConversationMessages = async (
 ): Promise<MessageResponseDto[]> => {
   return tryRealOrMock(
     async () => {
-      const response = await axiosClient.get<MessageResponseDto[]>(
+      const response = await axiosClient.get<{ data: MessageResponseDto[] }>(
         ConverationEndpoint.CHAT_CONVERSATION_MESSAGES(conversationId),
         { params },
       );
-      return response.data;
+      return response.data.data;
     },
     () => buildMockMessages(conversationId, params),
   );
@@ -141,10 +140,9 @@ export const markConversationAsRead = async (
   messageId?: number,
 ): Promise<void> => {
   if (USE_MOCK) return;
-  await axiosClient.post(
-    ConverationEndpoint.CHAT_MARK_READ(conversationId),
-    { messageId },
-  );
+  await axiosClient.post(ConverationEndpoint.CHAT_MARK_READ(conversationId), {
+    messageId,
+  });
 };
 
 // ─── Conversation actions (nickname, pin, mute) ─────────────────────────

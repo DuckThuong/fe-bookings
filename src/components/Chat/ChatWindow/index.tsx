@@ -156,7 +156,9 @@ export const ChatWindow = ({
       // socket chưa sẵn sàng - bỏ qua im lặng
     });
     return () => {
-      chatSocket.leaveConversation(data.conversationId).catch(() => undefined);
+      chatSocket.leaveConversation(data.conversationId).catch(() => {
+        // socket chưa sẵn sàng - bỏ qua im lặng
+      });
     };
   }, [data.conversationId]);
 
@@ -209,7 +211,9 @@ export const ChatWindow = ({
         conversationId: data.conversationId,
         messageId: latestMessage.id,
       })
-      .catch(() => undefined);
+      .catch(() => {
+        // socket chưa sẵn sàng - bỏ qua im lặng
+      });
   }, [latestMessage, currentUserId, data.conversationId]);
 
   const pinMutation = useMutation({
@@ -220,7 +224,7 @@ export const ChatWindow = ({
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [ConverationEndpoint.GET_CHAT_CONVERSATION],
+        queryKey: [ConverationEndpoint.CHAT_CONVERSATION_DETAIL, data.conversationId],
       });
     },
   });
@@ -233,7 +237,7 @@ export const ChatWindow = ({
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [ConverationEndpoint.GET_CHAT_CONVERSATION],
+        queryKey: [ConverationEndpoint.CHAT_CONVERSATION_DETAIL, data.conversationId],
       });
     },
   });
@@ -246,7 +250,7 @@ export const ChatWindow = ({
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [ConverationEndpoint.GET_CHAT_CONVERSATION],
+        queryKey: [ConverationEndpoint.CHAT_CONVERSATION_DETAIL, data.conversationId],
       });
     },
   });

@@ -3,6 +3,7 @@ import {
   createChatConversation,
   getChatConversations,
   getOperatorHotlines,
+  sendChatMessage,
 } from "@/api/configs/chat.config";
 import {
   useMutation,
@@ -17,7 +18,7 @@ import {
   PlusOutlined,
   FilterOutlined,
 } from "@ant-design/icons";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { ROUTER_PATH } from "@/routers/Route";
 import type { ConversationResponseDto } from "@/api/dtos/chat.dto";
@@ -64,6 +65,8 @@ export const ChatPage = () => {
   const [filter, setFilter] = useState<FilterKey>("all");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [infoOpen, setInfoOpen] = useState(true);
+  const [pendingConversation, setPendingConversation] =
+    useState<ConversationResponseDto | null>(null);
 
   const conversationsQuery = useQuery({
     queryKey: [CHAT_QUERY_KEYS.CONVERSATIONS],
@@ -78,10 +81,14 @@ export const ChatPage = () => {
   const startConversationMutation = useMutation({
     mutationFn: createChatConversation,
     onSuccess: (conversation) => {
+      setPendingConversation(conversation);
+      setSelectedId(conversation.conversationId);
       queryClient.invalidateQueries({
         queryKey: [CHAT_QUERY_KEYS.CONVERSATIONS],
       });
-      setSelectedId(conversation.conversationId);
+      queryClient.invalidateQueries({
+        queryKey: [CHAT_QUERY_KEYS.CONVERSATION_MESSAGES, conversation.conversationId],
+      });
     },
   });
 
@@ -108,12 +115,30 @@ export const ChatPage = () => {
 
   // Auto-select first conversation
   const activeConversation = useMemo(() => {
-    if (filteredConversations.length === 0) return null;
-    const found = filteredConversations.find(
-      (c) => c.conversationId === selectedId,
-    );
-    return found ?? filteredConversations[0];
-  }, [filteredConversations, selectedId]);
+    const baseList = pendingConversation
+      ? [
+          pendingConversation,
+          ...filteredConversations.filter(
+            (c) => c.conversationId !== pendingConversation.conversationId,
+          ),
+        ]
+      : filteredConversations;
+    if (baseList.length === 0) return null;
+    const found = baseList.find((c) => c.conversationId === selectedId);
+    return found ?? baseList[0];
+  }, [filteredConversations, pendingConversation, selectedId]);
+
+  // Khi conversation vừa tạo đã xuất hiện trong list, clear pending.
+  useEffect(() => {
+    if (
+      pendingConversation &&
+      conversations.some(
+        (c) => c.conversationId === pendingConversation.conversationId,
+      )
+    ) {
+      setPendingConversation(null);
+    }
+  }, [conversations, pendingConversation]);
 
   const totalUnread = useMemo(
     () => conversations.reduce((sum, item) => sum + (item.unreadCount ?? 0), 0),
@@ -124,18 +149,19 @@ export const ChatPage = () => {
   const isEmpty = !isLoading && filteredConversations.length === 0;
 
   const handleStartWithOperator = (operator: ConversationResponseDto) => {
-    startConversationMutation.mutate({
-      toUserId: operator.toUser?.userId ?? 0,
-      type: "OPERATOR",
-    });
+    const userId = operator.toUser?.userId;
+    if (!userId) return;
+    const type: ConversationResponseDto["type"] =
+      operator.toUser?.role === "ADMIN" ? "ADMIN" : "OPERATOR";
+    startConversationMutation.mutate({ toUserId: userId, type });
   };
 
   const quickReplies = activeConversation
-    ? QUICK_REPLY_BY_TYPE[activeConversation.type].map((label, index) => ({
-        id: `${activeConversation.type}-${index}`,
-        label,
-        payload: label,
-      }))
+    ? QUICK_REPLY_BY_TYPE[activeConversation.type]?.map((label, index) => ({
+      id: `${activeConversation.type}-${index}`,
+      label,
+      payload: label,
+    }))
     : [];
 
   return (
@@ -179,9 +205,8 @@ export const ChatPage = () => {
                   <button
                     key={key}
                     type="button"
-                    className={`chat-page__list-filter ${
-                      filter === key ? "chat-page__list-filter--active" : ""
-                    }`}
+                    className={`chat-page__list-filter ${filter === key ? "chat-page__list-filter--active" : ""
+                      }`}
                     onClick={() => setFilter(key)}
                   >
                     {FILTER_LABELS[key]}
@@ -223,57 +248,63 @@ export const ChatPage = () => {
               <h4 className="chat-page__list-hotlines-title">
                 Liên hệ nhanh
               </h4>
-              {operators.slice(0, 3).map((operator) => (
-                <button
-                  key={operator.conversationId}
-                  type="button"
-                  className="chat-page__list-hotline"
-                  disabled={startConversationMutation.isPending}
-                  onClick={() => handleStartWithOperator(operator)}
-                >
-                  <Avatar
-                    size={32}
-                    src={operator.conversationAvatar || undefined}
-                  >
-                    {(operator.conversationName ?? "?").charAt(0)}
-                  </Avatar>
-                  <div className="chat-page__list-hotline-info">
-                    <span className="chat-page__list-hotline-name">
-                      {operator.conversationName}
-                    </span>
-                    <span className="chat-page__list-hotline-role">
-                      <ShopOutlined /> Nhà xe
-                    </span>
-                  </div>
-                  <PlusOutlined className="chat-page__list-hotline-icon" />
-                </button>
-              ))}
-              <button
-                type="button"
-                className="chat-page__list-hotline chat-page__list-hotline--admin"
-                disabled={startConversationMutation.isPending}
-                onClick={() =>
-                  startConversationMutation.mutate({
-                    toUserId: 999,
-                    type: "ADMIN",
-                  })
-                }
-              >
-                <Avatar
-                  size={32}
-                  style={{ background: "#16a34a" }}
-                  icon={<CustomerServiceOutlined />}
-                />
-                <div className="chat-page__list-hotline-info">
-                  <span className="chat-page__list-hotline-name">
-                    Hỗ trợ GoRide
-                  </span>
-                  <span className="chat-page__list-hotline-role">
-                    <CustomerServiceOutlined /> Đội CSKH
-                  </span>
+              {operatorsQuery.isLoading ? (
+                <div className="chat-page__list-hotline chat-page__list-hotline--loading">
+                  <Spin size="small" />
+                  <span>Đang tải danh sách hỗ trợ…</span>
                 </div>
-                <PlusOutlined className="chat-page__list-hotline-icon" />
-              </button>
+              ) : operators.length === 0 ? (
+                <div className="chat-page__list-hotline chat-page__list-hotline--empty">
+                  <CustomerServiceOutlined />
+                  <span>Chưa có nhân viên hỗ trợ nào.</span>
+                </div>
+              ) : (
+                operators.slice(0, 3).map((operator) => {
+                  const isAdmin = operator.toUser?.role === "ADMIN";
+                  return (
+                    <button
+                      key={operator.toUser?.userId ?? operator.conversationId}
+                      type="button"
+                      className={`chat-page__list-hotline ${isAdmin ? "chat-page__list-hotline--admin" : ""
+                        }`}
+                      disabled={startConversationMutation.isPending}
+                      onClick={() => handleStartWithOperator(operator)}
+                    >
+                      <Avatar
+                        size={32}
+                        src={operator.conversationAvatar || undefined}
+                        style={
+                          !operator.conversationAvatar && isAdmin
+                            ? { background: "#16a34a" }
+                            : undefined
+                        }
+                        icon={!operator.conversationAvatar ? <CustomerServiceOutlined /> : undefined}
+                      >
+                        {!operator.conversationAvatar
+                          ? (operator.conversationName ?? "?").charAt(0)
+                          : null}
+                      </Avatar>
+                      <div className="chat-page__list-hotline-info">
+                        <span className="chat-page__list-hotline-name">
+                          {operator.conversationName ?? "Hỗ trợ"}
+                        </span>
+                        <span className="chat-page__list-hotline-role">
+                          {isAdmin ? (
+                            <>
+                              <CustomerServiceOutlined /> Đội CSKH
+                            </>
+                          ) : (
+                            <>
+                              <ShopOutlined /> Nhà xe
+                            </>
+                          )}
+                        </span>
+                      </div>
+                      <PlusOutlined className="chat-page__list-hotline-icon" />
+                    </button>
+                  );
+                })
+              )}
             </div>
           </aside>
 
@@ -282,11 +313,23 @@ export const ChatPage = () => {
               <ChatWindow
                 data={activeConversation}
                 quickReplies={quickReplies}
-                onQuickReplySelect={(reply) =>
-                  navigate(
-                    `${ROUTER_PATH.CHAT}/${activeConversation.conversationId}?msg=${encodeURIComponent(reply.payload ?? reply.label)}` as never,
-                  )
-                }
+                onQuickReplySelect={(reply) => {
+                  if (!activeConversation || !reply.payload) return;
+                  void sendChatMessage({
+                    conversationId: activeConversation.conversationId,
+                    content: reply.payload,
+                  }).then(() => {
+                    queryClient.invalidateQueries({
+                      queryKey: [
+                        CHAT_QUERY_KEYS.CONVERSATION_MESSAGES,
+                        activeConversation.conversationId,
+                      ],
+                    });
+                    queryClient.invalidateQueries({
+                      queryKey: [CHAT_QUERY_KEYS.CONVERSATIONS],
+                    });
+                  });
+                }}
               />
             ) : (
               <div className="chat-page__placeholder">
