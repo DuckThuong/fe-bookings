@@ -230,28 +230,26 @@ export const BookingInfoPage = ({ data }: { data: BookingConfirmData }) => {
                   label="Điểm lên xe"
                   name="pickupPoint"
                   rules={[
-                    { required: true, message: "Vui lòng chọn điểm lên xe" },
+                    { required: true, message: "Vui lòng nhập điểm lên xe" },
                   ]}
                 >
-                  <Select
-                    options={data.pageData.passenger.pickupPointOptions}
+                  <Input
                     size="large"
                     style={{ width: "100%" }}
-                    placeholder="Chọn điểm lên xe"
+                    placeholder="Nhập điểm lên xe"
                   />
                 </Form.Item>
                 <Form.Item
                   label="Điểm xuống xe"
                   name="dropoffPoint"
                   rules={[
-                    { required: true, message: "Vui lòng chọn điểm xuống xe" },
+                    { required: true, message: "Vui lòng nhập điểm xuống xe" },
                   ]}
                 >
-                  <Select
-                    options={data.pageData.passenger.dropoffPointOptions}
+                  <Input
                     size="large"
                     style={{ width: "100%" }}
-                    placeholder="Chọn điểm xuống xe"
+                    placeholder="Nhập điểm xuống xe"
                   />
                 </Form.Item>
               </div>

@@ -541,18 +541,16 @@ export const SeatSelectionPage = () => {
               <div className="seat-form__row2">
                 <div className="seat-form__field">
                   <label>Điểm lên xe</label>
-                  <Select
+                  <Input
                     defaultValue={pageData.passenger.pickupPointDefault}
-                    options={pageData.passenger.pickupPointOptions}
-                    style={{ width: "100%" }}
+                    placeholder="Nhập điểm lên xe"
                   />
                 </div>
                 <div className="seat-form__field">
                   <label>Điểm xuống xe</label>
-                  <Select
+                  <Input
                     defaultValue={pageData.passenger.dropoffPointDefault}
-                    options={pageData.passenger.dropoffPointOptions}
-                    style={{ width: "100%" }}
+                    placeholder="Nhập điểm xuống xe"
                   />
                 </div>
               </div>

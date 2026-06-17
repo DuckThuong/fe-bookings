@@ -50,18 +50,6 @@ const STATUS_CONFIG: Record<
   "Hoàn thành": { color: "#166534", bg: "#bbf7d0", dot: "#10b981" },
 };
 
-const PICKUP_OPTIONS = [
-  { value: "mydinh", label: "Bến xe Mỹ Đình" },
-  { value: "giapbat", label: "Bến xe Giáp Bát" },
-  { value: "nuocngam", label: "Bến xe Nước Ngầm" },
-];
-
-const DROPOFF_OPTIONS = [
-  { value: "mienDong", label: "Bến xe Miền Đông" },
-  { value: "mienTay", label: "Bến xe Miền Tây" },
-  { value: "binhTrieu", label: "Bến xe Bình Triệu" },
-];
-
 const resolveApiMessage = (error: unknown) => {
   if (!isAxiosError(error)) return DEFAULT_MESSAGE;
   const apiMessage = error.response?.data?.message;
@@ -265,24 +253,18 @@ const BookingDetail = ({
               <Form.Item
                 label="Điểm lên xe"
                 name="pickupValue"
-                rules={[{ required: true, message: "Chọn điểm lên xe" }]}
+                rules={[{ required: true, message: "Nhập điểm lên xe" }]}
               >
-                <Select
-                  options={PICKUP_OPTIONS}
-                  placeholder="Chọn điểm lên xe"
-                />
+                <Input placeholder="Nhập điểm lên xe" />
               </Form.Item>
             </div>
 
             <Form.Item
               label="Điểm xuống xe"
               name="dropoffValue"
-              rules={[{ required: true, message: "Chọn điểm xuống xe" }]}
+              rules={[{ required: true, message: "Nhập điểm xuống xe" }]}
             >
-              <Select
-                options={DROPOFF_OPTIONS}
-                placeholder="Chọn điểm xuống xe"
-              />
+              <Input placeholder="Nhập điểm xuống xe" />
             </Form.Item>
 
             <Form.Item label="Ghi chú" name="note">

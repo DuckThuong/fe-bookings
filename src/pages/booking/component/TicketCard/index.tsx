@@ -2,7 +2,6 @@ import type {
   BookingConfirmData,
   SelectedSeat,
 } from "../../types/confirm.types";
-import { getDropoffPointLabel, getPickupPointLabel } from "../../utils/booking.utils";
 
 const TicketCard = ({
   data,
@@ -40,7 +39,7 @@ const TicketCard = ({
           <div className="confirm-ticket__time">{trip.departTime}</div>
           <div className="confirm-ticket__city">{trip.from}</div>
           <div className="confirm-ticket__station">
-            {getPickupPointLabel(data.pageData.passenger)}
+            {data.pageData.passenger.pickupPointDefault}
           </div>
         </div>
 
@@ -68,7 +67,7 @@ const TicketCard = ({
           </div>
           <div className="confirm-ticket__city">{trip.to}</div>
           <div className="confirm-ticket__station">
-            {getDropoffPointLabel(data.pageData.passenger)}
+            {data.pageData.passenger.dropoffPointDefault}
           </div>
         </div>
       </div>
@@ -86,12 +85,12 @@ const TicketCard = ({
           {
             label: "Điểm lên xe",
             icon: "ti-map-pin",
-            val: getPickupPointLabel(data.pageData.passenger),
+            val: data.pageData.passenger.pickupPointDefault,
           },
           {
             label: "Điểm xuống xe",
             icon: "ti-map-pin-2",
-            val: getDropoffPointLabel(data.pageData.passenger),
+            val: data.pageData.passenger.dropoffPointDefault,
           },
         ].map((d) => (
           <div key={d.label} className="confirm-ticket__detail-item">

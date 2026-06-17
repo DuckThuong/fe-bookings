@@ -56,31 +56,11 @@ export interface ProfileBooking {
   operationStatus?: OperationStatus;
 }
 
-const PICKUP_POINTS: Record<string, string> = {
-  mydinh: "Bến xe Mỹ Đình",
-  giapbat: "Bến xe Giáp Bát",
-  nuocngam: "Bến xe Nước Ngầm",
-};
-
-const DROPOFF_POINTS: Record<string, string> = {
-  mienDong: "Bến xe Miền Đông",
-  mienTay: "Bến xe Miền Tây",
-  binhTrieu: "Bến xe Bình Triệu",
-};
-
 const PAYMENT_LABELS: Record<string, string> = {
   card: "Thẻ tín dụng / ghi nợ",
   ewallet: "Ví điện tử",
   bank: "Chuyển khoản ngân hàng",
   cash: "Tiền mặt",
-};
-
-const resolvePointLabel = (
-  value: string | undefined,
-  map: Record<string, string>,
-): string => {
-  if (!value) return "—";
-  return map[value] ?? value;
 };
 
 const formatSeatLabel = (item: AccountBookingItem | AccountBookingDetail): string => {
@@ -144,6 +124,11 @@ export const mapAccountBookingToProfile = (
       ? `${road.startPoint} → ${road.endPoint}`
       : trip?.name ?? "—";
 
+  const pickupFromRoad = road?.pickUpPoint;
+  const dropoffFromRoad = road?.dropOffPoint;
+
+  const hasPassenger = passenger && Object.keys(passenger).length > 0;
+
   return {
     id: String(item.id),
     holdCode: item.code,
@@ -152,10 +137,10 @@ export const mapAccountBookingToProfile = (
     time: trip?.departure ?? "—",
     passengerName: passenger?.fullName ?? "—",
     seat: formatSeatLabel(item),
-    pickup: resolvePointLabel(passenger?.pickupPoint, PICKUP_POINTS),
-    dropoff: resolvePointLabel(passenger?.dropoffPoint, DROPOFF_POINTS),
-    pickupValue: passenger?.pickupPoint ?? "",
-    dropoffValue: passenger?.dropoffPoint ?? "",
+    pickup: hasPassenger ? (passenger.pickupPoint ?? "—") : (pickupFromRoad ?? "—"),
+    dropoff: hasPassenger ? (passenger.dropoffPoint ?? "—") : (dropoffFromRoad ?? "—"),
+    pickupValue: hasPassenger ? (passenger.pickupPoint ?? "") : (pickupFromRoad ?? ""),
+    dropoffValue: hasPassenger ? (passenger.dropoffPoint ?? "") : (dropoffFromRoad ?? ""),
     paymentMethod:
       PAYMENT_LABELS[item.paymentMethodId ?? ""] ??
       item.paymentMethodId ??
