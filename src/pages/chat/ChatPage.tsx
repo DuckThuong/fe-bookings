@@ -5,6 +5,7 @@ import {
   getOperatorHotlines,
   sendChatMessage,
 } from "@/api/configs/chat.config";
+import type { ConversationType } from "@/api/dtos/chat.dto";
 import { chatSocket } from "@/socket/domains/chat.socket";
 import {
   useMutation,
@@ -19,8 +20,8 @@ import {
   PlusOutlined,
   FilterOutlined,
 } from "@ant-design/icons";
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { ROUTER_PATH } from "@/routers/Route";
 import type { ConversationResponseDto } from "@/api/dtos/chat.dto";
 import {
@@ -61,6 +62,7 @@ const QUICK_REPLY_BY_TYPE: Record<ConversationResponseDto["type"], string[]> = {
 
 export const ChatPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterKey>("all");
@@ -68,6 +70,9 @@ export const ChatPage = () => {
   const [infoOpen, setInfoOpen] = useState(true);
   const [pendingConversation, setPendingConversation] =
     useState<ConversationResponseDto | null>(null);
+
+  // Track processed userIds to avoid duplicate conversation creation
+  const processedUserIdsRef = useRef<Set<number>>(new Set());
 
   const conversationsQuery = useQuery({
     queryKey: [CHAT_QUERY_KEYS.CONVERSATIONS],
@@ -78,6 +83,9 @@ export const ChatPage = () => {
     queryKey: [CHAT_QUERY_KEYS.OPERATORS],
     queryFn: getOperatorHotlines,
   });
+
+  const conversations = conversationsQuery.data ?? [];
+  const operators = operatorsQuery.data ?? [];
 
   const startConversationMutation = useMutation({
     mutationFn: createChatConversation,
@@ -93,8 +101,95 @@ export const ChatPage = () => {
     },
   });
 
-  const conversations = conversationsQuery.data ?? [];
-  const operators = operatorsQuery.data ?? [];
+  const handleStartWithOperator = useCallback((operator: ConversationResponseDto) => {
+    const userId = operator.toUser?.userId;
+    if (!userId) return;
+    const type: ConversationResponseDto["type"] =
+      operator.toUser?.role === "ADMIN" ? "ADMIN" : "OPERATOR";
+    startConversationMutation.mutate({ toUserId: userId, type });
+  }, [startConversationMutation]);
+
+  // Handle direct contact from booking profile with userId
+  useEffect(() => {
+    // Reset tracking when URL changes (e.g., navigating to different operator)
+    processedUserIdsRef.current = new Set();
+  }, [location.search]);
+
+  useEffect(() => {
+    // Wait for both queries to finish loading
+    if (conversationsQuery.isLoading) return;
+
+    const params = new URLSearchParams(location.search);
+    const operatorCode = params.get("operator");
+    const operatorName = params.get("name");
+    const userIdParam = params.get("userId");
+
+    // If we have userId directly, create conversation without needing operators list
+    if (userIdParam) {
+      const toUserId = parseInt(userIdParam, 10);
+      if (isNaN(toUserId)) {
+        navigate(location.pathname, { replace: true });
+        return;
+      }
+
+      // Skip if already processed this userId (prevents duplicate creation)
+      if (processedUserIdsRef.current.has(toUserId)) return;
+      processedUserIdsRef.current.add(toUserId);
+
+      // Check if there's already an existing conversation with this userId
+      const existingConversation = conversations.find(
+        (conv) =>
+          conv.participants.some((p) => p.userId === toUserId),
+      );
+
+      if (existingConversation) {
+        setSelectedId(existingConversation.conversationId);
+      } else {
+        // Create new conversation with this userId
+        startConversationMutation.mutate({
+          toUserId,
+          type: "OPERATOR" as ConversationType,
+        });
+      }
+
+      navigate(location.pathname, { replace: true });
+      return;
+    }
+
+    // Fallback: If no userId but have operatorCode, try to find in hotlines
+    if (operatorsQuery.isLoading) return;
+    if (!operatorCode || operators.length === 0) return;
+
+    // Find the operator in hotlines to get their userId
+    const matchedOperator = operators.find(
+      (op) =>
+        op.conversationName?.toLowerCase().includes(operatorCode.toLowerCase()) ||
+        op.conversationName?.toLowerCase().includes(operatorName?.toLowerCase() ?? "") ||
+        op.toUser?.fullName?.toLowerCase().includes(operatorCode.toLowerCase()) ||
+        op.toUser?.fullName?.toLowerCase().includes(operatorName?.toLowerCase() ?? ""),
+    );
+
+    if (!matchedOperator?.toUser?.userId) return;
+
+    // Skip if already processed this userId
+    const opUserId = matchedOperator.toUser!.userId;
+    if (processedUserIdsRef.current.has(opUserId)) return;
+    processedUserIdsRef.current.add(opUserId);
+
+    // Check if there's already an existing conversation with this operator
+    const existingConversation = conversations.find(
+      (conv) =>
+        conv.participants.some((p) => p.userId === opUserId),
+    );
+
+    if (existingConversation) {
+      setSelectedId(existingConversation.conversationId);
+    } else {
+      handleStartWithOperator(matchedOperator);
+    }
+
+    navigate(location.pathname, { replace: true });
+  }, [operators, operatorsQuery.isLoading, conversationsQuery.isLoading, conversations, location.search, location.pathname, navigate, handleStartWithOperator, startConversationMutation]);
 
   // Keep conversations list live via socket
   useEffect(() => {
@@ -124,12 +219,12 @@ export const ChatPage = () => {
           return current.map((c) =>
             c.conversationId === incoming.conversationId
               ? {
-                  ...c,
-                  lastMessagePreview: incoming.content ?? "(đính kèm)",
-                  lastMessageAt: incoming.createdAt,
-                  unreadCount:
-                    c.unreadCount !== undefined ? c.unreadCount + 1 : 1,
-                }
+                ...c,
+                lastMessagePreview: incoming.content ?? "(đính kèm)",
+                lastMessageAt: incoming.createdAt,
+                unreadCount:
+                  c.unreadCount !== undefined ? c.unreadCount + 1 : 1,
+              }
               : c,
           );
         },
@@ -164,11 +259,11 @@ export const ChatPage = () => {
   const activeConversation = useMemo(() => {
     const baseList = pendingConversation
       ? [
-          pendingConversation,
-          ...filteredConversations.filter(
-            (c) => c.conversationId !== pendingConversation.conversationId,
-          ),
-        ]
+        pendingConversation,
+        ...filteredConversations.filter(
+          (c) => c.conversationId !== pendingConversation.conversationId,
+        ),
+      ]
       : filteredConversations;
     if (baseList.length === 0) return null;
     const found = baseList.find((c) => c.conversationId === selectedId);
@@ -194,14 +289,6 @@ export const ChatPage = () => {
 
   const isLoading = conversationsQuery.isLoading;
   const isEmpty = !isLoading && filteredConversations.length === 0;
-
-  const handleStartWithOperator = (operator: ConversationResponseDto) => {
-    const userId = operator.toUser?.userId;
-    if (!userId) return;
-    const type: ConversationResponseDto["type"] =
-      operator.toUser?.role === "ADMIN" ? "ADMIN" : "OPERATOR";
-    startConversationMutation.mutate({ toUserId: userId, type });
-  };
 
   const quickReplies = activeConversation
     ? QUICK_REPLY_BY_TYPE[activeConversation.type]?.map((label, index) => ({

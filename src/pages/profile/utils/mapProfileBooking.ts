@@ -9,7 +9,26 @@ export type ProfileBookingStatus =
   | "Chờ khởi hành"
   | "Chờ xác nhận"
   | "Chưa thanh toán"
-  | "Đã hủy";
+  | "Đã hủy"
+  | "Chuẩn bị khởi hành"
+  | "Đang đón khách"
+  | "Đã khởi hành"
+  | "Sắp đến điểm đón"
+  | "Đang di chuyển"
+  | "Đã đến điểm đón"
+  | "Hoàn thành";
+
+export type OperationStatus =
+  | "SCHEDULED"
+  | "PREPARING"
+  | "BOARDING"
+  | "DEPARTED"
+  | "APPROACHING"
+  | "MOVING"
+  | "ARRIVED"
+  | "COMPLETED"
+  | "CANCELLED"
+  | "DELAYED";
 
 export interface ProfileBooking {
   id: string;
@@ -31,6 +50,10 @@ export interface ProfileBooking {
   contactEmail: string;
   note: string;
   canEdit: boolean;
+  operatorCode?: string;
+  operatorName?: string;
+  operatorUserId?: number;
+  operationStatus?: OperationStatus;
 }
 
 const PICKUP_POINTS: Record<string, string> = {
@@ -144,6 +167,10 @@ export const mapAccountBookingToProfile = (
     contactEmail,
     note: "",
     canEdit: canEditBooking(item),
+    operatorCode: item.schedule?.company?.code,
+    operatorName: item.schedule?.company?.companyName,
+    operatorUserId: item.schedule?.company?.operatorUserId,
+    operationStatus: (item as AccountBookingDetail).operationStatus as OperationStatus | undefined,
   };
 };
 

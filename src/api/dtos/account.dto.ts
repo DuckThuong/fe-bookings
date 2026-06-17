@@ -36,6 +36,7 @@ export interface AccountBookingScheduleTrip {
 export interface AccountBookingScheduleCompany {
   code: string;
   companyName: string;
+  operatorUserId?: number;
 }
 
 export interface AccountBookingSchedule {
@@ -75,4 +76,5 @@ export interface AccountBookingItem {
 export interface AccountBookingDetail extends AccountBookingItem {
   seats?: AccountBookingSeat[];
   ticket?: AccountBookingTicket | null;
+  operationStatus?: string;
 }

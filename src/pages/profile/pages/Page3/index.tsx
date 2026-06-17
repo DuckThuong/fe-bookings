@@ -22,6 +22,7 @@ import {
 import { Button, Empty, Form, Input, Select, Spin } from "antd";
 import { isAxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   mapAccountBookingToProfile,
   type ProfileBooking,
@@ -40,6 +41,13 @@ const STATUS_CONFIG: Record<
   "Chờ xác nhận": { color: "#1d4ed8", bg: "#dbeafe", dot: "#3b82f6" },
   "Chưa thanh toán": { color: "#9a3412", bg: "#ffedd5", dot: "#f97316" },
   "Đã hủy": { color: "#991b1b", bg: "#fee2e2", dot: "#ef4444" },
+  "Chuẩn bị khởi hành": { color: "#7c3aed", bg: "#ede9fe", dot: "#8b5cf6" },
+  "Đang đón khách": { color: "#b45309", bg: "#fef3c7", dot: "#f59e0b" },
+  "Đã khởi hành": { color: "#0369a1", bg: "#e0f2fe", dot: "#0ea5e9" },
+  "Sắp đến điểm đón": { color: "#6d28d9", bg: "#f3e8ff", dot: "#a855f7" },
+  "Đang di chuyển": { color: "#0f766e", bg: "#ccfbf1", dot: "#14b8a6" },
+  "Đã đến điểm đón": { color: "#15803d", bg: "#dcfce7", dot: "#22c55e" },
+  "Hoàn thành": { color: "#166534", bg: "#bbf7d0", dot: "#10b981" },
 };
 
 const PICKUP_OPTIONS = [
@@ -117,10 +125,12 @@ const BookingDetail = ({
   booking,
   saving,
   onSave,
+  onContactOperator,
 }: {
   booking: ProfileBooking;
   saving: boolean;
   onSave: (values: Partial<ProfileBooking>) => void;
+  onContactOperator: (operatorCode: string, operatorName: string, operatorUserId?: number) => void;
 }) => {
   const [form] = Form.useForm();
   const cfg = STATUS_CONFIG[booking.status];
@@ -196,7 +206,7 @@ const BookingDetail = ({
         )}
       </div>
 
-      <TicketStatusTracker booking={booking} />
+      <TicketStatusTracker booking={booking} onContactOperator={onContactOperator} />
 
       <div className="pt-form-card">
         <p className="pt-card-title">
@@ -305,6 +315,7 @@ export const ProfileTicket = () => {
   const { user } = useUser();
   const { setLoading } = useLoading();
   const { showNotification } = useNotification();
+  const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const contactEmail = user?.userEmail ?? "";
@@ -396,6 +407,17 @@ export const ProfileTicket = () => {
     });
   };
 
+  const handleContactOperator = (operatorCode: string, operatorName: string, operatorUserId?: number) => {
+    const params = new URLSearchParams({
+      operator: operatorCode,
+      name: operatorName,
+    });
+    if (operatorUserId) {
+      params.set("userId", operatorUserId.toString());
+    }
+    navigate(`/chat?${params.toString()}`);
+  };
+
   const isListLoading = listQuery.isLoading;
   const isEmpty = !isListLoading && listBookings.length === 0;
 
@@ -443,6 +465,7 @@ export const ProfileTicket = () => {
               booking={activeBooking}
               saving={updateMutation.isPending}
               onSave={handleSave}
+              onContactOperator={handleContactOperator}
             />
           ) : (
             <Empty description="Chọn một vé để xem chi tiết" />
