@@ -9,6 +9,7 @@ import { ProfileSettings } from "./Page5";
 import { HomeHeader } from "@/components/TopBar";
 import { useLocation, useNavigate } from "react-router";
 import { ROUTER_PATH } from "@/routers/Route";
+import { CompanyRegistrationPage } from "@/pages/company-registration/CompanyRegistrationPage";
 
 export const ProfilePage = () => {
   const location = useLocation();
@@ -28,6 +29,8 @@ export const ProfilePage = () => {
         return (
           <ProfileInformation onOpenPayment={() => setActiveKey("payment")} />
         );
+      case "company-registration":
+        return <CompanyRegistrationPage />;
       case "overview":
         return <ProfileSummary onEdit={() => setActiveKey("account")} />;
       case "trips":

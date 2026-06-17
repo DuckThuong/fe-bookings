@@ -9,6 +9,7 @@ import {
   StarFilled,
   PhoneOutlined,
   MessageOutlined,
+  ApartmentOutlined,
 } from "@ant-design/icons";
 import { useUser } from "@/common/contexts/UserContext";
 import "../style.scss";
@@ -39,6 +40,11 @@ export const MENU_ITEMS: MenuProps["items"] = [
     key: "payment",
     icon: <CreditCardOutlined />,
     label: "Phương thức thanh toán",
+  },
+  {
+    key: "company-registration",
+    icon: <ApartmentOutlined />,
+    label: "Đăng ký trở thành nhà xe",
   },
   {
     key: "settings",

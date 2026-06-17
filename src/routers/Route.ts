@@ -19,6 +19,7 @@ export const ROUTER_NAME = {
   PROFILE: "profile",
   NOTIFICATION: "notification",
   CHAT: "chat",
+  COMPANY_REGISTRATION: "company-registration",
 };
 
 export const ROUTER_PATH = {
@@ -40,4 +41,5 @@ export const ROUTER_PATH = {
   PROFILE: `${ROUTER}/${ROUTER_NAME.PROFILE}`,
   NOTIFICATION: `${ROUTER}/${ROUTER_NAME.NOTIFICATION}`,
   CHAT: `${ROUTER}/${ROUTER_NAME.CHAT}`,
+  COMPANY_REGISTRATION: `${ROUTER}/${ROUTER_NAME.COMPANY_REGISTRATION}`,
 };

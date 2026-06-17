@@ -20,6 +20,7 @@ import { NotificationsPage } from "@/pages/notification";
 import { ChatLayout } from "@/pages/chat/ChatLayout";
 import { ChatPage } from "@/pages/chat/ChatPage";
 import { ChatDetailPage } from "@/pages/chat/ChatDetailPage";
+import { CompanyRegistrationPage } from "@/pages/company-registration/CompanyRegistrationPage";
 
 export const WebRouter = () => (
   <Routes>
@@ -51,5 +52,6 @@ export const WebRouter = () => (
       <Route index element={<ChatPage />} />
       <Route path=":id" element={<ChatDetailPage />} />
     </Route>
+    <Route path={ROUTER_PATH.COMPANY_REGISTRATION} element={<CompanyRegistrationPage />} />
   </Routes>
 );
