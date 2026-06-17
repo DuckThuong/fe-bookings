@@ -10,6 +10,7 @@ import type { UploadFile } from "antd/es/upload/interface";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "@/providers/notificationProvider";
 import { RegistrationStatus } from "@/api/dtos/company-registration.dto";
+import { uploadImage } from "@/api/configs/common.config";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -35,6 +36,23 @@ type CompanyRegistrationFormValues = {
   businessLicenseUrl?: string;
   idCardUrl?: string;
   description?: string;
+};
+
+// ─── Helpers ──────────────────────────────────────────────
+const getBase64 = (file: Blob): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (err) => reject(err);
+  });
+
+const handleUploadFile = async (file: File): Promise<{ url: string }> => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await uploadImage(formData);
+  return { url: res.imageUrl };
 };
 
 // ─── Sub: Status card ─────────────────────────────────────
@@ -300,8 +318,31 @@ export const CompanyRegistrationPage = () => {
               <Upload
                 listType="picture"
                 fileList={fileList}
-                onChange={({ fileList }) => setFileList(fileList)}
-                beforeUpload={() => false}
+                onChange={({ fileList }) => {
+                  const processed = fileList.map((f) => {
+                    if (
+                      f.status === "done" &&
+                      typeof f.response === "object" &&
+                      f.response?.url
+                    ) {
+                      return {
+                        ...f,
+                        url: f.response.url,
+                        thumbUrl: f.response.url,
+                      };
+                    }
+                    return f;
+                  });
+                  setFileList(processed);
+                }}
+                customRequest={async ({ file, onSuccess, onError }) => {
+                  try {
+                    const { url } = await handleUploadFile(file as File);
+                    onSuccess({ url });
+                  } catch (e) {
+                    onError(e);
+                  }
+                }}
                 maxCount={1}
               >
                 <Button className="btn-ghost" style={{ width: "fit-content" }}>
@@ -313,8 +354,31 @@ export const CompanyRegistrationPage = () => {
               <Upload
                 listType="picture"
                 fileList={idCardFileList}
-                onChange={({ fileList }) => setIdCardFileList(fileList)}
-                beforeUpload={() => false}
+                onChange={({ fileList }) => {
+                  const processed = fileList.map((f) => {
+                    if (
+                      f.status === "done" &&
+                      typeof f.response === "object" &&
+                      f.response?.url
+                    ) {
+                      return {
+                        ...f,
+                        url: f.response.url,
+                        thumbUrl: f.response.url,
+                      };
+                    }
+                    return f;
+                  });
+                  setIdCardFileList(processed);
+                }}
+                customRequest={async ({ file, onSuccess, onError }) => {
+                  try {
+                    const { url } = await handleUploadFile(file as File);
+                    onSuccess({ url });
+                  } catch (e) {
+                    onError(e);
+                  }
+                }}
                 maxCount={1}
               >
                 <Button className="btn-ghost" style={{ width: "fit-content" }}>
