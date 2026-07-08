@@ -25,3 +25,26 @@ export const getMyBooking = async (
   );
   return response.data;
 };
+
+export interface RefundRequestPayload {
+  reason?: string;
+}
+
+export interface RefundRequestResponse {
+  success: boolean;
+  message: string;
+  refundCode?: string;
+  estimatedRefundAmount?: number;
+  refundPercentage?: number;
+}
+
+export const requestRefund = async (
+  bookingId: number,
+  payload?: RefundRequestPayload,
+): Promise<RefundRequestResponse> => {
+  const response = await axiosClient.post<RefundRequestResponse>(
+    AccountEndPoints.REFUND_REQUEST(bookingId),
+    payload ?? {},
+  );
+  return response.data;
+};

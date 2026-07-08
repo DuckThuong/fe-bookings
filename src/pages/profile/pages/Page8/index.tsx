@@ -306,7 +306,7 @@ export const RefundHistoryPage = () => {
             <ul className="rh-info__list">
               <li>Thời gian xử lý hoàn tiền thông thường từ 3-7 ngày làm việc.</li>
               <li>Đối với thanh toán qua thẻ, tiền sẽ được hoàn vào tài khoản ngân hàng của bạn.</li>
-              <li>Đối với thanh toán qua ví điện tử (PayOS, MoMo, ZaloPay), tiền sẽ được hoàn vào ví tương ứng.</li>
+              <li>Đối với thanh toán qua PayOS, tiền sẽ được hoàn vào tài khoản thanh toán trong vòng 3-5 ngày làm việc.</li>
               <li>Nếu có thắc mắc về trạng thái hoàn tiền, vui lòng liên hệ bộ phận hỗ trợ.</li>
             </ul>
           </div>

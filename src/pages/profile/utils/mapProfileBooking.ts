@@ -16,7 +16,8 @@ export type ProfileBookingStatus =
   | "Sắp đến điểm đón"
   | "Đang di chuyển"
   | "Đã đến điểm đón"
-  | "Hoàn thành";
+  | "Hoàn thành"
+  | "Chờ hoàn tiền";
 
 export type OperationStatus =
   | "SCHEDULED"
@@ -29,6 +30,15 @@ export type OperationStatus =
   | "COMPLETED"
   | "CANCELLED"
   | "DELAYED";
+
+export interface RefundInfo {
+  refundCode?: string;
+  refundPercentage?: number;
+  estimatedRefundAmount?: number;
+  refundStatus?: string;
+  requestedAt?: string;
+  processedAt?: string;
+}
 
 export interface ProfileBooking {
   id: string;
@@ -54,6 +64,9 @@ export interface ProfileBooking {
   operatorName?: string;
   operatorUserId?: number;
   operationStatus?: OperationStatus;
+  refundInfo?: RefundInfo;
+  departureTime?: string;
+  totalAmount?: number;
 }
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -63,7 +76,9 @@ const PAYMENT_LABELS: Record<string, string> = {
   cash: "Tiền mặt",
 };
 
-const formatSeatLabel = (item: AccountBookingItem | AccountBookingDetail): string => {
+const formatSeatLabel = (
+  item: AccountBookingItem | AccountBookingDetail,
+): string => {
   const detail = item as AccountBookingDetail;
   if (detail.seats?.length) {
     return detail.seats.map((s) => s.name || s.code).join(", ");
@@ -80,6 +95,10 @@ export const mapBookingStatus = (
 ): ProfileBookingStatus => {
   const status = item.status?.toUpperCase() ?? "";
   const ticket = ticketStatus?.toUpperCase() ?? "";
+
+  if (ticket === "PENDING_REFUND") {
+    return "Chờ hoàn tiền";
+  }
 
   if (
     status === "CANCELLED" ||
@@ -124,18 +143,30 @@ export const mapAccountBookingToProfile = (
   const road = item.schedule?.road;
   const trip = item.schedule?.trip;
   const passenger = item.passenger;
-  const ticket = (item as AccountBookingDetail).ticket;
+  const detail = item as AccountBookingDetail;
+  const ticket = detail.ticket;
   const ticketStatus = ticket?.status ?? null;
 
   const route =
     road?.startPoint && road?.endPoint
       ? `${road.startPoint} → ${road.endPoint}`
-      : trip?.name ?? "—";
+      : (trip?.name ?? "—");
 
-  const pickupFromRoad = road?.pickUpPoint;
-  const dropoffFromRoad = road?.dropOffPoint;
+  const pickupFromRoad = road?.startPoint;
+  const dropoffFromRoad = road?.endPoint;
 
   const hasPassenger = passenger && Object.keys(passenger).length > 0;
+
+  const refundInfo: RefundInfo | undefined = detail.refundInfo
+    ? {
+        refundCode: detail.refundInfo.refundCode,
+        refundPercentage: detail.refundInfo.refundPercentage,
+        estimatedRefundAmount: detail.refundInfo.estimatedRefundAmount,
+        refundStatus: detail.refundInfo.refundStatus,
+        requestedAt: detail.refundInfo.requestedAt,
+        processedAt: detail.refundInfo.processedAt,
+      }
+    : undefined;
 
   return {
     id: String(item.id),
@@ -145,14 +176,20 @@ export const mapAccountBookingToProfile = (
     time: trip?.departure ?? "—",
     passengerName: passenger?.fullName ?? "—",
     seat: formatSeatLabel(item),
-    pickup: hasPassenger ? (passenger.pickupPoint ?? "—") : (pickupFromRoad ?? "—"),
-    dropoff: hasPassenger ? (passenger.dropoffPoint ?? "—") : (dropoffFromRoad ?? "—"),
-    pickupValue: hasPassenger ? (passenger.pickupPoint ?? "") : (pickupFromRoad ?? ""),
-    dropoffValue: hasPassenger ? (passenger.dropoffPoint ?? "") : (dropoffFromRoad ?? ""),
+    pickup: hasPassenger
+      ? (passenger.pickupPoint ?? "—")
+      : (pickupFromRoad ?? "—"),
+    dropoff: hasPassenger
+      ? (passenger.dropoffPoint ?? "—")
+      : (dropoffFromRoad ?? "—"),
+    pickupValue: hasPassenger
+      ? (passenger.pickupPoint ?? "")
+      : (pickupFromRoad ?? ""),
+    dropoffValue: hasPassenger
+      ? (passenger.dropoffPoint ?? "")
+      : (dropoffFromRoad ?? ""),
     paymentMethod:
-      PAYMENT_LABELS[item.paymentMethodId ?? ""] ??
-      item.paymentMethodId ??
-      "—",
+      PAYMENT_LABELS[item.paymentMethodId ?? ""] ?? item.paymentMethodId ?? "—",
     status: mapBookingStatus(item, ticketStatus, item.holdExpiresAt),
     rawStatus: item.status,
     bookingCode: ticket?.code ?? item.code,
@@ -163,7 +200,10 @@ export const mapAccountBookingToProfile = (
     operatorCode: item.schedule?.company?.code,
     operatorName: item.schedule?.company?.companyName,
     operatorUserId: item.schedule?.company?.operatorUserId,
-    operationStatus: (item as AccountBookingDetail).operationStatus as OperationStatus | undefined,
+    operationStatus: detail.operationStatus as OperationStatus | undefined,
+    refundInfo,
+    departureTime: detail.departureTime,
+    totalAmount: detail.totalAmount,
   };
 };
 

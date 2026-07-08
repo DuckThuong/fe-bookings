@@ -1,9 +1,12 @@
 import { CheckCircleFilled, ClockCircleOutlined, ReloadOutlined, CarOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 import type { ProfileBooking, ProfileBookingStatus, OperationStatus } from "../../utils/mapProfileBooking";
 
 type TicketStatusTrackerProps = {
   booking: ProfileBooking;
   onContactOperator: (operatorCode: string, operatorName: string, operatorUserId?: number) => void;
+  onRequestRefund?: (bookingId: string) => void;
+  refundLoading?: boolean;
 };
 
 type TrackerStep = {
@@ -137,6 +140,7 @@ const LEGACY_STEPS_BY_STATUS: Record<ProfileBookingStatus, TrackerStep[]> = {
   "Đang di chuyển": [],
   "Đã đến điểm đón": [],
   "Hoàn thành": [],
+  "Chờ hoàn tiền": []
 };
 
 const LEGACY_ACTIVE_INDEX: Record<ProfileBookingStatus, number> = {
@@ -152,6 +156,7 @@ const LEGACY_ACTIVE_INDEX: Record<ProfileBookingStatus, number> = {
   "Đang di chuyển": 0,
   "Đã đến điểm đón": 0,
   "Hoàn thành": 0,
+  "Chờ hoàn tiền": 0
 };
 
 const LEGACY_APPROVED_STATUSES: ProfileBookingStatus[] = ["Đã xác nhận", "Chờ khởi hành"];
@@ -161,9 +166,93 @@ const getActiveIndex = (status: OperationStatus): number => {
   return idx >= 0 ? idx : 0;
 };
 
+const CANCELLABLE_STATUSES: ProfileBookingStatus[] = ["Đã xác nhận", "Chờ khởi hành"];
+const CANCELLABLE_OPERATION_STATUSES: OperationStatus[] = ["SCHEDULED", "PREPARING", "BOARDING"];
+
+const isRefundAllowed = (booking: ProfileBooking): boolean => {
+  // Check by booking status (legacy flow)
+  if (CANCELLABLE_STATUSES.includes(booking.status)) {
+    return true;
+  }
+  // Check by operation status (new flow)
+  if (booking.operationStatus && CANCELLABLE_OPERATION_STATUSES.includes(booking.operationStatus)) {
+    return true;
+  }
+  return false;
+};
+
+const isRefundInProgress = (booking: ProfileBooking): boolean => {
+  return booking.status === "Chờ hoàn tiền";
+};
+
+const isRefundNotAllowed = (booking: ProfileBooking): boolean => {
+  const notRefundableStatuses: ProfileBookingStatus[] = [
+    "Đã hủy",
+    "Hoàn thành",
+    "Chờ xác nhận",
+    "Chưa thanh toán",
+  ];
+  if (notRefundableStatuses.includes(booking.status)) {
+    return true;
+  }
+  if (booking.operationStatus === "COMPLETED" || booking.operationStatus === "CANCELLED") {
+    return true;
+  }
+  return false;
+};
+
+const getRefundButtonState = (
+  booking: ProfileBooking,
+  isLoading?: boolean,
+): { disabled: boolean; label: string; variant: "ghost" | "solid" | "danger" } => {
+  if (isRefundInProgress(booking)) {
+    return { disabled: true, label: "Đang chờ hoàn tiền", variant: "ghost" };
+  }
+
+  // Check operation status - disable if already started (BOARDING or later)
+  if (booking.operationStatus && ["BOARDING", "DEPARTED", "APPROACHING", "MOVING", "ARRIVED", "COMPLETED", "CANCELLED"].includes(booking.operationStatus)) {
+    return { disabled: true, label: "Không thể hủy vé", variant: "ghost" };
+  }
+
+  // Check time-based refund eligibility
+  const refundInfo = getTimeUntilDeparture(booking.departureTime);
+  if (!refundInfo.canRefund) {
+    return { disabled: true, label: refundInfo.label, variant: "ghost" };
+  }
+
+  // Check legacy booking status
+  if (isRefundAllowed(booking)) {
+    return { disabled: !!isLoading, label: "Hủy vé hoàn tiền", variant: "danger" };
+  }
+
+  return { disabled: true, label: "Không thể hủy vé", variant: "ghost" };
+};
+
+const getTimeUntilDeparture = (departureTime?: string): { hours: number; canRefund: boolean; percentage: number; label: string } => {
+  if (!departureTime) {
+    return { hours: 0, canRefund: false, percentage: 0, label: "Không xác định" };
+  }
+
+  const departure = new Date(departureTime).getTime();
+  const now = Date.now();
+  const hoursUntilDeparture = (departure - now) / (1000 * 60 * 60);
+
+  if (hoursUntilDeparture >= 24) {
+    return { hours: hoursUntilDeparture, canRefund: true, percentage: 80, label: "Hoàn 80%" };
+  } else if (hoursUntilDeparture >= 6) {
+    return { hours: hoursUntilDeparture, canRefund: true, percentage: 50, label: "Hoàn 50%" };
+  } else if (hoursUntilDeparture > 0) {
+    return { hours: hoursUntilDeparture, canRefund: false, percentage: 0, label: "Không hoàn tiền" };
+  } else {
+    return { hours: 0, canRefund: false, percentage: 0, label: "Chuyến đã khởi hành" };
+  }
+};
+
 const OperationStatusTracker = ({
   booking,
   onContactOperator,
+  onRequestRefund,
+  refundLoading,
 }: TicketStatusTrackerProps) => {
   const status = booking.operationStatus!;
   const steps = STATUS_STEP_CONFIG[status];
@@ -216,9 +305,8 @@ const OperationStatusTracker = ({
                 <div className="pt-tracker__dot">{step.icon}</div>
                 {isLast ? null : (
                   <div
-                    className={`pt-tracker__line ${
-                      isDone ? "pt-tracker__line--done" : ""
-                    }`}
+                    className={`pt-tracker__line ${isDone ? "pt-tracker__line--done" : ""
+                      }`}
                   />
                 )}
               </div>
@@ -262,6 +350,62 @@ const OperationStatusTracker = ({
         >
           Liên hệ nhà xe
         </button>
+        {onRequestRefund && (
+          <button
+            type="button"
+            className={`pt-tracker__btn pt-tracker__btn--${getRefundButtonState(booking, refundLoading).variant}`}
+            onClick={() => {
+              const refundInfo = getTimeUntilDeparture(booking.departureTime);
+              const totalAmount = booking.totalAmount ?? 0;
+              const refundAmount = Math.round(totalAmount * (refundInfo.percentage / 100));
+
+              Modal.confirm({
+                title: "Xác nhận yêu cầu hủy vé hoàn tiền",
+                icon: null,
+                content: (
+                  <div style={{ padding: "12px 0" }}>
+                    <p style={{ marginBottom: 12 }}>
+                      Bạn có chắc chắn muốn yêu cầu hủy vé hoàn tiền cho chuyến xe này không?
+                    </p>
+                    <div style={{
+                      background: "#f5f5f5",
+                      borderRadius: 8,
+                      padding: 12,
+                      marginBottom: 12
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                        <span>Phí hoàn tiền:</span>
+                        <strong>{refundInfo.label}</strong>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <span>Số tiền nhận lại:</span>
+                        <strong style={{ color: "#22c55e" }}>
+                          {refundAmount.toLocaleString("vi-VN")}đ
+                        </strong>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 12, color: "#666" }}>
+                      Thời gian xử lý hoàn tiền: 3-5 ngày làm việc
+                    </p>
+                  </div>
+                ),
+                okText: "Xác nhận hủy vé",
+                cancelText: "Không, giữ vé",
+                okButtonProps: {
+                  danger: true,
+                  style: { borderRadius: 8 },
+                },
+                cancelButtonProps: { style: { borderRadius: 8 } },
+                async onOk() {
+                  onRequestRefund(booking.id);
+                },
+              });
+            }}
+            disabled={getRefundButtonState(booking, refundLoading).disabled}
+          >
+            {refundLoading ? "Đang xử lý..." : getRefundButtonState(booking, refundLoading).label}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -270,6 +414,8 @@ const OperationStatusTracker = ({
 export const TicketStatusTracker = ({
   booking,
   onContactOperator,
+  onRequestRefund,
+  refundLoading,
 }: TicketStatusTrackerProps) => {
   // Use operation status if available (new flow)
   if (booking.operationStatus && STATUS_STEP_CONFIG[booking.operationStatus]) {
@@ -277,6 +423,8 @@ export const TicketStatusTracker = ({
       <OperationStatusTracker
         booking={booking}
         onContactOperator={onContactOperator}
+        onRequestRefund={onRequestRefund}
+        refundLoading={refundLoading}
       />
     );
   }
@@ -342,9 +490,8 @@ export const TicketStatusTracker = ({
                 <div className="pt-tracker__dot">{step.icon}</div>
                 {isLast ? null : (
                   <div
-                    className={`pt-tracker__line ${
-                      isDone ? "pt-tracker__line--done" : ""
-                    }`}
+                    className={`pt-tracker__line ${isDone ? "pt-tracker__line--done" : ""
+                      }`}
                   />
                 )}
               </div>
@@ -388,6 +535,62 @@ export const TicketStatusTracker = ({
         >
           Liên hệ nhà xe
         </button>
+        {onRequestRefund && (
+          <button
+            type="button"
+            className={`pt-tracker__btn pt-tracker__btn--${getRefundButtonState(booking, refundLoading).variant}`}
+            onClick={() => {
+              const refundInfo = getTimeUntilDeparture(booking.departureTime);
+              const totalAmount = booking.totalAmount ?? 0;
+              const refundAmount = Math.round(totalAmount * (refundInfo.percentage / 100));
+
+              Modal.confirm({
+                title: "Xác nhận yêu cầu hủy vé hoàn tiền",
+                icon: null,
+                content: (
+                  <div style={{ padding: "12px 0" }}>
+                    <p style={{ marginBottom: 12 }}>
+                      Bạn có chắc chắn muốn yêu cầu hủy vé hoàn tiền cho chuyến xe này không?
+                    </p>
+                    <div style={{
+                      background: "#f5f5f5",
+                      borderRadius: 8,
+                      padding: 12,
+                      marginBottom: 12
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                        <span>Phí hoàn tiền:</span>
+                        <strong>{refundInfo.label}</strong>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <span>Số tiền nhận lại:</span>
+                        <strong style={{ color: "#22c55e" }}>
+                          {refundAmount.toLocaleString("vi-VN")}đ
+                        </strong>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 12, color: "#666" }}>
+                      Thời gian xử lý hoàn tiền: 3-5 ngày làm việc
+                    </p>
+                  </div>
+                ),
+                okText: "Xác nhận hủy vé",
+                cancelText: "Không, giữ vé",
+                okButtonProps: {
+                  danger: true,
+                  style: { borderRadius: 8 },
+                },
+                cancelButtonProps: { style: { borderRadius: 8 } },
+                async onOk() {
+                  onRequestRefund(booking.id);
+                },
+              });
+            }}
+            disabled={getRefundButtonState(booking, refundLoading).disabled}
+          >
+            {refundLoading ? "Đang xử lý..." : getRefundButtonState(booking, refundLoading).label}
+          </button>
+        )}
       </div>
     </div>
   );

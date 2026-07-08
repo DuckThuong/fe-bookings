@@ -73,8 +73,20 @@ export interface AccountBookingItem {
   schedule?: AccountBookingSchedule | null;
 }
 
+export interface RefundInfoDto {
+  refundCode?: string;
+  refundPercentage?: number;
+  estimatedRefundAmount?: number;
+  refundStatus?: string;
+  requestedAt?: string;
+  processedAt?: string;
+}
+
 export interface AccountBookingDetail extends AccountBookingItem {
   seats?: AccountBookingSeat[];
   ticket?: AccountBookingTicket | null;
   operationStatus?: string;
+  refundInfo?: RefundInfoDto;
+  departureTime?: string;
+  totalAmount?: number;
 }

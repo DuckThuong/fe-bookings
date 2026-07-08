@@ -1,8 +1,8 @@
 import { Button, Empty, Form, Spin } from "antd";
-import { isAxiosError } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import { getMyBooking, listMyBookings } from "@/api/configs/account.config";
+import { getMyBooking, listMyBookings, requestRefund } from "@/api/configs/account.config";
 import { updateHoldPassenger } from "@/api/configs/bookings.config";
 import {
   DEFAULT_MESSAGE,
@@ -75,7 +75,7 @@ export const ProfileTicket = () => {
 
   useEffect(() => {
     if (!listQuery.isError) return;
-    const apiMessage = listQuery.error?.response?.data?.message;
+    const apiMessage = (listQuery.error as AxiosError<{ message: string }>)?.response?.data?.message;
     let message = DEFAULT_MESSAGE;
     if (typeof apiMessage === "string") message = apiMessage;
     else if (Array.isArray(apiMessage) && apiMessage[0]) message = String(apiMessage[0]);
@@ -84,7 +84,7 @@ export const ProfileTicket = () => {
 
   useEffect(() => {
     if (!detailQuery.isError) return;
-    const apiMessage = detailQuery.error?.response?.data?.message;
+    const apiMessage = (detailQuery.error as AxiosError<{ message: string }>)?.response?.data?.message;
     let message = DEFAULT_MESSAGE;
     if (typeof apiMessage === "string") message = apiMessage;
     else if (Array.isArray(apiMessage) && apiMessage[0]) message = String(apiMessage[0]);
@@ -144,6 +144,35 @@ export const ProfileTicket = () => {
     navigate(`/chat?${params.toString()}`);
   };
 
+  const refundMutation = useMutation({
+    mutationFn: async (bookingId: string) => {
+      const numericId = parseInt(bookingId, 10);
+      return requestRefund(numericId);
+    },
+    onSuccess: (data) => {
+      showNotification(data.message || "Yêu cầu hoàn tiền đã được gửi thành công!", NOTI_SUCCESS);
+      void queryClient.invalidateQueries({ queryKey: ["myBookings"] });
+      if (selectedNumericId !== null) {
+        void queryClient.invalidateQueries({
+          queryKey: ["myBooking", selectedNumericId],
+        });
+      }
+    },
+    onError: (error) => {
+      let message = DEFAULT_MESSAGE;
+      if (isAxiosError(error)) {
+        const apiMessage = error.response?.data?.message;
+        if (typeof apiMessage === "string") message = apiMessage;
+        else if (Array.isArray(apiMessage) && apiMessage[0]) message = String(apiMessage[0]);
+      }
+      showNotification(message, NOTI_ERROR);
+    },
+  });
+
+  const handleRequestRefund = (bookingId: string) => {
+    refundMutation.mutate(bookingId);
+  };
+
   const isListLoading = listQuery.isLoading;
   const isEmpty = !isListLoading && listBookings.length === 0;
 
@@ -192,6 +221,8 @@ export const ProfileTicket = () => {
               saving={updateMutation.isPending}
               onSave={handleSave}
               onContactOperator={handleContactOperator}
+              onRequestRefund={handleRequestRefund}
+              refundLoading={refundMutation.isPending}
             />
           ) : (
             <Empty description="Chọn một vé để xem chi tiết" />

@@ -36,10 +36,7 @@ const { Text } = Typography;
 
 const PAYMENT_METHODS = [
   { value: "", label: "Tất cả" },
-  { value: "PAYYOS", label: "PayOS (VietQR)" },
-  { value: "MOMO", label: "MoMo" },
-  { value: "ZALOPAY", label: "ZaloPay" },
-  { value: "BANK_TRANSFER", label: "Chuyển khoản" },
+  { value: "PAYOS", label: "PayOS (VietQR)" },
   { value: "CASH", label: "Tiền mặt" },
 ];
 

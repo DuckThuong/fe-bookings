@@ -12,8 +12,6 @@ import {
 } from "@ant-design/icons";
 
 export enum PaymentMethod {
-  CARD = "card",
-  BANK = "bank",
   CASH = "cash",
 }
 export enum CardNetwork {
@@ -31,18 +29,6 @@ export interface MethodOption {
 
 export const METHOD_OPTIONS: MethodOption[] = [
   {
-    key: PaymentMethod.CARD,
-    icon: <CreditCardOutlined /> as React.ReactNode,
-    label: "Thẻ ngân hàng",
-    desc: "Visa, Mastercard, JCB",
-  },
-  {
-    key: PaymentMethod.BANK,
-    icon: <BankOutlined /> as React.ReactNode,
-    label: "Chuyển khoản",
-    desc: "Internet banking",
-  },
-  {
     key: PaymentMethod.CASH,
     icon: <DollarOutlined /> as React.ReactNode,
     label: "Tiền mặt",
@@ -50,11 +36,7 @@ export const METHOD_OPTIONS: MethodOption[] = [
   },
 ];
 
-export const CARD_NETWORKS: { value: CardNetwork; label: string; color: string }[] = [
-  { value: CardNetwork.VISA, label: "Visa", color: "#1a1f71" },
-  { value: CardNetwork.MASTERCARD, label: "Mastercard", color: "#eb001b" },
-  { value: CardNetwork.JCB, label: "JCB", color: "#003087" },
-];
+export const CARD_NETWORKS: { value: CardNetwork; label: string; color: string }[] = [];
 
 // ─── Profile Page 1: Summary Stats ─────────────────────────
 export const SUMMARY_STATS = [
@@ -96,7 +78,8 @@ export type ProfileBookingStatus =
   | "Sắp đến điểm đón"
   | "Đang di chuyển"
   | "Đã đến điểm đón"
-  | "Hoàn thành";
+  | "Hoàn thành"
+  | "Chờ hoàn tiền";
 
 export const STATUS_CONFIG: Record<
   ProfileBookingStatus,
@@ -114,6 +97,7 @@ export const STATUS_CONFIG: Record<
   "Đang di chuyển": { color: "#0f766e", bg: "#ccfbf1", dot: "#14b8a6" },
   "Đã đến điểm đón": { color: "#15803d", bg: "#dcfce7", dot: "#22c55e" },
   "Hoàn thành": { color: "#166534", bg: "#bbf7d0", dot: "#10b981" },
+  "Chờ hoàn tiền": { color: "#7c3aed", bg: "#ede9fe", dot: "#8b5cf6" },
 };
 
 // ─── Profile Page 5: Notification Settings ────────────────────

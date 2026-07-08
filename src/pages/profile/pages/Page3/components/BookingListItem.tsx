@@ -3,10 +3,11 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import {
-  type ProfileBooking,
+  type ProfileBookingStatus,
   STATUS_CONFIG,
 } from "../../../../../common/constants/profile.constant";
 import "./BookingListItem.scss";
+import type { ProfileBooking } from "@/pages/profile/utils/mapProfileBooking";
 
 interface BookingListItemProps {
   booking: ProfileBooking;
@@ -19,7 +20,7 @@ export const BookingListItem = ({
   isActive,
   onClick,
 }: BookingListItemProps) => {
-  const cfg = STATUS_CONFIG[booking.status];
+  const cfg = STATUS_CONFIG[booking.status as ProfileBookingStatus];
 
   return (
     <button

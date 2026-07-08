@@ -4,17 +4,19 @@ import {
 } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useEffect } from "react";
-import type { ProfileBooking } from "../../../../../common/constants/profile.constant";
 import { STATUS_CONFIG } from "../../../../../common/constants/profile.constant";
 import { TicketStatusTracker } from "../TicketStatusTracker";
 import { DetailRow } from "./DetailRow";
 import "./BookingDetail.scss";
+import type { ProfileBooking } from "@/pages/profile/utils/mapProfileBooking";
 
 interface BookingDetailProps {
   booking: ProfileBooking;
   saving: boolean;
   onSave: (values: Partial<ProfileBooking>) => void;
   onContactOperator: (operatorCode: string, operatorName: string, operatorUserId?: number) => void;
+  onRequestRefund?: (bookingId: string) => void;
+  refundLoading?: boolean;
 }
 
 export const BookingDetail = ({
@@ -22,6 +24,8 @@ export const BookingDetail = ({
   saving,
   onSave,
   onContactOperator,
+  onRequestRefund,
+  refundLoading,
 }: BookingDetailProps) => {
   const [form] = Form.useForm();
   const cfg = STATUS_CONFIG[booking.status];
@@ -97,7 +101,12 @@ export const BookingDetail = ({
         )}
       </div>
 
-      <TicketStatusTracker booking={booking} onContactOperator={onContactOperator} />
+      <TicketStatusTracker
+        booking={booking}
+        onContactOperator={onContactOperator}
+        onRequestRefund={onRequestRefund}
+        refundLoading={refundLoading}
+      />
 
       <div className="pt-form-card">
         <p className="pt-card-title">
