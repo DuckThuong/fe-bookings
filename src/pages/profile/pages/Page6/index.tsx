@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, message, Modal, Select, Steps, Upload } from "antd";
+import { Button, DatePicker, Form, Input, message, Modal, Select, Steps, Upload } from "antd";
 import { useUser } from "@/common/contexts/UserContext";
 import {
   createCompanyRegistration,
@@ -21,6 +21,8 @@ import {
   ShopOutlined,
   TeamOutlined,
   UserOutlined,
+  IdcardOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import "./style.scss";
 
@@ -38,14 +40,6 @@ type CompanyRegistrationFormValues = {
   description?: string;
 };
 
-// ─── Helpers ──────────────────────────────────────────────
-const getBase64 = (file: Blob): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (err) => reject(err);
-  });
 
 const handleUploadFile = async (file: File): Promise<{ url: string }> => {
   const formData = new FormData();
@@ -55,7 +49,6 @@ const handleUploadFile = async (file: File): Promise<{ url: string }> => {
   return { url: res.imageUrl };
 };
 
-// ─── Sub: Status card ─────────────────────────────────────
 const StatusView = ({
   existingRegistration,
   onReapply,
@@ -97,9 +90,6 @@ const StatusView = ({
 
   return (
     <div className="registration-status">
-      {/* <div className={`registration-status__icon registration-status__icon--${cfg.className}`}>
-        {cfg.icon}
-      </div> */}
       <span className={`registration-status__badge registration-status__badge--${cfg.className}`}>
         {cfg.icon}
         {cfg.label}
@@ -229,7 +219,6 @@ export const CompanyRegistrationPage = () => {
 
   return (
     <div className="registration-page">
-      {/* ── Hero banner ──────────────────────────────────── */}
       <div className="registration-hero">
         <div className="registration-hero__icon">
           <ShopOutlined />
@@ -243,7 +232,6 @@ export const CompanyRegistrationPage = () => {
         </div>
       </div>
 
-      {/* ── Form card ───────────────────────────────────── */}
       <div className="registration-card">
         <Steps
           current={step}
@@ -271,7 +259,6 @@ export const CompanyRegistrationPage = () => {
             description: "",
           }}
         >
-          {/* ── Step 1: Company info ──────────────────────── */}
           <div className="registration-step" style={{ display: step === 0 ? "block" : "none" }}>
             <Form.Item
               name="companyName"
@@ -305,25 +292,31 @@ export const CompanyRegistrationPage = () => {
               <Input prefix={<PhoneOutlined />} placeholder="Nhập số điện thoại" />
             </Form.Item>
             <Form.Item name="taxCode" label="Mã số thuế">
-              <Input placeholder="Nhập mã số thuế" />
+              <Input prefix={<IdcardOutlined />} placeholder="Nhập mã số thuế" />
             </Form.Item>
             <Form.Item name="businessAddress" label="Địa chỉ theo GPKD">
               <Input prefix={<EnvironmentOutlined />} placeholder="Nhập địa chỉ theo giấy phép kinh doanh" />
             </Form.Item>
           </div>
 
-          {/* ── Step 2: Legal documents ──────────────────── */}
           <div className="registration-step" style={{ display: step === 1 ? "block" : "none" }}>
             <Form.Item
               name="businessLicenseDate"
               label="Ngày cấp giấy phép kinh doanh"
             >
-              <Input type="date" />
+              <DatePicker
+                format="DD/MM/YYYY"
+                className="registration-date-picker"
+                size="large"
+                style={{ width: "100%" }}
+                placeholder="Chọn ngày cấp giấy phép kinh doanh"
+              />
             </Form.Item>
             <Form.Item label="Giấy phép kinh doanh">
               <Upload
                 listType="picture"
                 fileList={fileList}
+                style={{ width: "100%" }}
                 onChange={({ fileList }) => {
                   const processed = fileList.map((f) => {
                     if (
@@ -351,7 +344,7 @@ export const CompanyRegistrationPage = () => {
                 }}
                 maxCount={1}
               >
-                <Button className="btn-ghost" style={{ width: "fit-content" }}>
+                <Button className="btn-ghost" style={{ width: "100%" }}>
                   Chọn file giấy phép kinh doanh
                 </Button>
               </Upload>
@@ -360,6 +353,7 @@ export const CompanyRegistrationPage = () => {
               <Upload
                 listType="picture"
                 fileList={idCardFileList}
+                style={{ width: "100%" }}
                 onChange={({ fileList }) => {
                   const processed = fileList.map((f) => {
                     if (
@@ -387,14 +381,13 @@ export const CompanyRegistrationPage = () => {
                 }}
                 maxCount={1}
               >
-                <Button className="btn-ghost" style={{ width: "fit-content" }}>
+                <Button className="btn-ghost" style={{ width: "100%" }}>
                   Chọn file CMND/CCCD
                 </Button>
               </Upload>
             </Form.Item>
           </div>
 
-          {/* ── Step 3: Confirmation ──────────────────────── */}
           <div className="registration-step" style={{ display: step === 2 ? "block" : "none" }}>
             <Form.Item name="description" label="Mô tả thêm">
               <Input.TextArea
@@ -412,7 +405,6 @@ export const CompanyRegistrationPage = () => {
           </div>
         </Form>
 
-        {/* ── Actions ─────────────────────────────────────── */}
         <div className="registration-actions">
           {step > 0 && (
             <Button className="btn-ghost" onClick={handlePrev}>

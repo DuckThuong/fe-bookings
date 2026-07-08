@@ -252,27 +252,24 @@
 }
 
 .btn-primary {
-  &.ant-btn-primary {
-    height: 44px !important;
-    padding: 0 24px !important;
-    border-radius: 10px !important;
-    background: $night !important;
-    border-color: $night !important;
-    font-size: 13.5px !important;
-    font-weight: 600 !important;
-    transition: opacity 0.15s !important;
+  height: 44px !important;
+  padding: 0 24px !important;
+  border-radius: 10px !important;
+  background: $night !important;
+  border-color: $night !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  transition: opacity 0.15s !important;
+  color: #fff !important;
+  &:hover {
+    opacity: 0.88 !important;
+  }
 
-    &:hover {
-      opacity: 0.88 !important;
-    }
-
-    i {
-      font-size: 13px !important;
-    }
+  i {
+    font-size: 13px !important;
   }
 }
 
-// ─── Status view ──────────────────────────────────────────
 .registration-status {
   text-align: center;
   padding: 32px 24px;
