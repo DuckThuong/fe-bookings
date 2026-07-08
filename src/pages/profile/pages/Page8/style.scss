@@ -1,0 +1,252 @@
+@import "../../../../common";
+
+// ─── Page wrapper ─────────────────────────────────────────
+.refund-history-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeUp 0.35s ease;
+}
+
+// ─── Header ───────────────────────────────────────────────
+.refund-history-page__header {
+  background: $night;
+  border-radius: $radius-lg;
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(#dc2626, 0.06);
+    pointer-events: none;
+  }
+}
+
+.rh-header__text {
+  position: relative;
+  z-index: 1;
+}
+
+.rh-header__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.rh-header__desc {
+  font-size: 13px;
+  color: rgba(#fff, 0.45);
+  margin: 0;
+}
+
+.rh-header__count {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  background: rgba(#dc2626, 0.15);
+  border: 0.5px solid rgba(#dc2626, 0.3);
+  color: #fca5a5;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 999px;
+}
+
+// ─── Filters ──────────────────────────────────────────────
+.refund-history-page__filters {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $card-shadow;
+  padding: 18px 20px;
+}
+
+.rh-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__icon {
+    font-size: 16px;
+    color: $muted;
+  }
+
+  &__label {
+    font-size: 13px;
+    color: $muted;
+    font-weight: 500;
+  }
+}
+
+.rh-filter-select {
+  min-width: 180px;
+
+  .ant-select-selector {
+    border-radius: $radius-md !important;
+    font-size: 13px !important;
+  }
+}
+
+.rh-filter-date {
+  .ant-picker-input > input {
+    font-size: 13px !important;
+  }
+}
+
+// ─── Table Card ────────────────────────────────────────────
+.refund-history-page__table-card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $card-shadow;
+  padding: 0;
+
+  .ant-card-body {
+    padding: 0;
+  }
+}
+
+.refund-history-page__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.refund-history-table {
+  .ant-table-thead > tr > th {
+    background: #f8f9fb !important;
+    font-size: 12px;
+    font-weight: 600;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid $border !important;
+    padding: 14px 16px !important;
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 16px !important;
+    border-bottom: 0.5px solid rgba(0, 41, 58, 0.06) !important;
+    vertical-align: middle;
+  }
+
+  .ant-table-tbody > tr:hover > td {
+    background: #fafbfc !important;
+  }
+}
+
+.payment-ref-code {
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+}
+
+.invoice-amount--refund {
+  color: #dc2626 !important;
+}
+
+// ─── Pagination ────────────────────────────────────────────
+.refund-history-page__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-top: 0.5px solid $border;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .rh-pagination__info {
+    font-size: 13px;
+  }
+}
+
+// ─── Info Card ────────────────────────────────────────────
+.refund-history-page__info {
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  border: 0.5px solid rgba(#b45309, 0.2);
+  border-radius: $radius-lg;
+  padding: 20px 24px;
+}
+
+.rh-info {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+
+  &__icon {
+    font-size: 20px;
+    color: #b45309;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__title {
+    font-size: 14px;
+    color: #92400e;
+  }
+
+  &__list {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    li {
+      font-size: 13px;
+      color: #92400e;
+      line-height: 1.5;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .rh-filters {
+    flex-direction: column;
+    align-items: flex-start;
+
+    &__left,
+    &__right {
+      width: 100%;
+    }
+  }
+
+  .rh-filter-select {
+    width: 100%;
+  }
+}

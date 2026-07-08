@@ -1,4 +1,10 @@
-import { Avatar, Button, Menu, Tag, type MenuProps } from "antd";
+import {
+  Avatar,
+  Button,
+  Menu,
+  Tag,
+  type MenuProps,
+} from "antd";
 import {
   UserOutlined,
   ProfileOutlined,
@@ -10,6 +16,8 @@ import {
   PhoneOutlined,
   MessageOutlined,
   ApartmentOutlined,
+  FileTextOutlined,
+  UndoOutlined,
 } from "@ant-design/icons";
 import { useUser } from "@/common/contexts/UserContext";
 import "../style.scss";
@@ -30,6 +38,16 @@ export const MENU_ITEMS: MenuProps["items"] = [
     key: "trips",
     icon: <HistoryOutlined />,
     label: "Lịch sử đặt vé",
+  },
+  {
+    key: "payment-history",
+    icon: <FileTextOutlined />,
+    label: "Hóa đơn thanh toán",
+  },
+  {
+    key: "refund-history",
+    icon: <UndoOutlined />,
+    label: "Hóa đơn hoàn tiền",
   },
   {
     key: "messages",

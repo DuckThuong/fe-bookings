@@ -5,17 +5,82 @@ interface SuccessHeroProps {
   bookingId: TripInfo["bookingId"];
   phone: string;
   pendingApproval?: boolean;
+  isError?: boolean;
 }
 
 const SuccessHero = ({
   bookingId,
   phone,
   pendingApproval = false,
+  isError = false,
 }: SuccessHeroProps) => {
   const handleCopy = () => {
-    navigator.clipboard?.writeText(bookingId);
-    message.success("Đã sao chép mã đặt vé");
+    if (bookingId) {
+      navigator.clipboard?.writeText(bookingId);
+      message.success("Đã sao chép mã đặt vé");
+    }
   };
+
+  if (isError) {
+    return (
+      <div className="success-hero success-hero--error">
+        <div className="success-hero__ring-wrap">
+          <div className="success-hero__ring-pulse success-hero__ring-pulse--error" />
+          <div className="success-hero__ring-pulse success-hero__ring-pulse--2 success-hero__ring-pulse--error" />
+          <svg
+            className="success-hero__check-svg"
+            viewBox="0 0 88 88"
+            fill="none"
+          >
+            <circle
+              cx="44"
+              cy="44"
+              r="42"
+              fill="#fef2f2"
+              stroke="#ef4444"
+              strokeWidth="1.5"
+            />
+            <path
+              className="success-hero__check-path"
+              d="M32 32l24 24M56 32L32 56"
+              stroke="#dc2626"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+
+        <h1 className="success-hero__title success-hero__title--error">
+          Thanh toán thất bại
+        </h1>
+        <p className="success-hero__sub">
+          Đã xảy ra lỗi trong quá trình thanh toán. Vui lòng thử lại hoặc liên hệ hỗ trợ.
+        </p>
+
+        <div className="success-hero__actions">
+          <Button
+            className="success-hero__btn-primary"
+            icon={<i className="ti ti-refresh" aria-hidden="true" />}
+          >
+            Thử lại
+          </Button>
+          <Button
+            className="success-hero__btn-outline"
+            icon={<i className="ti ti-headphones" aria-hidden="true" />}
+          >
+            Liên hệ hỗ trợ
+          </Button>
+          <Button
+            className="success-hero__btn-ghost"
+            icon={<i className="ti ti-home" aria-hidden="true" />}
+          >
+            Về trang chủ
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="success-hero">

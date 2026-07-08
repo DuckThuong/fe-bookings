@@ -1,1 +1,365 @@
-@use '../../../../common.scss';
+@import "../../../../common";
+
+// ─── Page wrapper ─────────────────────────────────────────
+.payment-history-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeUp 0.35s ease;
+}
+
+// ─── Header ───────────────────────────────────────────────
+.payment-history-page__header {
+  background: $night;
+  border-radius: $radius-lg;
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba($amber, 0.06);
+    pointer-events: none;
+  }
+}
+
+.ph-header__text {
+  position: relative;
+  z-index: 1;
+}
+
+.ph-header__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.ph-header__desc {
+  font-size: 13px;
+  color: rgba(#fff, 0.45);
+  margin: 0;
+}
+
+.ph-header__count {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  background: rgba($amber, 0.15);
+  border: 0.5px solid rgba($amber, 0.3);
+  color: $amber;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 999px;
+}
+
+// ─── Stats Cards ──────────────────────────────────────────
+.payment-history-page__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ph-stat-card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $card-shadow;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+
+    &--success {
+      background: rgba(#15803d, 0.1);
+      color: #15803d;
+    }
+
+    &--primary {
+      background: rgba($secondary_color, 0.1);
+      color: $secondary_color;
+    }
+
+    &--warning {
+      background: rgba(#b45309, 0.1);
+      color: #b45309;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: 12px;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 500;
+  }
+
+  &__value {
+    font-size: 18px;
+    font-weight: 700;
+    color: $night;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// ─── Filters ──────────────────────────────────────────────
+.payment-history-page__filters {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $card-shadow;
+  padding: 18px 20px;
+}
+
+.ph-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__icon {
+    font-size: 16px;
+    color: $muted;
+  }
+
+  &__label {
+    font-size: 13px;
+    color: $muted;
+    font-weight: 500;
+  }
+}
+
+.ph-filter-select {
+  min-width: 180px;
+
+  .ant-select-selector {
+    border-radius: $radius-md !important;
+    font-size: 13px !important;
+  }
+}
+
+.ph-filter-date {
+  .ant-picker-input > input {
+    font-size: 13px !important;
+  }
+}
+
+// ─── Table Card ────────────────────────────────────────────
+.payment-history-page__table-card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $card-shadow;
+  padding: 0;
+
+  .ant-card-body {
+    padding: 0;
+  }
+}
+
+.payment-history-page__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.payment-history-table {
+  .ant-table-thead > tr > th {
+    background: #f8f9fb !important;
+    font-size: 12px;
+    font-weight: 600;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid $border !important;
+    padding: 14px 16px !important;
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 16px !important;
+    border-bottom: 0.5px solid rgba(0, 41, 58, 0.06) !important;
+    vertical-align: middle;
+  }
+
+  .ant-table-tbody > tr:hover > td {
+    background: #fafbfc !important;
+  }
+}
+
+// ─── Invoice Cell Styles ───────────────────────────────────
+.invoice-code-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .invoice-code {
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    color: $night;
+  }
+
+  .invoice-copy-btn {
+    color: $muted !important;
+    opacity: 0;
+    transition: opacity 0.15s;
+
+    &:hover {
+      color: $amber !important;
+    }
+  }
+}
+
+tr:hover .invoice-copy-btn {
+  opacity: 1;
+}
+
+.invoice-route-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .route-text {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: $night;
+  }
+
+  .route-arrow {
+    font-size: 12px;
+    color: $amber;
+    font-weight: 700;
+  }
+
+  .invoice-date {
+    font-size: 11.5px;
+  }
+}
+
+.invoice-method-tag {
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 3px 10px !important;
+  border: none !important;
+  background: rgba($secondary_color, 0.08) !important;
+  color: $secondary_color !important;
+}
+
+.invoice-amount {
+  font-size: 14px !important;
+  color: $night !important;
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
+.invoice-status-tag {
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 4px 10px !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+.invoice-action-btn {
+  color: $muted !important;
+  opacity: 0;
+  transition: opacity 0.15s;
+
+  &:hover {
+    color: $amber !important;
+    background: $amber-pale !important;
+  }
+}
+
+tr:hover .invoice-action-btn {
+  opacity: 1;
+}
+
+// ─── Pagination ────────────────────────────────────────────
+.payment-history-page__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-top: 0.5px solid $border;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .ph-pagination__info {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ph-filters {
+    flex-direction: column;
+    align-items: flex-start;
+
+    &__left,
+    &__right {
+      width: 100%;
+    }
+  }
+
+  .ph-filter-select {
+    width: 100%;
+  }
+
+  .ph-header__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -6,6 +6,8 @@ import { ProfileInformation } from "./Page2";
 import { ProfileTicket } from "./Page3";
 import { ProfileSettings } from "./Page5";
 import { CompanyRegistrationPage } from "./Page6";
+import { PaymentHistoryPage } from "./Page7";
+import { RefundHistoryPage } from "./Page8";
 import { HomeHeader } from "@/components/TopBar";
 import { useLocation, useNavigate } from "react-router";
 import { ROUTER_PATH } from "@/routers/Route";
@@ -28,6 +30,10 @@ export const ProfilePage = () => {
         return <ProfileInformation />;
       case "company-registration":
         return <CompanyRegistrationPage />;
+      case "payment-history":
+        return <PaymentHistoryPage />;
+      case "refund-history":
+        return <RefundHistoryPage />;
       case "overview":
         return <ProfileSummary onEdit={() => setActiveKey("account")} />;
       case "trips":
