@@ -1,4 +1,38 @@
-@use "./color" as *;
+// Font family
+$font_family_1: "DM Sans", "system-ui", sans-serif;
+
+// Text colors
+$text_color_1: #00293a;
+$text_color_2: #f0f2f5;
+$text_color_3: #147ba7;
+$text_color_4: #015e86a1;
+
+// Color aliases
+$black_color: #00293a;
+$white_color: #ffffff;
+$primary_color: #00293a;
+$secondary_color: #00609c;
+
+// Alert colors
+$text_alert_1: #e52500;
+$text_alert_2: #007bff;
+
+// Common color tokens
+$color-text-primary: #333333;
+$color-border: #d9d9d9;
+$color-blue-5: #1890ff;
+$color-blue-4: #40a9ff;
+$color-blue-6: #096dd9;
+$color-red-5: #ff4d4f;
+$color-orange-5: #faad14;
+$color-gray-2: #f5f5f5;
+$color-gray-6: #bfbfbf;
+$color-white: #ffffff;
+
+// Shadow tokens
+$shadow-focus-blue: rgba(24, 144, 255, 0.2);
+$shadow-error-red: rgba(255, 77, 79, 0.2);
+$shadow-warning-orange: rgba(250, 173, 20, 0.2);
 
 $night: #0a0e1a;
 $night-2: #151b2e;
@@ -7,6 +41,10 @@ $navy: #0f1629;
 $amber: #f5a623;
 $amber-light: #fdc96a;
 $amber-pale: #fff8ec;
+$amber-pale: #faeeda;
+$amber-dark: #854f0b;
+
+$orange: #e85d2c;
 
 $muted: #6b7280;
 $muted-on-dark: rgba(255, 255, 255, 0.55);
@@ -14,17 +52,64 @@ $muted-on-dark: rgba(255, 255, 255, 0.55);
 $border: #e5e7eb;
 $bg: #f4f5f7;
 $white: #ffffff;
+$white: #fff;
 
 $green: #16a34a;
 $green-bright: #22c55e;
 $green-pale: #f0fdf4;
+$green-bg: #f0fdf4;
+$green-bd: #86efac;
+$green-text: #16a34a;
 $red: #ef4444;
+$red-bg: #fee2e2;
 
-$radius-sm: 10px;
-$radius-md: 16px;
-$radius-lg: 24px;
+$card-shadow: 0 4px 24px rgba(0, 41, 58, 0.07);
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 20px;
+$radius-xl: 24px;
 
+$font-sans: "Be Vietnam Pro", sans-serif;
+$font-serif: "Cormorant Garamond", serif;
+
+$background-color: #f7f8f9;
+$background-color-1: #6ba7e44b;
+
+// Page6 animations
 @keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp12 {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp16 {
   from {
     opacity: 0;
     transform: translateY(16px);
@@ -60,6 +145,11 @@ $radius-lg: 24px;
 @mixin fadeUp($delay: 0s) {
   opacity: 0;
   animation: fadeUp 0.5s #{$delay} ease forwards;
+}
+
+@mixin fadeUp12($delay: 0s) {
+  opacity: 0;
+  animation: fadeUp12 0.5s #{$delay} ease forwards;
 }
 
 @mixin fadeUp18($delay: 0s) {
@@ -130,20 +220,28 @@ $radius-lg: 24px;
 
 @keyframes carDrive {
   0% {
-    transform: translateY(600px);
+    transform: translateY(0) scale(0.95);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  86% {
+    opacity: 1;
   }
   100% {
-    transform: translateY(-30px);
+    transform: translateY(660px) scale(1.06);
+    opacity: 0;
   }
 }
 
 @keyframes blink {
   0%,
   100% {
-    opacity: 0.35;
+    opacity: 0.25;
   }
   50% {
-    opacity: 0.9;
+    opacity: 0.95;
   }
 }
 
@@ -182,5 +280,230 @@ $radius-lg: 24px;
   }
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+// Additional keyframes
+@keyframes chat-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chat-pop {
+  0% {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes chat-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes chat-bounce-dot {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes chatFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chatSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+@keyframes activePulse {
+  0%,
+  100% {
+    box-shadow: 0 2px 12px rgba($amber, 0.4);
+  }
+  50% {
+    box-shadow: 0 2px 20px rgba($amber, 0.65);
+  }
+}
+
+@keyframes notifPanelIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes progressFill {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--target, 68%);
+  }
+}
+
+// Page2-specific keyframes
+@keyframes bookingDashMove {
+  to {
+    stroke-dashoffset: -60;
+  }
+}
+
+@keyframes bookingCarDrive {
+  0% {
+    transform: translateY(0) scale(0.95);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  86% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(660px) scale(1.06);
+    opacity: 0;
+  }
+}
+
+@keyframes bookingBlink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes searchQuickScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+// Home-specific keyframes
+@keyframes homeDashMove {
+  to {
+    stroke-dashoffset: -60;
+  }
+}
+
+@keyframes homeCarDrive {
+  0% {
+    transform: translateY(0) scale(0.95);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  86% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(660px) scale(1.06);
+    opacity: 0;
+  }
+}
+
+@keyframes homeBlink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.95;
   }
 }

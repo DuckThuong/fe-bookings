@@ -1,4 +1,4 @@
-@import "./color.scss";
+@import "./common";
 
 .notification-container {
   position: fixed;
@@ -146,35 +146,6 @@
 
 .show {
   display: block !important;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
 }
 
 ::-webkit-scrollbar {

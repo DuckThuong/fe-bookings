@@ -1,27 +1,5 @@
 @use "../../../../common" as *;
 
-// ─── Shared tokens (mirror SeatSelectionPage) ────────────
-$night: #0a0e1a;
-$amber: #f5a623;
-$amber-pale: #fff8ec;
-$muted: #6b7280;
-$border: #e5e7eb;
-$green-bg: #f0fdf4;
-$green-bd: #86efac;
-$green-text: #16a34a;
-
-// ─── Keyframes ───────────────────────────────────────────
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 // ─── Page ────────────────────────────────────────────────
 .booking-info-page {
   min-height: 100vh;

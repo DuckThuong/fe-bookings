@@ -1,11 +1,4 @@
-$night: #0a0e1a;
-$amber: #f5a623;
-$amber-pale: #fff8ec;
-$muted: #6b7280;
-$border: #e5e7eb;
-$green-bg: #f0fdf4;
-$green-bd: #86efac;
-$green-text: #16a34a;
+@import "../../../../common";
 
 .seat-page {
   min-height: 100vh;
@@ -687,14 +680,6 @@ $green-text: #16a34a;
     height: 36px;
   }
 }
-
-$night: #0a0e1a;
-$amber: #f5a623;
-$amber-pale: #fff8ec;
-$muted: #6b7280;
-$border: #e5e7eb;
-$green-text: #16a34a;
-$green-bg: #f0fdf4;
 
 .seat-extras {
   display: flex;

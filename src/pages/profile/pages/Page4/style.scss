@@ -1,27 +1,4 @@
-@import "../../../../color.scss";
-
-// ─── Local tokens ─────────────────────────────────────────
-$night: #0a0e1a;
-$night-2: #151b2e;
-$amber: #f5a623;
-$amber-pale: #fff8ec;
-$muted: #6b7280;
-$border: rgba(0, 41, 58, 0.08);
-$card-shadow: 0 4px 24px rgba(0, 41, 58, 0.07);
-$radius-lg: 20px;
-$radius-md: 12px;
-$radius-sm: 8px;
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+@import "../../../../common";
 
 // ─── Page wrapper ─────────────────────────────────────────
 .profile-payment {

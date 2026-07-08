@@ -1,12 +1,4 @@
-@import "../../../color.scss";
-
-// ─── Local tokens (đồng bộ với profile-summary) ──────────
-$night: #0a0e1a;
-$amber: #f5a623;
-$amber-pale: #fff8ec;
-$amber-dark: #854f0b;
-$muted: #6b7280;
-$border: rgba(0, 41, 58, 0.08);
+@import "../../../common";
 
 // ─── Sidebar shell ────────────────────────────────────────
 .profile-sidebar {

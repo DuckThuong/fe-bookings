@@ -1,37 +1,4 @@
-@import "../../color.scss";
-
-$night: #0a0e1a;
-$amber: #f5a623;
-$amber-light: #fdc96a;
-$amber-pale: #fff8ec;
-$muted: #6b7280;
-$border: #e5e7eb;
-$green: #16a34a;
-$green-bg: #dcfce7;
-$red: #ef4444;
-$red-bg: #fee2e2;
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+@import "../../../../common";
 
 // ─── Page wrapper ─────────────────────────────────────────
 .registration-page {

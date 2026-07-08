@@ -6,10 +6,10 @@ import { ProfileInformation } from "./Page2";
 import { ProfileTicket } from "./Page3";
 import { ProfilePayment } from "./Page4";
 import { ProfileSettings } from "./Page5";
+import { CompanyRegistrationPage } from "./Page6";
 import { HomeHeader } from "@/components/TopBar";
 import { useLocation, useNavigate } from "react-router";
 import { ROUTER_PATH } from "@/routers/Route";
-import { CompanyRegistrationPage } from "@/pages/company-registration/CompanyRegistrationPage";
 
 export const ProfilePage = () => {
   const location = useLocation();
