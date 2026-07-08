@@ -5,7 +5,7 @@ const API_VERSION = "v1";
 export { API_VERSION };
 
 export const paymentConfig = {
-  baseUrl: `/api/${API_VERSION}/payments/payos`,
+  baseUrl: `/api/payments/payos`,
 
   createPaymentLink: async (ticketId: number, description?: string) => {
     const response = await axiosClient.post(`${paymentConfig.baseUrl}/create-link`, {
@@ -42,7 +42,7 @@ export const cancelPayment = (paymentLinkId: string) =>
 // Booking-specific payment (creates PayOS link from hold)
 export const createBookingPaymentLink = async (holdId: string) => {
   const response = await axiosClient.post(
-    `/api/${API_VERSION}/bookings/hold/${holdId}/payment-link`
+    `/api/bookings/hold/${holdId}/payment-link`
   );
   return response.data;
 };
@@ -50,7 +50,7 @@ export const createBookingPaymentLink = async (holdId: string) => {
 // Get booking info by payment link ID (for PayOS return page)
 export const getBookingByPaymentLink = async (paymentLinkId: string) => {
   const response = await axiosClient.get(
-    `/api/${API_VERSION}/bookings/by-payment/${paymentLinkId}`
+    `/api/bookings/by-payment/${paymentLinkId}`
   );
   return response.data;
 };
