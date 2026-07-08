@@ -1,0 +1,60 @@
+@import "../../../../../common";
+
+.registration-status {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: #fff;
+  border-radius: 14px;
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    align-self: flex-start;
+
+    &--pending {
+      background: #fef9c3;
+      color: #854d0e;
+    }
+
+    &--approved {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    &--rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  }
+}
+
+.registration-company-name {
+  font-size: 14px;
+  color: $night;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.registration-rejection-reason {
+  font-size: 13px;
+  color: $muted;
+  margin: 0;
+  padding: 12px 16px;
+  background: rgba($muted, 0.05);
+  border-radius: 8px;
+}
+
+.registration-note {
+  font-size: 13px;
+  color: $muted;
+  margin: 0;
+  line-height: 1.5;
+}

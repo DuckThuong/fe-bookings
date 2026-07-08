@@ -1,0 +1,73 @@
+@import "../../../../../common";
+
+.ps-reminders {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &__hd {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 16px;
+    border-bottom: 0.5px solid $border;
+    font-size: 12px;
+    font-weight: 500;
+    color: $night;
+
+    i {
+      font-size: 15px;
+      color: $amber;
+    }
+    span:first-of-type {
+      flex: 1;
+    }
+  }
+
+  &__count {
+    font-size: 10px;
+    background: $amber-pale;
+    color: #854f0b;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 0.5px solid $border;
+    cursor: pointer;
+    transition: background 0.12s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+    &:hover {
+      background: #fafbfc;
+    }
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $amber;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    flex: 1;
+    font-size: 12px;
+    color: $night;
+    line-height: 1.4;
+  }
+
+  &__arrow {
+    font-size: 13px;
+    color: #9ca3af;
+  }
+}

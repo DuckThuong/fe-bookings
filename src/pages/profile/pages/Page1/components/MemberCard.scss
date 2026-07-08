@@ -1,0 +1,76 @@
+@import "../../../../../common";
+
+.ps-member {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &__top {
+    background: $night;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: rgba($amber, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    i {
+      font-size: 15px;
+      color: $amber;
+    }
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__tier {
+    font-size: 12px;
+    font-weight: 600;
+    color: $amber;
+  }
+
+  &__next {
+    font-size: 10px;
+    color: rgba(#fff, 0.4);
+    margin-top: 1px;
+  }
+
+  &__pct {
+    font-size: 16px;
+    font-weight: 700;
+    color: $amber;
+  }
+
+  &__body {
+    padding: 13px 16px;
+  }
+
+  &__progress {
+    margin-bottom: 7px !important;
+    .ant-progress-inner {
+      background: $border !important;
+    }
+  }
+
+  &__labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #9ca3af;
+
+    span:last-child {
+      color: $amber;
+      font-weight: 500;
+    }
+  }
+}

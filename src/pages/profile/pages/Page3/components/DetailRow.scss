@@ -1,0 +1,25 @@
+@import "../../../../../common";
+
+.pt-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 0.5px solid $border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &__label {
+    font-size: 13px;
+    color: $muted;
+  }
+
+  &__value {
+    font-size: 13px;
+    font-weight: 500;
+    color: $night;
+    text-align: right;
+  }
+}

@@ -1,0 +1,55 @@
+.pp-card-preview {
+  background: linear-gradient(135deg, #1a2a4a 0%, #2d4a6f 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: #fff;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  &__chip {
+    width: 40px;
+    height: 30px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+    border-radius: 6px;
+  }
+
+  &__network {
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  &__number {
+    font-size: 20px;
+    letter-spacing: 2px;
+    font-family: "Courier New", monospace;
+    margin: 16px 0;
+  }
+
+  &__bottom {
+    display: flex;
+    gap: 32px;
+  }
+
+  &__label {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  &__value {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 4px 0 0;
+  }
+}

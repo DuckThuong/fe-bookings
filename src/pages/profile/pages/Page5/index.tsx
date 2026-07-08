@@ -1,162 +1,29 @@
 import { useState } from "react";
-import { Button, Form, Select, Switch, Tag } from "antd";
+import { Button, Form, Select, Tag } from "antd";
 import {
+  BellOutlined,
   MailOutlined,
   MessageOutlined,
-  BellOutlined,
-  TagsOutlined,
-  CheckCircleOutlined,
-  CreditCardOutlined,
-  WarningOutlined,
   PhoneOutlined,
-  SaveOutlined,
-  ReloadOutlined,
   CheckOutlined,
-  CloseOutlined,
+  ReloadOutlined,
+  SaveOutlined,
 } from "@ant-design/icons";
+import {
+  type NotificationSettings,
+  INITIAL_NOTIFICATION_SETTINGS,
+  type NotificationChannelKey,
+  CHANNEL_ITEMS,
+  ALERT_ITEMS,
+} from "../../../../common/constants/profile.constant";
+import { SwitchRow, StatsCard } from "./components";
 import "./style.scss";
 
-// ─── Types ────────────────────────────────────────────────
-interface NotificationSettings {
-  email: boolean;
-  sms: boolean;
-  push: boolean;
-  promotions: boolean;
-  bookingUpdates: boolean;
-  paymentReminders: boolean;
-  travelAlerts: boolean;
-  preferredContact: "email" | "sms" | "phone";
-}
-
-// ─── Constants ────────────────────────────────────────────
-const INITIAL_SETTINGS: NotificationSettings = {
-  email: true,
-  sms: false,
-  push: true,
-  promotions: false,
-  bookingUpdates: true,
-  paymentReminders: true,
-  travelAlerts: false,
-  preferredContact: "email",
-};
-
-interface SwitchItem {
-  key: keyof Omit<NotificationSettings, "preferredContact">;
-  icon: React.ReactNode;
-  label: string;
-  desc: string;
-}
-
-const CHANNEL_ITEMS: SwitchItem[] = [
-  {
-    key: "email",
-    icon: <MailOutlined />,
-    label: "Email",
-    desc: "Thông báo gửi đến hộp thư của bạn",
-  },
-  {
-    key: "sms",
-    icon: <MessageOutlined />,
-    label: "SMS",
-    desc: "Tin nhắn thông báo đến số điện thoại",
-  },
-  {
-    key: "push",
-    icon: <BellOutlined />,
-    label: "Thông báo đẩy",
-    desc: "Thông báo trong ứng dụng GoRide",
-  },
-  {
-    key: "promotions",
-    icon: <TagsOutlined />,
-    label: "Khuyến mãi",
-    desc: "Ưu đãi, voucher và tin tức mới nhất",
-  },
-];
-
-const ALERT_ITEMS: SwitchItem[] = [
-  {
-    key: "bookingUpdates",
-    icon: <CheckCircleOutlined />,
-    label: "Cập nhật đặt vé",
-    desc: "Xác nhận, huỷ hoặc thay đổi chuyến",
-  },
-  {
-    key: "paymentReminders",
-    icon: <CreditCardOutlined />,
-    label: "Nhắc thanh toán",
-    desc: "Nhắc trước khi hết hạn giữ chỗ",
-  },
-  {
-    key: "travelAlerts",
-    icon: <WarningOutlined />,
-    label: "Cảnh báo chuyến đi",
-    desc: "Trễ xe, thay đổi lịch trình",
-  },
-];
-
-const CONTACT_OPTIONS = [
-  { value: "email", label: "Email", icon: <MailOutlined /> },
-  { value: "sms", label: "SMS", icon: <MessageOutlined /> },
-  { value: "phone", label: "Cuộc gọi", icon: <PhoneOutlined /> },
-];
-
-// ─── Sub: SwitchRow ───────────────────────────────────────
-const SwitchRow = ({
-  item,
-  checked,
-  onChange,
-}: {
-  item: SwitchItem;
-  checked: boolean;
-  onChange: (v: boolean) => void;
-}) => (
-  <div className={`ps-switch-row${checked ? " ps-switch-row--on" : ""}`}>
-    <div className="ps-switch-row__icon">{item.icon}</div>
-    <div className="ps-switch-row__text">
-      <span className="ps-switch-row__label">{item.label}</span>
-      <span className="ps-switch-row__desc">{item.desc}</span>
-    </div>
-    <Switch
-      checked={checked}
-      onChange={onChange}
-      className="ps-switch"
-      checkedChildren={<CheckOutlined />}
-      unCheckedChildren={<CloseOutlined />}
-    />
-  </div>
-);
-
-// ─── Sub: StatsCard ───────────────────────────────────────
-const StatsCard = ({
-  icon,
-  label,
-  value,
-  sub,
-  color,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  sub: string;
-  color: string;
-}) => (
-  <div className="ps-stat">
-    <div className="ps-stat__icon" style={{ background: `${color}15` }}>
-      <span style={{ color }}>{icon}</span>
-    </div>
-    <div className="ps-stat__label">{label}</div>
-    <div className="ps-stat__value">{value}</div>
-    <div className="ps-stat__sub">{sub}</div>
-  </div>
-);
-
-// ─── Main component ───────────────────────────────────────
 export const ProfileSettings = () => {
   const [form] = Form.useForm();
-  const [values, setValues] = useState<NotificationSettings>(INITIAL_SETTINGS);
+  const [values, setValues] = useState<NotificationSettings>(INITIAL_NOTIFICATION_SETTINGS);
 
-  const toggle = (key: keyof Omit<NotificationSettings, "preferredContact">) =>
+  const toggle = (key: NotificationChannelKey) =>
     setValues((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const handleSave = () => {
@@ -164,7 +31,7 @@ export const ProfileSettings = () => {
   };
 
   const handleReset = () => {
-    setValues(INITIAL_SETTINGS);
+    setValues(INITIAL_NOTIFICATION_SETTINGS);
     form.resetFields();
   };
 
@@ -174,6 +41,12 @@ export const ProfileSettings = () => {
   }).length;
 
   const totalCount = Object.keys(values).filter(k => k !== "preferredContact").length;
+
+  const CONTACT_OPTIONS = [
+    { value: "email", label: "Email", icon: <MailOutlined /> },
+    { value: "sms", label: "SMS", icon: <MessageOutlined /> },
+    { value: "phone", label: "Cuộc gọi", icon: <PhoneOutlined /> },
+  ];
 
   return (
     <div className="profile-settings">

@@ -1,0 +1,134 @@
+@import "../../../../../common";
+
+.pt-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pt-ticket-hero {
+  background: $night;
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+
+  &__left {
+    flex: 1;
+  }
+
+  &__code {
+    font-size: 12px;
+    color: rgba($amber, 0.7);
+    margin: 0 0 4px;
+  }
+
+  &__route {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 8px;
+  }
+
+  &__time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(#fff, 0.6);
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+}
+
+.pt-info-card,
+.pt-form-card {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 14px;
+  padding: 20px 24px;
+}
+
+.pt-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: $night;
+  margin: 0 0 16px;
+
+  .anticon {
+    font-size: 16px;
+    color: $amber;
+  }
+}
+
+.pt-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+}
+
+.pt-info-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background: $amber-pale;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: $night;
+
+  &__icon {
+    font-size: 16px;
+  }
+}
+
+.pt-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+
+.pt-locked-notice {
+  padding: 16px;
+  background: rgba($muted, 0.08);
+  border-radius: 8px;
+  font-size: 13px;
+  color: $muted;
+  text-align: center;
+}
+
+.pt-save-btn {
+  &.ant-btn-primary {
+    background: $amber !important;
+    border-color: $amber !important;
+    color: $night !important;
+    font-weight: 600;
+    height: 44px;
+    border-radius: 8px;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+.pt-list-item__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}

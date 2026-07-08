@@ -1,0 +1,51 @@
+@import "../../../../../common";
+
+.ps-stat {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: darken($border, 10%);
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: $amber-pale;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+
+    i {
+      font-size: 18px;
+      color: $amber;
+    }
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+  }
+
+  &__value {
+    font-size: 26px;
+    font-weight: 700;
+    color: $night;
+    line-height: 1;
+  }
+
+  &__sub {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 4px;
+  }
+}

@@ -1,0 +1,79 @@
+@import "../../../../../common";
+
+.ps-trip {
+  background: #fff;
+  border: 0.5px solid $border;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: darken($border, 10%);
+  }
+
+  &__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: $night;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    i {
+      font-size: 17px;
+      color: $amber;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: $night;
+    margin-bottom: 4px;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  &__note {
+    font-size: 11px;
+    color: $muted;
+  }
+
+  &__tag {
+    flex-shrink: 0;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    border-radius: 4px !important;
+    padding: 2px 8px !important;
+
+    &--done.ant-tag {
+      background: $green-bg !important;
+      color: $green !important;
+    }
+    &--upcoming.ant-tag {
+      background: $amber-pale !important;
+      color: #854f0b !important;
+    }
+  }
+
+  &__chevron {
+    font-size: 14px;
+    color: #9ca3af;
+    flex-shrink: 0;
+  }
+}
