@@ -20,6 +20,8 @@ import { NotificationsPage } from "@/pages/notification";
 import { ChatLayout } from "@/pages/chat/ChatLayout";
 import { ChatPage } from "@/pages/chat/ChatPage";
 import { ChatDetailPage } from "@/pages/chat/ChatDetailPage";
+import { PaymentSuccessPage } from "@/pages/payment/PaymentSuccessPage";
+import { PaymentCancelPage } from "@/pages/payment/PaymentCancelPage";
 
 export const WebRouter = () => (
   <Routes>
@@ -38,10 +40,9 @@ export const WebRouter = () => (
       path={ROUTER_PATH.BOOKING_CONFIRM}
       element={<BookingConfirmRoute />}
     />
-    <Route
-      path={ROUTER_PATH.BOOKING_SUCCESS}
-      element={<BookingSuccessRoute />}
-    />
+    <Route path={ROUTER_PATH.BOOKING_SUCCESS} element={<BookingSuccessRoute />} />
+    <Route path={ROUTER_PATH.PAYMENT_SUCCESS} element={<PaymentSuccessPage />} />
+    <Route path={ROUTER_PATH.PAYMENT_CANCEL} element={<PaymentCancelPage />} />
     <Route path={ROUTER_PATH.PROMOS} element={<PromosPage />} />
     <Route path={ROUTER_PATH.SUPPORT} element={<SupportPage />} />
     <Route path={ROUTER_PATH.PROFILE} element={<ProfilePage />} />

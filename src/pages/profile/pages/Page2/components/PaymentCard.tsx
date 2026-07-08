@@ -48,14 +48,5 @@ export const PaymentCard = ({ onOpenPayment }: PaymentCardProps) => (
       <SafetyOutlined className="pi-payment-secure__icon" />
       <span>Thông tin thẻ được mã hoá SSL 256-bit</span>
     </div>
-
-    <Button
-      block
-      icon={<EditOutlined />}
-      className="pi-payment-update-btn"
-      onClick={onOpenPayment}
-    >
-      Cập nhật phương thức
-    </Button>
   </div>
 );

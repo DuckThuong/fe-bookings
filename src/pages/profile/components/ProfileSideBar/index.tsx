@@ -37,11 +37,6 @@ export const MENU_ITEMS: MenuProps["items"] = [
     label: "Tin nhắn",
   },
   {
-    key: "payment",
-    icon: <CreditCardOutlined />,
-    label: "Phương thức thanh toán",
-  },
-  {
     key: "company-registration",
     icon: <ApartmentOutlined />,
     label: "Đăng ký trở thành nhà xe",

@@ -16,6 +16,14 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
     desc: "Visa, Mastercard, JCB",
   },
   {
+    id: "payos",
+    icon: "ti-qrcode",
+    iconColor: "#fff",
+    iconBg: "#00856f",
+    name: "PayOS",
+    desc: "Thanh toán qua QR code",
+  },
+  {
     id: "ewallet",
     icon: "ti-wallet",
     iconColor: "#fff",

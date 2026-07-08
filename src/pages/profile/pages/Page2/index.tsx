@@ -17,11 +17,7 @@ import { NOTI_SUCCESS } from "@/common/constants/constants";
 import { AvatarUploader, PaymentCard } from "./components";
 import "./style.scss";
 
-export const ProfileInformation = ({
-  onOpenPayment,
-}: {
-  onOpenPayment?: () => void;
-}) => {
+export const ProfileInformation = () => {
   const { user, setUser } = useUser();
   const [form] = Form.useForm();
   const [avatarUrl, setAvatarUrl] = useState(user.userAvatar || "");
@@ -162,7 +158,7 @@ export const ProfileInformation = ({
 
         {/* Right: payment card */}
         <aside className="profile-information__payment-section">
-          <PaymentCard onOpenPayment={onOpenPayment} />
+          <PaymentCard />
         </aside>
       </div>
     </div>

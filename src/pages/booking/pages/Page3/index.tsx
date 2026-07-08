@@ -1,3 +1,4 @@
+import { createBookingPaymentLink } from "@/api/configs/payment.config";
 import { confirmHoldPayment } from "@/api/configs/bookings.config";
 import { formatVnd } from "@/common/contexts/booking";
 import { useCountdown } from "@/common/contexts/helper";
@@ -38,12 +39,26 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
       }),
   });
 
+  const payOSMutation = useMutation({
+    mutationFn: () => createBookingPaymentLink(data.holdId!),
+  });
+
   useEffect(() => {
-    setLoading(payMutation.isPending);
-  }, [payMutation.isPending, setLoading]);
+    setLoading(payMutation.isPending || payOSMutation.isPending);
+  }, [payMutation.isPending, payOSMutation.isPending, setLoading]);
 
   const handleConfirm = async () => {
     try {
+      if (payMethod === "payos") {
+        const result = await payOSMutation.mutateAsync();
+        if (result.checkoutUrl) {
+          window.location.href = result.checkoutUrl;
+        } else {
+          showNotification("Không thể tạo liên kết thanh toán", NOTI_ERROR);
+        }
+        return;
+      }
+
       const result = await payMutation.mutateAsync();
       const successData = toBookingSuccessData(result, data);
       showNotification(
@@ -183,11 +198,13 @@ export const BookingConfirmPage = ({ data }: { data: BookingConfirmData }) => {
               block
               className="confirm-cta-btn"
               icon={<i className="ti ti-lock" aria-hidden="true" />}
-              disabled={payMutation.isPending}
-              loading={payMutation.isPending}
+              disabled={payMutation.isPending || payOSMutation.isPending}
+              loading={payMutation.isPending || payOSMutation.isPending}
               onClick={() => void handleConfirm()}
             >
-              Thanh toán ngay — {formatVnd(data.total)}
+              {payMethod === "payos"
+                ? "Thanh toán PayOS"
+                : `Thanh toán ngay — ${formatVnd(data.total)}`}
             </Button>
             <p className="confirm-cta-note">
               🔒 Thanh toán được bảo mật bởi SSL 256-bit

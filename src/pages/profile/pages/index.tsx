@@ -4,7 +4,6 @@ import { ProfileSideBar } from "../components/ProfileSideBar";
 import { ProfileSummary } from "./Page1";
 import { ProfileInformation } from "./Page2";
 import { ProfileTicket } from "./Page3";
-import { ProfilePayment } from "./Page4";
 import { ProfileSettings } from "./Page5";
 import { CompanyRegistrationPage } from "./Page6";
 import { HomeHeader } from "@/components/TopBar";
@@ -26,17 +25,13 @@ export const ProfilePage = () => {
   const renderContent = () => {
     switch (activeKey) {
       case "account":
-        return (
-          <ProfileInformation onOpenPayment={() => setActiveKey("payment")} />
-        );
+        return <ProfileInformation />;
       case "company-registration":
         return <CompanyRegistrationPage />;
       case "overview":
         return <ProfileSummary onEdit={() => setActiveKey("account")} />;
       case "trips":
         return <ProfileTicket />;
-      case "payment":
-        return <ProfilePayment />;
       case "settings":
         return <ProfileSettings />;
       default:
