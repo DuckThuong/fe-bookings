@@ -4,11 +4,11 @@ import {
 } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useEffect } from "react";
-import { STATUS_CONFIG } from "../../../../../common/constants/profile.constant";
 import { TicketStatusTracker } from "../TicketStatusTracker";
 import { DetailRow } from "./DetailRow";
 import "./BookingDetail.scss";
 import type { ProfileBooking } from "@/pages/profile/utils/mapProfileBooking";
+import { useBookingStatuses } from "@/common/hooks/useBookingStatuses";
 
 interface BookingDetailProps {
   booking: ProfileBooking;
@@ -28,7 +28,9 @@ export const BookingDetail = ({
   refundLoading,
 }: BookingDetailProps) => {
   const [form] = Form.useForm();
-  const cfg = STATUS_CONFIG[booking.status];
+  const { getBookingStatusMeta } = useBookingStatuses();
+  const statusMeta = getBookingStatusMeta(booking.status);
+  const cfg = statusMeta ?? { color: "#64748b", bg: "#f1f5f9", dot: "#94a3b8", label: booking.status };
   const locked = !booking.canEdit;
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export const BookingDetail = ({
           style={{ color: cfg.color, background: cfg.bg }}
         >
           <span className="pt-list-item__dot" style={{ background: cfg.dot }} />
-          {booking.status}
+          {cfg.label || booking.status}
         </span>
       </div>
 
@@ -114,12 +116,12 @@ export const BookingDetail = ({
         </p>
 
         {locked ? (
-          booking.status === "Đã xác nhận" || booking.status === "Chờ khởi hành" ? null : (
+          booking.status === "CONFIRMED" || booking.status === "WAITING" ? null : (
             <div className="pt-locked-notice">
               <span>
-                {booking.status === "Chờ xác nhận"
+                {booking.status === "PENDING"
                   ? "Đơn đang chờ nhà xe xác nhận — không thể chỉnh sửa."
-                  : booking.status === "Đã hủy"
+                  : booking.status === "CANCELLED"
                     ? "Đơn đặt vé đã bị hủy — không thể chỉnh sửa."
                     : "Chỉ có thể chỉnh sửa khi đơn đang giữ chỗ và chưa hết hạn."}
               </span>

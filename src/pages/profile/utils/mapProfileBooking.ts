@@ -4,20 +4,7 @@ import type {
 } from "@/api/dtos/account.dto";
 import dayjs from "dayjs";
 
-export type ProfileBookingStatus =
-  | "Đã xác nhận"
-  | "Chờ khởi hành"
-  | "Chờ xác nhận"
-  | "Chưa thanh toán"
-  | "Đã hủy"
-  | "Chuẩn bị khởi hành"
-  | "Đang đón khách"
-  | "Đã khởi hành"
-  | "Sắp đến điểm đón"
-  | "Đang di chuyển"
-  | "Đã đến điểm đón"
-  | "Hoàn thành"
-  | "Chờ hoàn tiền";
+export type ProfileBookingStatus = string;
 
 export type OperationStatus =
   | "SCHEDULED"
@@ -53,7 +40,7 @@ export interface ProfileBooking {
   pickupValue: string;
   dropoffValue: string;
   paymentMethod: string;
-  status: ProfileBookingStatus;
+  status: string; // Status code from backend
   rawStatus: string;
   bookingCode: string;
   contactPhone: string;
@@ -92,12 +79,12 @@ export const mapBookingStatus = (
   item: AccountBookingItem,
   ticketStatus?: string | null,
   holdExpiresAt?: string | null,
-): ProfileBookingStatus => {
+): string => {
   const status = item.status?.toUpperCase() ?? "";
   const ticket = ticketStatus?.toUpperCase() ?? "";
 
-  if (ticket === "PENDING_REFUND") {
-    return "Chờ hoàn tiền";
+  if (ticket === "REFUNDING" || ticket === "PENDING_REFUND") {
+    return "REFUNDING";
   }
 
   if (
@@ -105,29 +92,29 @@ export const mapBookingStatus = (
     ticket === "CANCELLED" ||
     ticket === "REFUNDED"
   ) {
-    return "Đã hủy";
+    return "CANCELLED";
   }
 
   // Check if HOLD booking has expired
   if (status === "HOLD" && holdExpiresAt) {
     if (new Date() > new Date(holdExpiresAt)) {
-      return "Đã hủy";
+      return "CANCELLED";
     }
   }
 
-  if (status === "HOLD") return "Chưa thanh toán";
-  if (status === "CONFIRMED") return "Đã xác nhận";
+  if (status === "HOLD") return "UNPAID";
+  if (status === "CONFIRMED") return "CONFIRMED";
 
   if (
     status === "PENDING_APPROVAL" ||
     (status === "CONVERTED" && ticket === "PENDING")
   ) {
-    return "Chờ xác nhận";
+    return "PENDING";
   }
 
-  if (status === "CONVERTED" && ticket === "PAID") return "Chờ khởi hành";
+  if (status === "CONVERTED" && ticket === "PAID") return "WAITING";
 
-  return "Chưa thanh toán";
+  return "UNPAID";
 };
 
 const canEditBooking = (item: AccountBookingItem): boolean => {
