@@ -54,6 +54,7 @@ export interface ProfileBooking {
   refundInfo?: RefundInfo;
   departureTime?: string;
   totalAmount?: number;
+  timeTicket?: string;
 }
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -118,9 +119,13 @@ export const mapBookingStatus = (
 };
 
 const canEditBooking = (item: AccountBookingItem): boolean => {
-  if (item.status !== "HOLD") return false;
-  const expiresAt = dayjs(item.holdExpiresAt);
-  return expiresAt.isValid() && expiresAt.isAfter(dayjs());
+  console.log("item.operationStatus", item.operationStatus);
+  if (item.operationStatus === "SCHEDULED") {
+    return true;
+  } else {
+    const expiresAt = dayjs(item.holdExpiresAt);
+    return expiresAt.isValid() && expiresAt.isAfter(dayjs());
+  }
 };
 
 export const mapAccountBookingToProfile = (
@@ -133,7 +138,6 @@ export const mapAccountBookingToProfile = (
   const detail = item as AccountBookingDetail;
   const ticket = detail.ticket;
   const ticketStatus = ticket?.status ?? null;
-
   const route =
     road?.startPoint && road?.endPoint
       ? `${road.startPoint} → ${road.endPoint}`
@@ -146,13 +150,13 @@ export const mapAccountBookingToProfile = (
 
   const refundInfo: RefundInfo | undefined = detail.refundInfo
     ? {
-        refundCode: detail.refundInfo.refundCode,
-        refundPercentage: detail.refundInfo.refundPercentage,
-        estimatedRefundAmount: detail.refundInfo.estimatedRefundAmount,
-        refundStatus: detail.refundInfo.refundStatus,
-        requestedAt: detail.refundInfo.requestedAt,
-        processedAt: detail.refundInfo.processedAt,
-      }
+      refundCode: detail.refundInfo.refundCode,
+      refundPercentage: detail.refundInfo.refundPercentage,
+      estimatedRefundAmount: detail.refundInfo.estimatedRefundAmount,
+      refundStatus: detail.refundInfo.refundStatus,
+      requestedAt: detail.refundInfo.requestedAt,
+      processedAt: detail.refundInfo.processedAt,
+    }
     : undefined;
 
   return {
@@ -183,14 +187,15 @@ export const mapAccountBookingToProfile = (
     contactPhone: passenger?.phone ?? "",
     contactEmail,
     note: "",
+    timeTicket: item.timeTicket,
     canEdit: canEditBooking(item),
     operatorCode: item.schedule?.company?.code,
     operatorName: item.schedule?.company?.companyName,
     operatorUserId: item.schedule?.company?.operatorUserId,
     operationStatus: detail.operationStatus as OperationStatus | undefined,
     refundInfo,
-    departureTime: detail.departureTime,
-    totalAmount: detail.totalAmount,
+    departureTime: detail.schedule.trip.departure,
+    totalAmount: detail.ticket?.totalPrice,
   };
 };
 

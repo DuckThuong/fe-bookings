@@ -68,7 +68,6 @@ export const ProfileTicket = () => {
     }
     return mapAccountBookingToProfile(detailQuery.data, contactEmail);
   }, [detailQuery.data, listBookings, selectedId, contactEmail]);
-
   useEffect(() => {
     setLoading(listQuery.isLoading || detailQuery.isFetching);
   }, [listQuery.isLoading, detailQuery.isFetching, setLoading]);

@@ -1,10 +1,9 @@
+import { useBookingStatuses } from "@/common/hooks/useBookingStatuses";
+import type { ProfileBooking } from "@/pages/profile/utils/mapProfileBooking";
 import {
-  CalendarOutlined,
-  ClockCircleOutlined,
+  CalendarOutlined
 } from "@ant-design/icons";
 import "./BookingListItem.scss";
-import type { ProfileBooking } from "@/pages/profile/utils/mapProfileBooking";
-import { useBookingStatuses } from "@/common/hooks/useBookingStatuses";
 
 interface BookingListItemProps {
   booking: ProfileBooking;
@@ -20,7 +19,7 @@ export const BookingListItem = ({
   const { getBookingStatusMeta } = useBookingStatuses();
   const statusMeta = getBookingStatusMeta(booking.status);
   const cfg = statusMeta ?? { color: "#64748b", bg: "#f1f5f9", dot: "#94a3b8", label: booking.status };
-
+  
   return (
     <button
       type="button"
@@ -33,14 +32,13 @@ export const BookingListItem = ({
           className="pt-list-item__status"
           style={{ color: cfg.color, background: cfg.bg }}
         >
-          <span className="pt-list-item__dot" style={{ background: cfg.dot }} />
           {cfg.label || booking.status}
         </span>
       </div>
 
       <div className="pt-list-item__meta">
         <span>
-          <CalendarOutlined /> {booking.date} · {booking.time}
+          <CalendarOutlined /> {booking.timeTicket}
         </span>
         <span className="pt-list-item__sep" />
         <span>Ghế {booking.seat}</span>

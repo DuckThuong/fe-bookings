@@ -31,7 +31,6 @@ export const BookingDetail = ({
   const { getBookingStatusMeta } = useBookingStatuses();
   const statusMeta = getBookingStatusMeta(booking.status);
   const cfg = statusMeta ?? { color: "#64748b", bg: "#f1f5f9", dot: "#94a3b8", label: booking.status };
-  const locked = !booking.canEdit;
 
   useEffect(() => {
     form.setFieldsValue({
@@ -69,7 +68,7 @@ export const BookingDetail = ({
           <p className="pt-ticket-hero__code">#{booking.bookingCode}</p>
           <h3 className="pt-ticket-hero__route">{booking.route}</h3>
           <div className="pt-ticket-hero__time">
-            <ClockCircleOutlined /> {booking.date} · {booking.time}
+            <ClockCircleOutlined /> {booking.timeTicket}
           </div>
         </div>
 
@@ -77,7 +76,6 @@ export const BookingDetail = ({
           className="pt-ticket-hero__status"
           style={{ color: cfg.color, background: cfg.bg }}
         >
-          <span className="pt-list-item__dot" style={{ background: cfg.dot }} />
           {cfg.label || booking.status}
         </span>
       </div>
@@ -115,7 +113,7 @@ export const BookingDetail = ({
           <FileTextOutlined /> Cập nhật thông tin
         </p>
 
-        {locked ? (
+        {!booking.canEdit ? (
           booking.status === "CONFIRMED" || booking.status === "WAITING" ? null : (
             <div className="pt-locked-notice">
               <span>

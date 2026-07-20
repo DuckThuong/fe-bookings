@@ -56,12 +56,15 @@ export interface AccountBookingTicket {
   id: number;
   code: string;
   status: string;
+  totalPrice?: number;
 }
 
 export interface AccountBookingItem {
   id: number;
   code: string;
   status: string;
+  operationStatus?: string;
+  timeTicket?: string;
   customerId: string;
   seatIds: number[];
   totalSeat: number;

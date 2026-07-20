@@ -209,18 +209,15 @@ const getRefundButtonState = (
     return { disabled: true, label: "Đang chờ hoàn tiền", variant: "ghost" };
   }
 
-  // Check operation status - disable if already started (BOARDING or later)
   if (booking.operationStatus && ["BOARDING", "DEPARTED", "APPROACHING", "MOVING", "ARRIVED", "COMPLETED", "CANCELLED"].includes(booking.operationStatus)) {
     return { disabled: true, label: "Không thể hủy vé", variant: "ghost" };
   }
 
-  // Check time-based refund eligibility
-  const refundInfo = getTimeUntilDeparture(booking.departureTime);
+  const refundInfo = getTimeUntilDeparture(booking.timeTicket);
   if (!refundInfo.canRefund) {
     return { disabled: true, label: refundInfo.label, variant: "ghost" };
-  }
+  } 
 
-  // Check legacy booking status
   if (isRefundAllowed(booking)) {
     return { disabled: !!isLoading, label: "Hủy vé hoàn tiền", variant: "danger" };
   }
@@ -228,14 +225,27 @@ const getRefundButtonState = (
   return { disabled: true, label: "Không thể hủy vé", variant: "ghost" };
 };
 
-const getTimeUntilDeparture = (departureTime?: string): { hours: number; canRefund: boolean; percentage: number; label: string } => {
-  if (!departureTime) {
+const getTimeUntilDeparture = (
+  timeTicket?: string
+): { hours: number; canRefund: boolean; percentage: number; label: string } => {
+  const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s*·\s*(\d{1,2}):(\d{2})$/.exec(
+    (timeTicket ?? "").trim()
+  );
+
+  if (!match) {
     return { hours: 0, canRefund: false, percentage: 0, label: "Không xác định" };
   }
 
-  const departure = new Date(departureTime).getTime();
-  const now = Date.now();
-  const hoursUntilDeparture = (departure - now) / (1000 * 60 * 60);
+  const [, dStr, moStr, yStr, hStr, mStr] = match;
+  const departureDate = new Date(
+    Number(yStr),
+    Number(moStr) - 1,
+    Number(dStr),
+    Number(hStr),
+    Number(mStr)
+  );
+
+  const hoursUntilDeparture = (departureDate.getTime() - Date.now()) / (1000 * 60 * 60);
 
   if (hoursUntilDeparture >= 24) {
     return { hours: hoursUntilDeparture, canRefund: true, percentage: 80, label: "Hoàn 80%" };
@@ -247,6 +257,7 @@ const getTimeUntilDeparture = (departureTime?: string): { hours: number; canRefu
     return { hours: 0, canRefund: false, percentage: 0, label: "Chuyến đã khởi hành" };
   }
 };
+
 
 const OperationStatusTracker = ({
   booking,
@@ -335,9 +346,6 @@ const OperationStatusTracker = ({
       </div>
 
       <div className="pt-tracker__actions">
-        <button type="button" className="pt-tracker__btn pt-tracker__btn--ghost">
-          Xem chi tiết chuyến
-        </button>
         <button
           type="button"
           className="pt-tracker__btn pt-tracker__btn--solid"
@@ -355,7 +363,7 @@ const OperationStatusTracker = ({
             type="button"
             className={`pt-tracker__btn pt-tracker__btn--${getRefundButtonState(booking, refundLoading).variant}`}
             onClick={() => {
-              const refundInfo = getTimeUntilDeparture(booking.departureTime);
+              const refundInfo = getTimeUntilDeparture(booking.timeTicket);
               const totalAmount = booking.totalAmount ?? 0;
               const refundAmount = Math.round(totalAmount * (refundInfo.percentage / 100));
 
@@ -417,7 +425,6 @@ export const TicketStatusTracker = ({
   onRequestRefund,
   refundLoading,
 }: TicketStatusTrackerProps) => {
-  // Use operation status if available (new flow)
   if (booking.operationStatus && STATUS_STEP_CONFIG[booking.operationStatus]) {
     return (
       <OperationStatusTracker
@@ -540,7 +547,7 @@ export const TicketStatusTracker = ({
             type="button"
             className={`pt-tracker__btn pt-tracker__btn--${getRefundButtonState(booking, refundLoading).variant}`}
             onClick={() => {
-              const refundInfo = getTimeUntilDeparture(booking.departureTime);
+              const refundInfo = getTimeUntilDeparture(booking.timeTicket);
               const totalAmount = booking.totalAmount ?? 0;
               const refundAmount = Math.round(totalAmount * (refundInfo.percentage / 100));
 
